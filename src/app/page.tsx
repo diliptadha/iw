@@ -1,18 +1,11 @@
-'use client'
-import "../app/globals.css"
+"use client";
 
-import { Homescreen } from "@/pages/Home-screen";
-import EyeTesting from "@/pages/eye-testing";
-import Terms from "@/pages/terms-conditions";
-import React from "react";
+import Homescreen from "@/pages/Home-screen";
 
 export default function Home() {
   return (
     <div>
-      
       <Homescreen />
-     
-     
     </div>
   );
 }
