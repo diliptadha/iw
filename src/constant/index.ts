@@ -33,7 +33,7 @@ export const Images = {
     Unisexframe1: "/Images/sarah-noltner-pL5ZzPp1zqg-unsplash 1.png",
     Unisexframe2: "/Images/carlos-vaz-KP4bxnxAilU-unsplash 1.png",
     PHONE_LOGO_BLUE: "/Images/phone_icon_blue.svg",
-    PHONE_LOGO_WHITE: "/Images/phone_logo_white.svg"
+    PHONE_LOGO_WHITE: "/Images/phone_logo_white.svg",
 };
 
 export const Strings = {
