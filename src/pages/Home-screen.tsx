@@ -4,12 +4,12 @@ import React from 'react';
 import { Footer } from "@/Component/footer";
 
 export const Homescreen = () => {
- 
+
   return (
     <div>
 
-    <Footer />
+      <Footer />
 
-  </div>
-     )
+    </div>
+  )
 }

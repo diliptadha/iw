@@ -54,7 +54,7 @@ export const Footer = () => {
               className=""
             />
           </div>
-          <div className="font-lato font-base xs:text-[18px] text-[26px] mt-2 text-white mt-8">
+          <div className="font-lato font-base xs:text-[18px] text-[26px] text-white mt-8">
             <div>
               {Strings.THE_BEST_QUALITY}
             </div>
@@ -73,38 +73,38 @@ export const Footer = () => {
             {Strings.SERVICES}
           </div>
           <div className="mt-4">
-          <Link href="/eye-testing" className=" font-lato font-light text-12 hover:opacity-[0.6]">
-            {Strings.EYE_TESTING}
-          </Link></div>
+            <Link href="/eye-testing" className=" font-lato font-light text-12 hover:opacity-[0.6]">
+              {Strings.EYE_TESTING}
+            </Link></div>
           <div>
-          <Link href="/expert-doctor" className="font-lato font-light text-12 hover:opacity-[0.6]">
-            {Strings.EXPERT_DOCTOR}
-          </Link></div>
+            <Link href="/expert-doctor" className="font-lato font-light text-12 hover:opacity-[0.6]">
+              {Strings.EXPERT_DOCTOR}
+            </Link></div>
 
           <div className="mt-6 font-lato text-12 font-bold text-PictonBlue">
             {Strings.ACCOUNT}
           </div>
           <div className="mt-4">
-          <Link href="/profile" className=" font-lato text-base  text-12 font-light hover:opacity-[0.6]">    
-            {Strings.PROFILE}
-          </Link></div>
+            <Link href="/profile" className=" font-lato text-base  text-12 font-light hover:opacity-[0.6]">
+              {Strings.PROFILE}
+            </Link></div>
           <div>
-          <Link href="/appoinments" className="font-lato text-base  text-12 font-light hover:opacity-[0.6]">
-            {Strings.APPOINTMENTS}
-          </Link></div>
+            <Link href="/appoinments" className="font-lato text-base  text-12 font-light hover:opacity-[0.6]">
+              {Strings.APPOINTMENTS}
+            </Link></div>
           <div>
-          <Link href="/orders" className="font-lato text-base  text-12 font-light hover:opacity-[0.6]">
-            {Strings.ORDERS}
+            <Link href="/orders" className="font-lato text-base  text-12 font-light hover:opacity-[0.6]">
+              {Strings.ORDERS}
 
-          </Link></div>
+            </Link></div>
           <div>
-          <Link href="/payment" className="font-lato text-base  text-12 font-light hover:opacity-[0.6]">
-            {Strings.PAYMENT}
-          </Link></div>
+            <Link href="/payment" className="font-lato text-base  text-12 font-light hover:opacity-[0.6]">
+              {Strings.PAYMENT}
+            </Link></div>
           <div>
-          <Link href="/returns-refunds" className="font-lato text-base  text-12 font-light hover:opacity-[0.6]">
-            {Strings.RETURNS_REFUNDS}
-          </Link></div>
+            <Link href="/refund-policy" className="font-lato text-base  text-12 font-light hover:opacity-[0.6]">
+              {Strings.RETURNS_REFUNDS}
+            </Link></div>
         </div>
 
         <div className="flex flex-col mt-6 lg:mt-8 lg:ml-2 xl:ml-6 text-white w-full lg:w-[400px] xl:w-[500px]">
@@ -112,32 +112,32 @@ export const Footer = () => {
             {Strings.ABOUT_US}
           </div>
           <div className="mt-4">
-          <Link href="/our-history" className="font-lato text-base text-12 font-light hover:opacity-[0.6]">
-            {Strings.OUR_HISTORY}
-          </Link></div>
+            <Link href="/our-history" className="font-lato text-base text-12 font-light hover:opacity-[0.6]">
+              {Strings.OUR_HISTORY}
+            </Link></div>
           <div>
-          <Link href="/blog" className="font-lato text-base  text-12 font-light hover:opacity-[0.6]">
-            {Strings.BLOG}
+            <Link href="/blog" className="font-lato text-base  text-12 font-light hover:opacity-[0.6]">
+              {Strings.BLOG}
 
-          </Link></div>
+            </Link></div>
           <div>
-          <Link href="/contact-us" className="font-lato text-base  text-12 font-light hover:opacity-[0.6]">
-            {Strings.CONTACT_US}
-          </Link></div>
+            <Link href="/contact-us" className="font-lato text-base  text-12 font-light hover:opacity-[0.6]">
+              {Strings.CONTACT_US}
+            </Link></div>
 
           <div className="mt-6 font-lato text-12 font-bold text-PictonBlue">
             {Strings.USEFUL_LINKS}
 
           </div>
           <div className="mt-4">
-          <Link href="/store-location" className="font-lato text-base  text-12 font-light hover:opacity-[0.6]">
-            {Strings.STORE_LOCATION}
+            <Link href="/store-location" className="font-lato text-base  text-12 font-light hover:opacity-[0.6]">
+              {Strings.STORE_LOCATION}
 
-          </Link></div>
+            </Link></div>
           <div>
-          <Link href="/business-partners" className="font-lato text-base  text-12 font-light hover:opacity-[0.6]">
-            {Strings.BUSINESS_PARTNERS}
-          </Link></div>
+            <Link href="/business-partners" className="font-lato text-base  text-12 font-light hover:opacity-[0.6]">
+              {Strings.BUSINESS_PARTNERS}
+            </Link></div>
         </div>
 
         <div className="flex flex-col mt-8 lg:ml-4 text-white w-full lg:w-[240px] xl:w-[300px]">
@@ -162,8 +162,6 @@ export const Footer = () => {
                 stroke-width="1.5"
                 stroke="currentColor"
                 className="h-6 w-6 text-black hover:text-PictonBlue cursor-pointer" >
-
-
                 <path
 
                   stroke-linecap="round"
@@ -194,8 +192,8 @@ export const Footer = () => {
             <div className="pl-2">
               <text className="font-lato text-base  text-12 font-light">{Strings.NEED_HELP}</text>
 
-              <div className="flex lg:flex-col xl:flex-row"><text className="font-lato text-base  text-12 font-light">{Strings.CALL_US} </text>  
-                <Link href="tel:+91 8291251241" className={"font-lato font-bold text-14 hover:text-PictonBlue "}>
+              <div className="flex lg:flex-col xl:flex-row gap-[7px] "><text className="font-lato text-base  text-12 font-light">{Strings.CALL_US}</text>
+                <Link href="tel: +91 8291251241" className={"font-lato font-bold text-14 hover:text-PictonBlue "}>
                   {Strings.PHONE}
                 </Link>
               </div>
@@ -211,12 +209,10 @@ export const Footer = () => {
           {Strings.ALL_RIGHTS}
         </div>
         <div className="flex flex-row lg:flex-row- xs:justify-start- lg:justify-end lg:flex-auto mt-2 lg:mt-0">
-
-
-        <div><Link href="/faq" className="pl-0 lg:pl-[8px] pr-[4px] lg:pr-[8px] text-white cursor-pointer font-lato md:text-xs lg:text-base xs:text-[7px]  font-medium hover:opacity-[0.6]">
+          <div><Link href="/faq" className="pl-0 lg:pl-[8px] pr-[4px] lg:pr-[8px] text-white cursor-pointer font-lato md:text-xs lg:text-base xs:text-[7px]  font-medium hover:opacity-[0.6]">
             {Strings.FAQ}
           </Link></div>
-          <div>   <Link href="/terms-conditions" className=" border-l pl-[4px] lg:pl-[8px] pl-[4px]  lg:pr-[8px] ml-[10px] text-white cursor-pointer font-lato md:text-xs lg:text-base xs:text-[7px]  font-medium hover:opacity-[0.6]">
+          <div>   <Link href="/terms-conditions" className=" border-l pl-[4px] lg:pl-[8px] lg:pr-[8px] ml-[10px] text-white cursor-pointer font-lato md:text-xs lg:text-base xs:text-[7px]  font-medium hover:opacity-[0.6]">
             {Strings.TERMS}
           </Link></div>
           <div> <Link href="/privacy-policy" className="border-l pl-[4px] lg:pl-[8px] pr-[4px] lg:pr-[8px] ml-[10px] text-white cursor-pointer font-lato md:text-xs lg:text-base xs:text-[7px]  font-medium hover:opacity-[0.6]">
