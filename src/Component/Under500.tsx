@@ -2,12 +2,14 @@ import { Images, Strings } from "@/constant";
 import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
+import StarRating from "./StarRating";
 
 interface Under500Props {
   image: string;
   title: string;
   description: string;
   price: string;
+  rating?: number;
   isBestseller?: boolean;
 }
 const Under500: React.FC<Under500Props> = ({
@@ -15,6 +17,7 @@ const Under500: React.FC<Under500Props> = ({
   title,
   description,
   price,
+  rating = 0,
   isBestseller = false,
 }) => {
   const [open, setOpen] = useState(false);
@@ -51,13 +54,9 @@ const Under500: React.FC<Under500Props> = ({
               {Strings.Inclusive_of_all_taxes}
             </p>
             <div className="absolute top-[107px] w-full">
-              <Image
-                src={Images.Rating}
-                alt="/"
-                height={18}
-                width={122}
-                className=""
-              />
+              <div>
+                <StarRating rating={rating} />
+              </div>
               <div className="flex justify-between items-center mt-3">
                 <button className=" flex justify-center items-center border-black border w-[130px] h-[34px] rounded-[5px] font-bold text-xs text-black bg-white">
                   {Strings.KNOW_MORE}

@@ -12,6 +12,7 @@ import Frameforkids from "@/Component/Frameforkids";
 import Frameformen from "@/Component/Frameformen";
 import Frameforunisex from "@/Component/Frameforunisex";
 import Image from "next/image";
+import StarRating from "@/Component/StarRating";
 import { Tab } from "@headlessui/react";
 import Under500 from "@/Component/Under500";
 import { useEffect } from "react";
@@ -44,22 +45,25 @@ const Homescreen = () => {
       image: Images.OCEAN,
       title: "OCEAN",
       descreption: "OC-12322-BROWN TORTOISE-50",
-      price_: "₹950",
-      price: "₹700",
+      price_: "950",
+      price: "700",
+      rating: 4,
     },
     {
       image: Images.OCEAN,
       title: "KADIYAM",
       descreption: "A-25172-PINK_GOLD-52-1",
-      price_: "₹900",
-      price: "₹650",
+      price_: "900",
+      price: "650",
+      rating: 3.5,
     },
     {
       image: Images.OCEAN,
       title: "PRATA",
       descreption: "6604-GOLDEN_BROWN-51-1",
-      price_: "₹950",
-      price: "₹600",
+      price_: "950",
+      price: "600",
+      rating: 5,
     },
   ];
 
@@ -224,37 +228,37 @@ const Homescreen = () => {
   const CustomerData = [
     {
       id: 0,
-      images: Images.Rating,
+      rating: 3.5,
       h1: "NAME SURNAME",
       p: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.",
     },
     {
       id: 1,
-      images: Images.Rating,
+      rating: 3,
       h1: "NAME SURNAME",
       p: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.",
     },
     {
       id: 2,
-      images: Images.Rating,
+      rating: 4.5,
       h1: "NAME SURNAME",
       p: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.",
     },
     {
       id: 3,
-      images: Images.Rating,
+      rating: 3,
       h1: "NAME SURNAME",
       p: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.",
     },
     {
       id: 4,
-      images: Images.Rating,
+      rating: 2.5,
       h1: "NAME SURNAME",
       p: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.",
     },
     {
       id: 5,
-      images: Images.Rating,
+      rating: 4,
       h1: "NAME SURNAME",
       p: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.",
     },
@@ -264,43 +268,50 @@ const Homescreen = () => {
       image: Images.product1,
       title: "100%",
       description: "6604-GOLDEN_BROWN-51-1",
-      price: "₹499",
+      rating: 4,
+      price: "499",
     },
     {
       image: Images.product2,
       title: "KADIYAM",
       description: "65003-MATTEBLACK_SILVER-52-1",
-      price: "₹350",
+      rating: 3.5,
+      price: "350",
     },
     {
       image: Images.product3,
       title: "KADIYAM ",
       description: "70029-18-BROWN-50-1",
-      price: "₹450",
+      rating: 2,
+      price: "450",
     },
     {
       image: Images.product4,
       title: "K_D ",
       description: "17140-CY-MAROON_SILVER-49-1",
-      price: "₹500",
+      rating: 5,
+      price: "500",
     },
     {
       image: Images.product5,
       title: "K_D ",
       description: "A-25172-PINK_GOLD-52-1",
-      price: "₹400",
+      rating: 4,
+      price: "400",
     },
     {
       image: Images.product1,
       title: "K_D ",
       description: "A-25172-PINK_GOLD-52-1",
-      price: "₹400",
+      rating: 3.5,
+      price: "400",
     },
     {
       image: Images.product1,
       title: "K_D ",
       description: "A-25172-PINK_GOLD-52-1",
-      price: "₹400",
+      rating: 4.5,
+      price: "400",
     },
   ];
   const Bestsellerproducts = [
@@ -308,43 +319,50 @@ const Homescreen = () => {
       image: Images.product1,
       title: "100%",
       description: "6604-GOLDEN_BROWN-51-1",
-      price: "₹499",
+      rating: 4,
+      price: "499",
     },
     {
       image: Images.product2,
       title: "KADIYAM",
       description: "65003-MATTEBLACK_SILVER-52-1",
-      price: "₹350",
+      rating: 5,
+      price: "350",
     },
     {
       image: Images.product3,
       title: "KADIYAM ",
       description: "70029-18-BROWN-50-1",
-      price: "₹450",
+      rating: 3.5,
+      price: "450",
     },
     {
       image: Images.product4,
       title: "K_D ",
       description: "17140-CY-MAROON_SILVER-49-1",
-      price: "₹500",
+      rating: 4,
+      price: "500",
     },
     {
       image: Images.product5,
       title: "K_D ",
       description: "A-25172-PINK_GOLD-52-1",
-      price: "₹400",
+      rating: 2.5,
+      price: "400",
     },
     {
       image: Images.product1,
       title: "K_D ",
       description: "A-25172-PINK_GOLD-52-1",
-      price: "₹400",
+      rating: 4,
+      price: "400",
     },
     {
       image: Images.product1,
       title: "K_D ",
       description: "A-25172-PINK_GOLD-52-1",
-      price: "₹400",
+      rating: 3.5,
+      price: "400",
     },
   ];
 
@@ -354,7 +372,6 @@ const Homescreen = () => {
       const containerScrollWidth = containerRef2.current.offsetWidth;
       const maxScrollRight = containerWidth - containerScrollWidth;
 
-      // Check if there's enough space to scroll
       if (scrollPosition < maxScrollRight) {
         containerRef2.current.scrollBy({
           left: scrollStep2,
@@ -362,7 +379,6 @@ const Homescreen = () => {
         });
         setScrollPosition(scrollPosition + scrollStep2);
       } else {
-        // If already scrolled to the end, reset scroll position to 0
         containerRef2.current.scrollTo({
           left: 0,
           behavior: "smooth",
@@ -377,7 +393,6 @@ const Homescreen = () => {
       const containerScrollWidth = containerRef3.current.offsetWidth;
       const maxScrollRight = containerWidth - containerScrollWidth;
 
-      // Check if there's enough space to scroll
       if (scrollPosition < maxScrollRight) {
         containerRef3.current.scrollBy({
           left: scrollStep2,
@@ -385,7 +400,6 @@ const Homescreen = () => {
         });
         setScrollPosition(scrollPosition + scrollStep2);
       } else {
-        // If already scrolled to the end, reset scroll position to 0
         containerRef3.current.scrollTo({
           left: 0,
           behavior: "smooth",
@@ -595,7 +609,6 @@ const Homescreen = () => {
               )}
             </Tab>
           </Tab.List>
-
           <Tab.Panels>
             <Tab.Panel className={""}>
               <div className="mt-5 xs:overflow-x-auto xs:space-x-4 xl:space-x-16 flex xl:justify-between no-scrollbar">
@@ -673,16 +686,16 @@ const Homescreen = () => {
               </p>
               <div className="flex space-x-2">
                 <p className="font-normal text-xl text-black line-through	">
-                  {currentItem.price_}
+                  ₹{currentItem.price_}
                 </p>
                 <p className="font-extrabold text-xl text-black">
-                  {currentItem.price}
+                  ₹{currentItem.price}
                 </p>
               </div>
               <p className="font-normal text-sm text-black mb-6">
                 {Strings.Inclusive_of_all_taxes}
               </p>
-              <Image src={Images.Rating} alt="/" height={18} width={122} />
+              <StarRating rating={currentItem.rating} />
               <div className="flex space-x-4 mt-4">
                 <button className="border-black border w-[137px] h-[34px] rounded-[5px] font-normal text-xs text-black bg-white">
                   {Strings.ADD_TO_CART}
@@ -724,9 +737,9 @@ const Homescreen = () => {
         </div>
       </div>
       <div className="h-[512px] py-14 xs:pl-4 md:pl-12 bg-Darkblue overflow-hidden mt-5">
-        <h1 className="font-extrabold text-2xl ml-8 text-white">
-          ALL UNDER
-          <span className="text-[#FFC107]"> ₹500!</span>
+        <h1 className="font-extrabold text-2xl ml-8 text-white space-x-2 flex">
+          <p> {Strings.ALL_UNDER}</p>
+          <span className="text-[#FFC107]">{Strings.FIVE_HUNDRED}</span>
         </h1>
         <div className="flex items-center">
           <Image
@@ -747,7 +760,8 @@ const Homescreen = () => {
                 image={product.image}
                 title={product.title}
                 description={product.description}
-                price={product.price}
+                price={`₹${product.price}`}
+                rating={product.rating}
                 isBestseller={index === 3}
               />
             ))}
@@ -808,9 +822,9 @@ const Homescreen = () => {
         />
         <div className="absolute xs:bottom-2 xs:left-7 sm:bottom-4 sm:left-16 md:bottom-8 md:left-16 lg:bottom-10 lg:left-20 xl:bottom-20 xl:left-32">
           <h1 className="font-normal xs:text-[10px] sm:text-xl xl:text-2xl text-black">
-            MODERN STYLES , TOP BRANDS,
+            {Strings.MODERN_STYLES}
             <br />
-            <span className="font-extrabold "> ENDLESS OFFERS!</span>
+            <span className="font-extrabold ">{Strings.ENDLESS_OFFERS}</span>
           </h1>
           <button className="bg-black text-white font-normal text-xs xs:w-[100px] xs:h-[22px] xl:w-[137px] xl:h-[34px] rounded-[5px] xs:mt-1 md:mt-2 xl:mt-4">
             {Strings.SIGN_UP}
@@ -840,7 +854,8 @@ const Homescreen = () => {
                 image={product.image}
                 title={product.title}
                 description={product.description}
-                price={product.price}
+                price={`₹${product.price}`}
+                rating={product.rating}
                 isBestseller={index === 1}
               />
             ))}
@@ -879,7 +894,7 @@ const Homescreen = () => {
             {CustomerData.map((Customer, index) => (
               <Customerssay
                 key={index}
-                image={Customer.images}
+                rating={Customer.rating}
                 h1={Customer.h1}
                 p={Customer.p}
                 style={{
@@ -892,6 +907,7 @@ const Homescreen = () => {
                         : 0,
                   }),
                 }}
+                image={""}
               />
             ))}
           </div>

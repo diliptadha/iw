@@ -207,4 +207,9 @@ export const Strings = {
   What_our_customers_have_to_say: "What our customers have to say!",
   NAME_SURNAME: "NAME SURNAME",
   KNOW_MORE: "KNOW MORE",
+  BESTSELLER: "BESTSELLER",
+  MODERN_STYLES: "MODERN STYLES , TOP BRANDS,",
+  ENDLESS_OFFERS: "ENDLESS OFFERS!",
+  ALL_UNDER: "ALL UNDER",
+  FIVE_HUNDRED: "₹500!",
 };
