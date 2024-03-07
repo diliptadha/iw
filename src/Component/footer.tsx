@@ -1,6 +1,7 @@
 import { Images, Strings } from "@/constant";
 import Link from "next/link";
 import React, { useState } from "react";
+import Image from "next/image";
 
 export const Footer = () => {
   const [Email, setEmail] = useState("");
@@ -181,8 +182,8 @@ export const Footer = () => {
           )}
           <div className="mt-4 lg:mt-12 flex flex-row">
             <div className="flex items-center" >
-              <img
-                src={Images.PHONE_LOGO}
+              <Image
+                src={Images.PHONE_LOGO_WHITE}
                 width={20}
                 height={20}
                 alt="phone"
