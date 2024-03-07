@@ -190,8 +190,6 @@ export const Strings = {
   NEW_ARRIVALS: "NEW ARRIVALS",
   OCEAN: "OCEAN ",
   OC: "OC-12322-BROWN TORTOISE-50",
-  PRICE_: "₹ 950",
-  PRICE: "₹ 700",
   Inclusive_of_all_taxes: "Inclusive of all taxes",
   ADD_TO_CART: "ADD TO CART",
   BUY_NOW: "BUY NOW",
@@ -212,4 +210,5 @@ export const Strings = {
   ENDLESS_OFFERS: "ENDLESS OFFERS!",
   ALL_UNDER: "ALL UNDER",
   FIVE_HUNDRED: "₹500!",
+  C: "“",
 };

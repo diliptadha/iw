@@ -32,6 +32,8 @@ const Homescreen = () => {
   const [currentIndex2, setCurrentIndex2] = useState(0);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [visibleIndex, setVisibleIndex] = useState(0);
+  const [windowWidth, setWindowWidth] = useState<number>(0);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollStepDesktop = 650;
   const scrollStepMobile = 330;
@@ -75,6 +77,19 @@ const Homescreen = () => {
   };
 
   const currentItem = imagesData[currIndex];
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const handleScrollRight = () => {
     if (containerRef.current) {
@@ -443,7 +458,7 @@ const Homescreen = () => {
               alt="/"
               height={358}
               width={1289}
-              className="relative transition-transform duration-700 ease-in-out xs:h-[140px] sm:h-full "
+              className="relative transition-transform duration-700 ease-in-out xs:h-[140px]- sm:h-full "
               style={{
                 transform: `translateX(-${currentIndex * 100}%)`,
               }}
@@ -898,16 +913,15 @@ const Homescreen = () => {
                 h1={Customer.h1}
                 p={Customer.p}
                 style={{
-                  ...(window.innerWidth > 768 && {
-                    opacity:
-                      index === visibleIndex
+                  opacity:
+                    windowWidth > 768
+                      ? index === visibleIndex
                         ? 1
                         : Math.abs(index - visibleIndex) < 3
                         ? 0.5
-                        : 0,
-                  }),
+                        : 0
+                      : 1,
                 }}
-                image={""}
               />
             ))}
           </div>

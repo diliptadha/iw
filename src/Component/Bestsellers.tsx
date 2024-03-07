@@ -109,13 +109,9 @@ const Bestsellers: React.FC<BestsellersProps> = ({
                   </p>
                   <div className="flex justify-center">
                     <div>
-                      <Image
-                        src={Images.Rating}
-                        alt="/"
-                        height={18}
-                        width={122}
-                        className="my-4 w-full"
-                      />
+                      <div>
+                        <StarRating rating={rating} />
+                      </div>
                       <button className="flex justify-center items-center border-black border w-[137px] h-[36px] rounded-[5px] font-bold text-sm text-black bg-white">
                         {Strings.ADD_TO_CART}
                       </button>
