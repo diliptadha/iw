@@ -29,6 +29,10 @@ body {
 }
 
 @layer utilities {
+  .star {
+    font-size: 16px;
+  }
+
   .text-balance {
     text-wrap: balance;
   }

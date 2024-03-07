@@ -15,7 +15,8 @@ const StarRating: React.FC<StarRatingProps> = ({ rating }) => {
         stars.push(
           <span
             key={i}
-            style={{ color: "#FFC107", fontSize: 24, marginRight: "5px" }}
+            style={{ color: "#FFC107", marginRight: "5px" }}
+            className="star"
           >
             {"\u2605"}
           </span>
@@ -26,17 +27,17 @@ const StarRating: React.FC<StarRatingProps> = ({ rating }) => {
             key={i}
             style={{
               color: "#D9D9D9",
-              fontSize: 24,
               marginRight: "5px",
               position: "relative",
             }}
+            className="star"
           >
             <span
               className="half-star"
               style={{
                 position: "absolute",
                 color: "#FFC107",
-                top: "-3.5px",
+                top: "-2px",
                 left: 0,
                 width: "50%",
                 overflow: "hidden",
@@ -51,7 +52,8 @@ const StarRating: React.FC<StarRatingProps> = ({ rating }) => {
         stars.push(
           <span
             key={i}
-            style={{ color: "#D9D9D9", fontSize: 24, marginRight: "5px" }}
+            style={{ color: "#D9D9D9", marginRight: "5px" }}
+            className="star"
           >
             {"\u2605"}
           </span>

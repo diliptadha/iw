@@ -1,12 +1,31 @@
 {
-    "store": [
-        {
-            "name": "Ikshana",
-            "address": "Property Bearing No 14, Ground Floor, khasra No 619/10 & Old No 619/21, Situated in Extended Abadi of Lal Dora of Village Chhatarpur, Tehsil Hauz Khas, Mehrauli, New Delhi, 110074",
-            "rating": 4,
-            "timing": "Hours: 11:00 AM to 09:30 PM",
-            "number": 8291251241,
-            "storeImg": "/asset/iksha-eye-care-mumbai-5f3a5fc76471e.webp"
-        }
-    ]
+  "store": [
+    {
+      "id": 1,
+      "name": "Iksana opticals",
+      "address": "Gulmohar Cross Rd Number 6, near irla masjid, Junaid Nagar, Navpada, JVPD Scheme, Andheri West, Mumbai, Maharashtra 400058",
+      "rating": 5,
+      "timing": "Hours: 10:00 AM to 06:30 PM",
+      "number": 7977994474,
+      "storeImg": "/Images/ikshana_store1_img.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Iksana opticals",
+      "address": "Elixir Eye Clinic, 811, Kohinoor square, N C. Kelkar Marg, opposite Shiv Sena Bhavan, Dadar West, Mumbai, Maharashtra 400028",
+      "rating": 5,
+      "timing": "Hours: 11:00 AM to 07:00 PM",
+      "number": 7977994474,
+      "storeImg": "/Images/ikshana_store2_img.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Iksana opticals",
+      "address": "Eye Solutions, 151D, August Kranti Rd, Kemps Corner, Malabar Hill, Mumbai, Maharashtra 400036",
+      "rating": 4.9,
+      "timing": "Hours: 10:00 AM to 06:00 PM",
+      "number": 8291251241,
+      "storeImg": "/Images/ikshana_store3_img.jpg"
+    }
+  ]
 }
