@@ -16,6 +16,7 @@ import StarRating from "@/Component/StarRating";
 import { Tab } from "@headlessui/react";
 import Under500 from "@/Component/Under500";
 import { useEffect } from "react";
+import { Footer } from "@/Component/footer";
 
 interface FrameData {
   image: string;
@@ -449,6 +450,7 @@ const Homescreen = () => {
   };
 
   return (
+    <>
     <div className="max-w-screen-2xl m-auto">
       <div className="flex justify-center mt-[40px]  items-center ">
         <div className="xs:w-full xl:w-[1272px]- xl:w-[1289px] overflow-hidden flex rounded-[10px] xs:mx-[20px] xlg:mx-0">
@@ -945,6 +947,8 @@ const Homescreen = () => {
         </div>
       </div>
     </div>
+    <Footer />
+    </>
   );
 };
 

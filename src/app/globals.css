@@ -65,7 +65,91 @@ body {
     margin-bottom: 6px;
   }
 
-  @media only screen and (max-width: 500px){
+  /* Privacy Page css */
+
+  .privacy-head {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .pri-point span {
+    font-weight: 600;
+    text-decoration: underline;
+    padding-right: 5px;
+  }
+
+  .pri-point {
+    margin-bottom: 6px;
+  }
+
+  .pri-head-para {
+    margin-bottom: 10px;
+  }
+
+  /* Terms and Condition page */
+
+  .term-head span {
+    text-decoration: underline;
+  }
+
+  .term-head {
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  .term-para {
+    margin-bottom: 10px;
+  }
+
+  /* Faq Page  */
+
+  .faq-main-h {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .faq-titi-col {
+    color: #000042;
+    font-weight: 700;
+    margin-bottom: 15px;
+  }
+
+  .faq-h {
+    font-weight: 700;
+    margin-bottom: 5px;
+    font-size: 15px;
+  }
+
+  .faq-p {
+    margin-bottom: 15px;
+    font-size: 15px;
+  }
+
+  .faq_li {
+    margin-bottom: 5px;
+  }
+
+  @media only screen and (max-width: 500px) {
+
+    .pri-head-para {
+      font-size: 14px;
+    }
+
+    .privacy-head {
+      font-size: 16px;
+    }
+
+    .pri-point {
+      font-size: 14px;
+    }
+
+    .privacy-list {
+      font-size: 14px;
+    }
+
     .title-refund {
       font-size: 18px;
     }
@@ -77,9 +161,29 @@ body {
     .refund-ques {
       font-size: 18px;
     }
+
+    .faq-p {
+      font-size: 13px;
+    }
+
+    .faq_li {
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .faq-titi-col {
+      margin-bottom: 7px;
+    }
+
+    .faq-main-h {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
   }
 }
+
 @layer utilities {
+
   /* Hide scrollbar for Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -87,8 +191,9 @@ body {
 
   /* Hide scrollbar for IE, Edge and Firefox */
   .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 }
-
