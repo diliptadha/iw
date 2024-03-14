@@ -155,7 +155,7 @@ const SimilarProductPage = () => {
                     <div className=""><div className="relative h-[335px] w-[320px] rounded-[10px] mr-5 md:mr-10">
   <Image src={Images.EXPLORE} alt="/" height={345} width={330} className="relative" />
   <div className="absolute inset-0 flex flex-col items-center">
-    <p className="mt-[160px] text-[64px] text-white font-extrabold">{Strings.OCEAN}</p>
+    <p className="mt-[160px] text-[64px] text-white font-extrabold">{Strings.OCEAN_EXPLORE}</p>
     <p className="mt-[-20px] text-[20px] font-medium">{Strings.EYEGLASSES}</p>
     <button className="mt-4 w-[136px] h-38 rounded-md text-sm text-white bg-black flex items-center justify-center border-none px-2 lg:px-4 py-2 hover:bg-PictonBlue">
     {Strings.EXPLORE}
