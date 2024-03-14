@@ -27,6 +27,130 @@ body {
   padding: 0;
   font-family: 'Lato';
 }
+/* Dropdown menu styles */
+#dropdown-menu {
+  width: 100%;
+  height: auto;
+  
+}
+
+
+.image2 {
+  /* Adjust width and height of images as needed */
+  width: 320px;
+  height: auto;
+ 
+}
+
+/* On medium devices and above, change flex direction */
+@media (min-width: 768px) {
+  .flex-md-row {
+      flex-direction: row;
+  }
+
+  .flex-md-col {
+      flex-direction: column;
+  }
+}
+
+@media (min-width: 768px) {
+  .flex-lg-row {
+      flex-direction: row;
+  }
+
+  .flex-lg-col {
+      flex-direction: column;
+  }
+}
+
+/* For large devices and above, set specific layout */
+@media (min-width: 1024px) {
+  .flex-lg-wrap {
+      flex-wrap: wrap;
+  }
+}
+
+/* Set the layout for the images on large devices and above */
+@media (min-width: 1024px) {
+  .image2 {
+      width: calc(50% - 10px); /* Adjust width to fit two images side by side with some spacing */
+      height: auto; /* Keep aspect ratio */
+  }
+}
+
+/* Set the layout for the images on medium devices */
+@media (max-width: 1023px) {
+  .image2 {
+      width: 75%; /* Make each image take up the full width */
+      height: 300px; /* Keep aspect ratio */
+  }
+}
+
+@media (max-width: 767px) {
+  .image2 {
+      width: 100%; /* Make each image take up the full width */
+      height: auto; /* Keep aspect ratio */
+  }
+}
+
+.hover\:text-red-900:hover path {
+  fill: red;
+}
+
+
+
+.navigation-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center; /* Center the dots horizontally */
+}
+
+.navigation-dots .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: gray;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.navigation-dots .dot.active {
+  background-color: white;
+}
+
+
+.control-btn {
+  display: none;
+}
+
+
+.rotate-270 {
+  transform: rotate(270deg);
+}
+
+.overflow-hidden::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for WebKit browsers */
+}
+
+.overflow-hidden {
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+.modal-open {
+  overflow: hidden;
+}
+
+.common-style {
+  @apply flex justify-between mt-[2px];
+}
+
+/* Common style for dividers */
+.common-divider {
+  @apply h-[0.5px] bg-black rounded-xl mt-[2px];
+}
 
 @layer utilities {
   .star {
@@ -195,5 +319,14 @@ body {
     /* IE and Edge */
     scrollbar-width: none;
     /* Firefox */
+  }
+}
+.product-color-button {
+  @apply w-8 h-8 rounded;
+}
+
+@media (min-width: 1024px) {
+  .product-color-button {
+      @apply lg:w-12 lg:h-12;
   }
 }

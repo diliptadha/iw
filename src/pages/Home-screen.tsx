@@ -17,6 +17,7 @@ import { Tab } from "@headlessui/react";
 import Under500 from "@/Component/Under500";
 import { useEffect } from "react";
 import { Footer } from "@/Component/footer";
+import ProductDetails from "./product_details";
 
 interface FrameData {
   image: string;
