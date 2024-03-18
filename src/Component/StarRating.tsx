@@ -36,7 +36,7 @@ const StarRating: React.FC<StarRatingProps> = ({ rating }) => {
               style={{
                 position: "absolute",
                 color: "#FFC107",
-                top: "-3.5px",
+                top: "-3.4px",
                 left: 0,
                 width: "50%",
                 overflow: "hidden",

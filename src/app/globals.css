@@ -22,9 +22,6 @@ body {
   background-color: white;
   padding: 0;
   margin: 0;
-  background-color: white;
-  margin: 0;
-  padding: 0;
   font-family: 'Lato';
 }
 /* Dropdown menu styles */
@@ -330,3 +327,27 @@ body {
       @apply lg:w-12 lg:h-12;
   }
 }
+.drawer {
+  width: 333px;
+  transition: transform 0.3s ease;
+  z-index: 50;
+}
+
+.drawer.hidden {
+  transform: translateX(-333px); /* Move the drawer out of the screen */
+}
+
+@media (max-width: 640px) {
+  .drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 1000;
+    background-color: white;
+  }
+}
+
+/* @media (min-width: 768px) { */
+  /* .drawer {
+    width: 333px; /* Adjust as needed for your design */

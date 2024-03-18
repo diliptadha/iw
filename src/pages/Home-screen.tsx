@@ -138,108 +138,108 @@ const Homescreen = () => {
     {
       image: Images.frame1,
       buttonText: "EYEGLASSES",
-      buttonUrl: "https://www.iksanaopticals.com/eyeglasses/women",
+      buttonUrl: "https://www.iksanaopticals.in/eyeglasses/women",
     },
     {
       image: Images.frame2,
       buttonText: "SUNGLASSES",
-      buttonUrl: "https://www.iksanaopticals.com/sunglasses/women",
+      buttonUrl: "https://www.iksanaopticals.in/sunglasses/women",
     },
     {
       image: Images.frame3,
       buttonText: "CONTACT LENS",
-      buttonUrl: "https://www.iksanaopticals.com/contact-lens/women",
+      buttonUrl: "https://www.iksanaopticals.in/contact-lens/women",
     },
     {
       image: Images.frame4,
       buttonText: "READING GLASSES",
-      buttonUrl: "https://www.iksanaopticals.com/reading-glasses/women",
+      buttonUrl: "https://www.iksanaopticals.in/reading-glasses/women",
     },
     {
       image: Images.frame5,
       buttonText: "COMPUTER GLASSES",
-      buttonUrl: "https://www.iksanaopticals.com/computer-glasses/women",
+      buttonUrl: "https://www.iksanaopticals.in/computer-glasses/women",
     },
   ];
   const framesformen = [
     {
       image: Images.menframe,
       buttonText: "EYEGLASSES",
-      buttonUrl: "https://www.iksanaopticals.com/eyeglasses/men",
+      buttonUrl: "https://www.iksanaopticals.in/eyeglasses/men",
     },
     {
       image: Images.menframe,
       buttonText: "SUNGLASSES",
-      buttonUrl: "https://www.iksanaopticals.com/sunglasses/men",
+      buttonUrl: "https://www.iksanaopticals.in/sunglasses/men",
     },
     {
       image: Images.menframe,
       buttonText: "CONTACT LENS",
-      buttonUrl: "https://www.iksanaopticals.com/contact-lens/men",
+      buttonUrl: "https://www.iksanaopticals.in/contact-lens/men",
     },
     {
       image: Images.menframe,
       buttonText: "READING GLASSES",
-      buttonUrl: "https://www.iksanaopticals.com/reading-glasses/men",
+      buttonUrl: "https://www.iksanaopticals.in/reading-glasses/men",
     },
     {
       image: Images.menframe,
       buttonText: "COMPUTER GLASSES",
-      buttonUrl: "https://www.iksanaopticals.com/computer-glasses/men",
+      buttonUrl: "https://www.iksanaopticals.in/computer-glasses/men",
     },
   ];
   const framesforunisex = [
     {
       image: Images.kidsframe1,
       buttonText: "EYEGLASSES",
-      buttonUrl: "https://www.iksanaopticals.com/eyeglasses/unisex",
+      buttonUrl: "https://www.iksanaopticals.in/eyeglasses/unisex",
     },
     {
       image: Images.Unisexframe2,
       buttonText: "SUNGLASSES",
-      buttonUrl: "https://www.iksanaopticals.com/sunglasses/unisex",
+      buttonUrl: "https://www.iksanaopticals.in/sunglasses/unisex",
     },
     {
       image: Images.Unisexframe1,
       buttonText: "CONTACT LENS",
-      buttonUrl: "https://www.iksanaopticals.com/contact-lens/unisex",
+      buttonUrl: "https://www.iksanaopticals.in/contact-lens/unisex",
     },
     {
       image: Images.Unisexframe2,
       buttonText: "READING GLASSES",
-      buttonUrl: "https://www.iksanaopticals.com/reading-glasses/unisex",
+      buttonUrl: "https://www.iksanaopticals.in/reading-glasses/unisex",
     },
     {
       image: Images.kidsframe1,
       buttonText: "COMPUTER GLASSES",
-      buttonUrl: "https://www.iksanaopticals.com/computer-glasses/unisex",
+      buttonUrl: "https://www.iksanaopticals.in/computer-glasses/unisex",
     },
   ];
   const framesforkids = [
     {
       image: Images.kidsframe2,
       buttonText: "EYEGLASSES",
-      buttonUrl: "https://www.iksanaopticals.com/eyeglasses/kids",
+      buttonUrl: "https://www.iksanaopticals.in/eyeglasses/kids",
     },
     {
       image: Images.kidsframe2,
       buttonText: "SUNGLASSES",
-      buttonUrl: "https://www.iksanaopticals.com/sunglasses/kids",
+      buttonUrl: "https://www.iksanaopticals.in/sunglasses/kids",
     },
     {
       image: Images.kidsframe2,
       buttonText: "CONTACT LENS",
-      buttonUrl: "https://www.iksanaopticals.com/contact-lens/kids",
+      buttonUrl: "https://www.iksanaopticals.in/contact-lens/kids",
     },
     {
       image: Images.kidsframe2,
       buttonText: "READING GLASSES",
-      buttonUrl: "https://www.iksanaopticals.com/reading-glasses/kids",
+      buttonUrl: "https://www.iksanaopticals.in/reading-glasses/kids",
     },
     {
       image: Images.kidsframe2,
       buttonText: "COMPUTER GLASSES",
-      buttonUrl: "https://www.iksanaopticals.com/computer-glasses/kids",
+      buttonUrl: "https://www.iksanaopticals.in/computer-glasses/kids",
     },
   ];
   const CustomerData = [
