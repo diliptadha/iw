@@ -76,7 +76,7 @@ const Homescreen = () => {
   };
   const handlePrev2 = () => {
     setCurrIndex((prevIndex) => (prevIndex - 1) % imagesData.length);
-  };
+  };  
 
   const currentItem = imagesData[currIndex];
 

@@ -5,32 +5,29 @@ import Image from "next/image";
 import StarRating from "./StarRating";
 
 interface SimilarProductsProps {
-  image: string;
+  productImage: string;
   title: string;
   description: string;
-  price: string;
+  salePrice: string;
   rating?: number;
   // isBestseller?: boolean;
-  colors: any;
+  color: any;
 }
 const SimilarProduct: React.FC<SimilarProductsProps> = ({
-  image,
+  productImage,
   title,
   description,
-  price,
+  salePrice,
   rating = 0,
   // isBestseller = false,
-  colors,
-  
+  color,
 }) => {
-
   const [isFavorite, setIsFavorite] = useState(false);
   const [open, setOpen] = useState(false);
 
   const handleToggleFavorite = () => {
     setIsFavorite((prevState) => !prevState);
   };
-
 
   useEffect(() => {
     if (open) {
@@ -43,44 +40,31 @@ const SimilarProduct: React.FC<SimilarProductsProps> = ({
   return (
     <div>
       <div className="bg-white h-[335px] w-[280px] rounded-[10px] px-5 py-7 relative mr-5 md:mr-10">
-        {/* {isBestseller && (
-          <div className="absolute top-0 right-0 bg-[#FF4307] font-extrabold text-xs text-white h-[27px] w-[121px] flex justify-center items-center rounded-[5px]">
-            BESTSELLER
-          </div>
-        )} */}
         <div className="relative">
           <div className="flex justify-center">
-            <Image src={image} alt="/" height={158} width={220} />
-           
+            <Image
+              src={productImage}
+              alt="/"
+              height={140}
+              width={220}
+              className="h-32 object-cover"
+            />
           </div>
           <div className="h-[0.5px] bg-black rounded-xl mt-2"></div>
           <div className="absolute top-[96px] w-full mt-12">
             <h1 className="font-extrabold text-sm text-black">{title}</h1>
-            <p className="font-bold text-sm text-black">{description} </p>
-            <p className="font-extrabold text-md lg:text-2xl text-black mt-3">{price}</p>
-           
-          <div className={`absolute top-[100px] md:top-[100px] flex flex-row justify-between w-full`}>
+
+            {/* <p className="font-bold text-sm text-black">{description} </p> */}
+            <p className="font-extrabold text-md lg:text-2xl text-black mt-3">
+              {salePrice}
+            </p>
+
+            <div
+              className={`absolute top-[100px] md:top-[100px] flex flex-row justify-between w-full`}
+            >
               <StarRating rating={rating} />
-              <div className="flex items-center">
-              {colors.slice(0, 3).map((color: any, index: number) => (
-                 <a
-      key={index}
-      className="flex items-center mr-1"
-      
-    >
-      <div
-        className="w-4 h-4 md:w-5 md:h-5 rounded-full mr-0.5 md:mr-1"
-        style={{ backgroundColor: color, cursor: 'pointer' }}
-      />
-    </a>
-  ))}
-                {colors.length > 3 && (
-                <a href="" className="font-bold">+{colors.length - 3}</a>
-              )}
-              </div>
-
+              <div className="flex items-center">{color}</div>
             </div>
-
           </div>
         </div>
         <button
@@ -94,7 +78,6 @@ const SimilarProduct: React.FC<SimilarProductsProps> = ({
           )}
         </button>
       </div>
-                  
     </div>
   );
 };

@@ -47,7 +47,7 @@ export const Footer = () => {
       <div className="flex flex-col lg:flex-row justify-between ">
 
         <div className="flex flex-col text-left w-full md: lg:w-[530px] xl:w-[700px]">
-          <div className="items-center- lg:flext-start- xs:w-[300px] md:w-[400px]- lg:w-full-">
+           <div className="items-center- lg:flext-start- xs:w-[300px] md:w-[400px]- lg:w-full-">
             <img
               src={Images.IKSANA_LOGO}
               width={220}
@@ -147,40 +147,40 @@ export const Footer = () => {
             {Strings.SUBSCRIBE_NEWSLETTER}
 
           </div>
-          <div className="mt-4 flex justify-row font-lato relative">
-            <input
-              type="email"
-              placeholder="Enter your email ID"
-              value={Email}
-              onChange={handleEmailChange}
-              className="border-Cod_Gray rounded-lg border-[1px] border-[#000] font-lato text-black placeholder-black bg-white px-4 py-2 outline-none dark:border-white dark:bg-[#000] w-full xs:text-base lg:text-md md:w-[280px] lg:w-[260px] xl:w-[380px]"
-            />
-            <button onClick={handleSubmit}
-              className="absolute inset-y-0 right-0 flex items-center px-2 md:left-60 lg:left-48 xl:left-64">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                className="h-6 w-6 text-black hover:text-PictonBlue cursor-pointer" >
-                <path
+            <div className="mt-4 flex justify-row font-lato relative">
+              <input
+                type="email"
+                placeholder="Enter your email ID"
+                value={Email}
+                onChange={handleEmailChange}
+                className="border-Cod_Gray rounded-lg border-[1px] border-[#000] font-lato text-black placeholder-black bg-white px-4 py-2 outline-none dark:border-white dark:bg-[#000] w-full xs:text-base lg:text-md md:w-[280px] lg:w-[260px] xl:w-[380px]"
+              />
+              <button onClick={handleSubmit}
+                className="absolute inset-y-0 right-0 flex items-center px-2 md:left-60 lg:left-48 xl:left-64">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  className="h-6 w-6 text-black hover:text-PictonBlue cursor-pointer" >
+                  <path
 
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
-                />
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                  />
 
-              </svg>
-            </button>
+                </svg>
+              </button>
 
-          </div>
-          {isSubmitted && isEmailValid && (
-            <div className="m-2 font-lato text-md text-green-500">{Strings.SUBSCRIBED_SUCCESSFULLY}</div>
-          )}
-          {isSubmitted && !isEmailValid && (
-            <div className="m-2 font-lato text-md text-red-500">{EmailError}</div>
-          )}
+            </div>
+            {isSubmitted && isEmailValid && (
+              <div className="m-2 font-lato text-md text-green-500">{Strings.SUBSCRIBED_SUCCESSFULLY}</div>
+            )}
+            {isSubmitted && !isEmailValid && (
+              <div className="m-2 font-lato text-md text-red-500">{EmailError}</div>
+            )}
           <div className="mt-4 lg:mt-12 flex flex-row">
             <div className="flex items-center" >
               <Image
