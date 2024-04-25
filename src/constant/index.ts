@@ -1258,3 +1258,19 @@ export const Faqs = {
   IKSANA_NUM_8291: " 8291251241 ",
   CHAT_ON_WHATSAPP: "chat on whatsapp",
 };
+
+export const ContactUs = {
+  CONTACT_US: "Contact Us",
+  FORM: "Fill the below form & you’ll hear from us within 48 hours!",
+  OUR_LOCATION: "Our Location:",
+  ADDRESS: "151-D, August Kranti Marg, Mumbai, Maharashtra - 400036",
+  EMAIL: "Email:",
+  EMAIL_ID: "eyesolutions@iksanaopticals.in",
+  SUPPORT_EMAIL: "support@iksanaopticals.in",
+  AVAILABLE: "Available 24/7",
+  PHONE_NO: "Phone No:",
+  MOBILE_NO: "Mobile No: 7977994474",
+  WHATSAPP_NO: "Whatsapp No: 8291251241",
+  TIMING_1: "10 AM to 6 PM ( Monday to Friday )",
+  TIMING_2: "9 AM to 4 PM ( Saturday )",
+};
