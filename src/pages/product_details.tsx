@@ -7,43 +7,49 @@ import Review from "@/Component/reviews";
 import GiveRatings from "@/Component/GiveRatings";
 import ShareOptions from "@/Component/share";
 import axios from "axios";
+import Header from "./header";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 interface ProductData {
   ProductData: any;
   FilteredSubProductData: any;
-  originalPrice: number;
-  brands: string;
-  category: string;
-  frameStyle: string;
-  frameMaterial: string;
-  frameShape: string;
-  frameColor: string;
-  frameSize: string;
-  width: number;
-  height: number;
-  length: number;
-  frameWeight: string;
-  modelNumber: string;
-  title: string;
-  productImage: string;
-  variantImage: string;
-  fullDesc: string;
+  originalPrice: any;
+  brands: any;
+  category: any;
+  frameStyle: any;
+  frameMaterial: any;
+  frameShape: any;
+  frameColor: any;
+  frameSize: any;
+  width: any;
+  height: any;
+  length: any;
+  frameWeight: any;
+  modelNumber: any;
+  title: any;
+  productImage: any;
+  variantImage: any;
+  fullDesc: any;
   boxImage: any;
-  color: string;
-  productId: string;
-  subProductId: string;
-  SKU: string;
+  color: any;
+  productId: any;
+  subProductId: any;
+  SKU: any;
+  salePrice: any;
 }
-FilteredSubProductData: Array<{
-  subProductId: string;
-  color: string;
-  frameColor: string;
-  productImage: string;
-  variantImage: string;
-}>;
 
 interface ExpectedDelivery {
-  expected: string;
+  expected: any;
+}
+
+interface Recent {
+  userImage: any;
+  fName: any;
+  lName: any;
+  createdAt: any;
+  rating: any;
+  comment: any;
 }
 
 const ProductDetails = () => {
@@ -73,55 +79,33 @@ const ProductDetails = () => {
   const [productData, setProductData] = useState<ProductData | null>(null);
   const [expectedDelivery, setExpectedDelivery] =
     useState<ExpectedDelivery | null>(null);
-  const [recentReviews, setRecentReviews] = useState([]);
+  const [recentReviews, setRecentReviews] = useState<Recent[]>([]);
   const [selectedSubProduct, setSelectedSubProduct] = useState<{
-    title: string | undefined;
-    productImage: string | undefined;
-    ProductData: {
-      ProductData: any;
-      FilteredSubProductData: any;
-      originalPrice: number;
-      brands: string;
-      category: string;
-      frameStyle: string;
-      frameMaterial: string;
-      frameShape: string;
-      frameColor: string;
-      frameSize: string;
-      width: number;
-      height: number;
-      length: number;
-      frameWeight: string;
-      modelNumber: string;
-      title: string;
-      productImage: string;
-      variantImage: string;
-      fullDesc: string;
-      boxImage: string;
-      color: string;
-      productId: string;
-      subProductId: string;
-      SKU: string;
-    };
-    FilteredSubProductData: Array<{
-      subProductId: string;
-      color: string;
-      frameColor: string;
-      productImage: string;
-      variantImage: string;
-
-      // Add more fields as needed
-    }>;
+    ProductData: any;
+    FilteredSubProductData?: any;
+    originalPrice?: any;
+    brands?: any;
+    category?: any;
+    frameStyle?: any;
+    frameMaterial?: any;
+    frameShape?: any;
+    frameColor?: any;
+    frameSize?: any;
+    width?: any;
+    salePrice?: any;
   } | null>(null);
+
+  const router = useRouter();
+  const { productId, subProductId } = router.query;
 
   useEffect(() => {
     productdata();
-  }, []);
+  }, [productId, subProductId]);
 
   const productdata = async () => {
     await axios
       .get(
-        "http://localhost:4000/product/getProductData?productId=SC5355&subProductId=PS0000001",
+        `${process.env.NEXT_PUBLIC_API_URL}product/getProductData?productId=${productId}&subProductId=${subProductId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -134,15 +118,11 @@ const ProductDetails = () => {
           setProductData(responseData.productData);
           setSelectedSubProduct(responseData.productData); // Set selected subProduct initially
         }
-        console.log("Product Data:", responseData.productData);
-        console.log(
-          "Filtered SubProduct Data:",
-          responseData.productData.FilteredSubProductData
-        );
       })
       .catch((error) => console.error("Error fetching product data:", error));
   };
-  const handleColorClick = (subProduct: { subProductId: string }) => {
+
+  const handleColorClick = (subProduct: { subProductId: any }) => {
     const selectedVariant = productData?.FilteredSubProductData.find(
       (variant: any) => variant.subProductId === subProduct.subProductId
     );
@@ -152,7 +132,7 @@ const ProductDetails = () => {
         ProductData: {
           ...productData?.ProductData,
           ...selectedVariant,
-          color: productData.ProductData.color,
+          color: productData?.ProductData.color,
         },
       });
     }
@@ -162,7 +142,7 @@ const ProductDetails = () => {
     async function fetchRecentReviews() {
       try {
         const response = await axios.get(
-          "http://localhost:4000/home/getRecenetReviews"
+          `${process.env.NEXT_PUBLIC_API_URL}home/getRecenetReviews`
         );
         const recentReviewsData = response.data.recentReviews;
         setRecentReviews(recentReviewsData.slice(0, 2));
@@ -183,7 +163,7 @@ const ProductDetails = () => {
 
     try {
       const response = await axios.get(
-        "http://localhost:4000/product/getExpectedDeliveryDate",
+        `${process.env.NEXT_PUBLIC_API_URL}product/getExpectedDeliveryDate`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -307,7 +287,6 @@ const ProductDetails = () => {
 
   const handleRatingChange = (newRating: React.SetStateAction<number>) => {
     4;
-    console.log("New Rating:", newRating);
     setRating(newRating);
   };
 
@@ -326,8 +305,6 @@ const ProductDetails = () => {
   }, [isOpenWriteReview, open]);
 
   const handleReviewSubmit = () => {
-    console.log("Submit review:", { rating: rating, message });
-
     setMessage("");
     setRating(0);
     setShowThankYouMessage(true);
@@ -357,73 +334,158 @@ const ProductDetails = () => {
     window.open(url, "_blank");
   };
 
+  const addToCart = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=IK0000002`,
+        {
+          cartProducts: [
+            {
+              productId: selectedSubProduct?.ProductData.productId,
+              subProductId: selectedSubProduct?.ProductData.subProductId,
+              size: selectedSubProduct?.ProductData.frameSize,
+              quantity: 1,
+              salePrice: selectedSubProduct?.ProductData.salePrice,
+              originalPrice: selectedSubProduct?.ProductData.originalPrice,
+              productImage: selectedSubProduct?.ProductData.productImage,
+            },
+          ],
+        },
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      showCartMessage("Product added to cart successfully!");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+    }
+  };
+
+  // const router = useRouter();
+
+  const handleBuyNow = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=IK0000002`,
+        {
+          cartProducts: [
+            {
+              productId: selectedSubProduct?.ProductData.productId,
+              subProductId: selectedSubProduct?.ProductData.subProductId,
+              size: selectedSubProduct?.ProductData.frameSize,
+              quantity: 1,
+              salePrice: selectedSubProduct?.ProductData.salePrice,
+              originalPrice: selectedSubProduct?.ProductData.originalPrice,
+              productImage: selectedSubProduct?.ProductData.productImage,
+            },
+          ],
+        },
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      showCartMessage("Product added to cart successfully!");
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+    }
+  };
+
+  const [cartMessage, setCartMessage] = useState<string | null>(null);
+
+  const showCartMessage = (message: string) => {
+    setCartMessage(message);
+    setTimeout(() => {
+      setCartMessage(null);
+    }, 5000);
+  };
   return (
     <>
+      <Header />
       {selectedSubProduct && (
         <div className="bg-white px-[2rem] py-[2rem] md:px-[3rem] xl:px-[6rem] p-black mx-auto- md:w-[50%]- lg:w-full-">
           <div className="p-1 bg-white w-full text-lato text-[14px] ">
             <text>Eyewear </text> <span> /</span>
             <text> Reading Glasses </text> <span> /</span>
             <text> Unisex </text> <span> /</span>
-            <text> {selectedSubProduct.ProductData?.productId} </text>{" "}
-            <span> / </span>
+            <text> {productId} </text> <span> / </span>
             <text className="text-PictonBlue">
               {selectedSubProduct.ProductData?.title}
             </text>
           </div>
           <>
             <div className="bg-red-200- mt-2 flex flex-col md:flex-row">
-              <div className="bg-blue-200- flex flex-row md:flex-col items-center ">
-                <Image
-                  onClick={handleScrollLeft2}
-                  src={Images.Lefticon}
-                  alt="/"
-                  height={40}
-                  width={40}
-                  className=" h-[24px] [w-24px] cursor-pointer text-blue-300  flex md:hidden"
-                />
-                <div
-                  ref={containerRef2}
-                  className="overflow-x-auto flex md:flex-wrap mx-0 lg:mx-1 "
-                >
+              {selectedSubProduct?.ProductData?.variantImage.length > 0  ? (
+                <div className="bg-blue-200- flex flex-row md:flex-col items-center ">
                   <Image
-                    height={500}
-                    width={500}
+                    onClick={handleScrollLeft2}
+                    src={Images.Lefticon}
+                    alt="/"
+                    height={40}
+                    width={40}
+                    className=" h-[24px] [w-24px] cursor-pointer text-blue-300  flex md:hidden"
+                  />
+
+                  <div
+                    ref={containerRef2}
+                    className="overflow-x-auto flex md:flex-wrap mx-0 lg:mx-1 "
+                  >
+                    <Image
+                      height={500}
+                      width={500}
+                      src={selectedSubProduct.ProductData?.productImage}
+                      alt="productImage"
+                      className="image2 md:mb-1 lg:mb-2 md:mr-1 lg:mr-2 border border-black rounded"
+                      loading="lazy"
+                    />
+                    {Array.isArray(
+                      selectedSubProduct.ProductData?.variantImage
+                    ) &&
+                      selectedSubProduct.ProductData.variantImage.map(
+                        (image: any, index: any) => (
+                          <Image
+                            height={500}
+                            width={500}
+                            key={index}
+                            src={image}
+                            alt="variant"
+                            className={`image2 ${
+                              index === 0
+                                ? "md:mb-1 md:mr-1 lg:mb-2"
+                                : "md:mr-1 md:mb-1 lg:mb-0 lg:mr-2"
+                            } border border-black rounded`}
+                            loading="lazy"
+                          />
+                        )
+                      )}
+                  </div>
+
+                  <Image
+                    onClick={handleScrollRight2}
+                    src={Images.Righticon}
+                    alt="/"
+                    height={40}
+                    width={40}
+                    className=" h-[24px] [w-24px]  cursor-pointer hover:text-PictonBlue flex md:hidden"
+                  />
+                </div>
+              ) : (
+                <div className="w-[100%]">
+                  <img
                     src={selectedSubProduct.ProductData?.productImage}
                     alt="productImage"
-                    className="image2 md:mb-1 lg:mb-2 md:mr-1 lg:mr-2 border border-black rounded"
+                    className=" w-[100%] h-auto md:mb-1 lg:mb-2 md:mr-1 lg:mr-2 border border-black rounded"
                     loading="lazy"
                   />
-                  {Array.isArray(
-                    selectedSubProduct.ProductData?.variantImage
-                  ) &&
-                    selectedSubProduct.ProductData.variantImage.map(
-                      (image: any, index: any) => (
-                        <Image
-                          height={500}
-                          width={500}
-                          key={index}
-                          src={image}
-                          alt="variant"
-                          className={`image2 ${
-                            index === 0
-                              ? "md:mb-1 md:mr-1 lg:mb-2"
-                              : "md:mr-1 md:mb-1 lg:mb-0 lg:mr-2"
-                          } border border-black rounded`}
-                          loading="lazy"
-                        />
-                      )
-                    )}
                 </div>
-                <Image
-                  onClick={handleScrollRight2}
-                  src={Images.Righticon}
-                  alt="/"
-                  height={40}
-                  width={40}
-                  className=" h-[24px] [w-24px]  cursor-pointer hover:text-PictonBlue flex md:hidden"
-                />
-              </div>
+              )}
+
               <div className="bg-blue-200- text-lato flex flex-col w-full  lg:w-[410px] xl:w-[520px] mt-4 md:mt-0  lg:ml-6 lg:ml-[-80px]- xl:ml-[-50px]-  relative">
                 <div className="flex justify-between">
                   <p className="text-md lg:text-[34px] xl:text-[40px] font-bold flex-start">
@@ -507,26 +569,28 @@ const ProductDetails = () => {
                         ></button>
                       )
                     )}
-                  {selectedSubProduct && (
-                    <div>
-                      {/* <Image
-                      height={1}
-                      width={1}
-                        src={selectedSubProduct.productImage}
-                        alt={selectedSubProduct.title}
-                      /> */}
-                    </div>
-                  )}
                 </div>
 
+                {/* addto cart button  */}
                 <div className="mt-2 lg:mt-4 flex flex-row">
-                  <button className="w-[136px] h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border-2 border-black outline-none px-2 lg:px-4 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold">
+                  <button
+                    onClick={addToCart}
+                    className="w-[136px] h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border-2 border-black outline-none px-2 lg:px-4 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold"
+                  >
                     {Strings.ADD_TO_CART}
                   </button>
-                  <button className="ml-2 lg:ml-4 w-[136px] h-38 rounded-md text-sm text-white bg-black flex items-center justify-center border-none px-2 lg:px-4 py-2 hover:bg-PictonBlue">
-                    {Strings.BUY_NOW}
-                  </button>
+                  <Link onClick={handleBuyNow} href="/cart">
+                    <button className="ml-2 lg:ml-4 w-[136px] h-38 rounded-md text-sm text-white bg-black flex items-center justify-center border-none px-2 lg:px-4 py-2 hover:bg-PictonBlue">
+                      {Strings.BUY_NOW}
+                    </button>
+                  </Link>
                 </div>
+
+                {cartMessage && (
+                  <div className="mt-4 text-sm text-green-600">
+                    {cartMessage}
+                  </div>
+                )}
                 <div className="mt-6 flex flex-row text-[12px] xl:text-[14px]">
                   <div className="flex flex-col lg:flex-row items-center justify-center xs:items-center xs:justify-start">
                     <Image
@@ -734,6 +798,7 @@ const ProductDetails = () => {
               </div>
             </div>{" "}
           </>
+
           <div className="mt-4 lg:mt-6  w-full lg:w-[600px] xl:w-[775px]">
             <div className="flex flex-col md:flex-row items-center md:items-end ">
               <p id="content">
@@ -754,7 +819,7 @@ const ProductDetails = () => {
                 </button>
               )}
             </div>
-            <div className="relative mt-4 lg:mt-6 flex justify-between">
+            <div className="relative mt-4 lg:mt-6 flex justify-between items">
               <div className="font-bold text-[12px] lg:text-[14px]">
                 {Strings.REVIEWS}
               </div>
@@ -1002,7 +1067,9 @@ const ProductDetails = () => {
           </div>
         </div>
       )}
+      <div style={{ marginTop: isOpenReview ? nextDivMarginTop : "40px" }}>
       <SimilarProductPage />
+      </div>
     </>
   );
 };

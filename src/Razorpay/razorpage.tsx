@@ -1,17 +1,24 @@
 import { Images } from "@/constant";
+import axios from "axios";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import useRazorpay, { RazorpayOptions } from "react-razorpay";
 
-export default function RazorPage({ onCancel }: { onCancel: () => void }) {
+export default function RazorPage({
+  onCancel,
+  toDiAfPr,
+}: {
+  onCancel: () => void;
+  toDiAfPr: number;
+}) {
   const router = useRouter();
-  const { toDiAfPr } = router.query;
   const [Razorpay, isLoaded] = useRazorpay();
   const RAZORPAY_KEY = "rzp_test_WG0saZcap7ShMM";
   const [orderId, setOrderId] = useState("");
+  const [isPaymentModalOpened, setIsPaymentModalOpened] = useState(false);
 
-  const handlePaymentSuccess = (orderId: string ) => {
-    router.push({
+  const handlePaymentSuccess = (orderId: string) => {
+    router.replace({
       pathname: "/successful-Payment",
       query: {
         orderId,
@@ -19,13 +26,10 @@ export default function RazorPage({ onCancel }: { onCancel: () => void }) {
       },
     });
   };
-  let amt: number | undefined;
 
-  if (typeof toDiAfPr === "string") {
-    amt = parseInt(toDiAfPr);
-  } else if (Array.isArray(toDiAfPr) && toDiAfPr.length > 0) {
-    amt = parseInt(toDiAfPr[0]);
-  }
+  const resetPaymentModal = () => {
+    setIsPaymentModalOpened(false);
+  };
 
   const createOrder = async () => {
     try {
@@ -38,10 +42,10 @@ export default function RazorPage({ onCancel }: { onCancel: () => void }) {
             Authorization: "Bearer dsLCHSAfKF6s371z8QJFKSGj",
           },
           body: JSON.stringify({
-            userId: "IK0000001",
+            userId: "IK0000002",
             productId: "P0000001",
             quantity: 1,
-            totalPrice: amt,
+            totalPrice: toDiAfPr,
             status: "pending",
             power: 200,
           }),
@@ -53,7 +57,7 @@ export default function RazorPage({ onCancel }: { onCancel: () => void }) {
       }
 
       const ordersData = await response.json();
-      const fetchedOrderId = ordersData?.order?.orderId; // Assuming orderId is nested correctly
+      const fetchedOrderId = ordersData?.order?.orderId;
       setOrderId(fetchedOrderId);
     } catch (error) {
       console.error("Error creating order:", error);
@@ -61,6 +65,12 @@ export default function RazorPage({ onCancel }: { onCancel: () => void }) {
   };
 
   const handlePayment = useCallback(async () => {
+    if (!orderId || isPaymentModalOpened) {
+      return;
+    }
+
+    setIsPaymentModalOpened(true);
+
     try {
       const options: RazorpayOptions = {
         key: RAZORPAY_KEY,
@@ -68,7 +78,7 @@ export default function RazorPage({ onCancel }: { onCancel: () => void }) {
         currency: "INR",
         name: "Iksana Opticals",
         description: "Test Transaction",
-        image:"https://example.com/your_logo",
+        image: "https://example.com/your_logo",
         order_id: orderId,
         handler: function (response) {
           handlePaymentSuccess(orderId);
@@ -86,7 +96,6 @@ export default function RazorPage({ onCancel }: { onCancel: () => void }) {
         },
         modal: {
           ondismiss: function () {
-            console.log("Checkout form closed");
             onCancel();
           },
         },
@@ -97,31 +106,26 @@ export default function RazorPage({ onCancel }: { onCancel: () => void }) {
     } catch (error) {
       console.log("err", error);
     }
-  }, [orderId, Razorpay]);
+  }, [orderId, isPaymentModalOpened, Razorpay]);
 
-  useEffect(() => {
-    if (orderId) {
-      handlePayment();
-    }
-  }, [isLoaded, orderId, handlePayment]);
+  const startPaymentProcess = () => {
+    resetPaymentModal(); // Reset the isPaymentModalOpened state
+    createOrder(); // Create a new order
+    handlePayment(); // Trigger the payment process
+  };
 
   useEffect(() => {
     createOrder();
   }, []);
 
+  useEffect(() => {
+    handlePayment();
+  }, [isLoaded, orderId]);
+
   return (
     <>
       <button onClick={onCancel}></button>
+      <button onClick={startPaymentProcess}></button>
     </>
   );
 }
-
-export const loadScript = (src: string) => {
-  return new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = src;
-    script.onload = resolve;
-    script.onerror = reject;
-    document.body.appendChild(script);
-  });
-};

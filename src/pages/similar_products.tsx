@@ -4,17 +4,35 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import SimilarProduct from "@/Component/SimilarProduct";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 const SimilarProductPage = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const containerRef2 = useRef<HTMLDivElement>(null);
   const [similarProductData, setSimilarProductData] = useState([]);
 
+  const router = useRouter();
+  const { productId } = router.query;
+
+  // const fetchSimilarProductData = async () => {
+  //   await axios.get(
+  //     `http://localhost:4000/product/getSimilarProductData?productId=${productId}`
+  //   );
+  //   const similarProductData = response.data.similarProductData;
+  //   setSimilarProductData(similarProductData);
+  //   // console.log('similar',similarProductData.color);
+  // } catch (error) {
+  //   console.error("Error fetching similar product data:", error);
+  // }
+  // }
+
+  // use
+
   useEffect(() => {
     async function fetchSimilarProductData() {
       try {
         const response = await axios.get(
-          "http://localhost:4000/product/getSimilarProductData?productId=SC5355"
+          `${process.env.NEXT_PUBLIC_API_URL}product/getSimilarProductData?productId=SC5355`
         );
         const similarProductData = response.data.similarProductData;
         setSimilarProductData(similarProductData);
@@ -25,68 +43,6 @@ const SimilarProductPage = () => {
 
     fetchSimilarProductData();
   }, []);
-
-  // const SimilarProductsData = [
-
-  //     {
-  //         image: Images.SAMPLE2,
-  //         title: "100%",
-  //         description: "6604-GOLDEN_BROWN-51-1",
-  //         rating: 4.5,
-  //         price: "499",
-  //         colors: ["black", "blue", "black", "brown", "red", "grey"],
-
-  //     },
-  //     {
-  //         image: Images.SAMPLE2,
-  //         title: "KADIYAM",
-  //         description: "65003-MATTEBLACK_SILVER-52-1",
-  //         rating: 4,
-  //         price: "350",
-  //         colors: ["black", "blue", "grey"],
-
-  //     },
-  //     {
-  //         image: Images.SAMPLE2,
-  //         title: "KADIYAM ",
-  //         description: "70029-18-BROWN-50-1",
-  //         rating: 2,
-  //         price: "450",
-  //         colors: ["black", "blue", "black", "brown", "red", "grey"]
-  //     },
-  //     {
-  //         image: Images.SAMPLE2,
-  //         title: "K_D ",
-  //         description: "17140-CY-MAROON_SILVER-49-1",
-  //         rating: 5,
-  //         price: "500",
-  //         colors: ["black", "brown", "grey"]
-  //     },
-  //     {
-  //         image: Images.SAMPLE2,
-  //         title: "K_D ",
-  //         description: "A-25172-PINK_GOLD-52-1",
-  //         rating: 4,
-  //         price: "400",
-  //         colors: ["black", "grey"]
-  //     },
-  //     {
-  //         image: Images.SAMPLE2,
-  //         title: "K_D ",
-  //         description: "A-25172-PINK_GOLD-52-1",
-  //         rating: 3.5,
-  //         price: "400",
-  //         colors: ["black", "brown", "red", "grey"]
-  //     },
-  //     {
-  //         image: Images.SAMPLE2,
-  //         title: "K_D ",
-  //         description: "A-25172-PINK_GOLD-52-1",
-  //         rating: 4.5,
-  //         price: "400",
-  //         colors: ["black", "grey"]
-  //     },
-  // ];
 
   const handleScrollRight2 = () => {
     if (containerRef2.current) {
@@ -140,7 +96,7 @@ const SimilarProductPage = () => {
   return (
     <div className="h-[520px] px-[1rem] md:px-[2rem] xl:px-[4rem] w-full  overflow-hidden bg-[#F2F2F2]">
       <div className=""></div>
-      <p className="mt-8 px-[2rem] md:px-[2rem] font-bold  text-[12px] lg:text-[14px]"></p>
+      <p className="mt-8 px-[2rem] md:px-[2rem] font-bold text-[12px] lg:text-[16px]">Similar Products</p>
       <div className="flex items-center">
         <Image
           onClick={handleScrollLeft2}

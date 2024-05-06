@@ -3,22 +3,30 @@ import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
 import StarRating from "./StarRating";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Under500Props {
   image: string;
   title: string;
   description: string;
-  price: string;
+  salePrice: string;
+  originalPrice: string;
   rating?: number;
   isBestseller?: boolean;
+  productId: string;
+  subProductId: any;
 }
 const Under500: React.FC<Under500Props> = ({
   image,
   title,
   description,
-  price,
+  salePrice,
+  originalPrice,
   rating = 0,
   isBestseller = false,
+  productId,
+  subProductId,
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -34,6 +42,14 @@ const Under500: React.FC<Under500Props> = ({
     }
   }, [open]);
 
+  const router = useRouter();
+
+  const handleProductPage = () => {
+    router.push(
+      `/product_details?productId=${productId}&subProductId=${subProductId}`
+    );
+  };
+
   return (
     <div>
       <div className="bg-white h-[330px] w-[240px] rounded-[10px] p-8 relative mr-10">
@@ -43,13 +59,15 @@ const Under500: React.FC<Under500Props> = ({
           </div>
         )}
         <div className="relative">
-          <div className="flex justify-center">
-            <Image src={image} alt="/" height={128} width={169} />
+          <div className="flex justify-center w-[100px] my-0 mx-auto">
+            <img src={image} alt="/" className="w-[100%]" />
           </div>
           <div className="absolute top-[96px] w-full">
             <h1 className="font-extrabold text-sm text-black">{title}</h1>
             <p className="font-normal text-sm text-black">{description} </p>
-            <p className="font-extrabold text-sm text-black">{price}</p>
+            <p className="font-extrabold text-sm text-black">
+              {salePrice ? salePrice : originalPrice}
+            </p>
             <p className="font-bold text-xs text-black">
               {Strings.Inclusive_of_all_taxes}
             </p>
@@ -58,7 +76,10 @@ const Under500: React.FC<Under500Props> = ({
                 <StarRating rating={rating} />
               </div>
               <div className="flex justify-between items-center mt-3">
-                <button className=" flex justify-center items-center border-black border w-[130px] h-[34px] rounded-[5px] font-bold text-xs text-black bg-white">
+                <button
+                  onClick={handleProductPage}
+                  className=" flex justify-center items-center border-black border w-[130px] h-[34px] rounded-[5px] font-bold text-xs text-black bg-white"
+                >
                   {Strings.KNOW_MORE}
                 </button>
                 <Image
@@ -84,16 +105,16 @@ const Under500: React.FC<Under500Props> = ({
             )}
             <div className="absolute top-2 right-2">
               <Image
-                src={Images.Close}
+                src={Images.Closeblack}
                 alt="/"
                 height={24}
                 width={24}
-                className="cursor-pointer"
+                className="cursor-pointer text-[black]"
                 onClick={openModal}
               />
             </div>
-            <div className="flex justify-center relative ">
-              <Image src={image} alt="/" height={256} width={338} />
+            <div className="flex justify-center relative my-0 mx-auto w-[100px]">
+              <img src={image} alt="/" />
 
               <div className="absolute top-[170px] text-center">
                 <div className="">
@@ -102,9 +123,15 @@ const Under500: React.FC<Under500Props> = ({
                     {description}
                   </p>
 
-                  <p className="font-extrabold text-xl text-black mt-2">
-                    {price}
-                  </p>
+                  {salePrice ? (
+                    <p className="font-extrabold text-sm text-black">
+                      {salePrice}
+                    </p>
+                  ) : (
+                    <p className="font-extrabold text-sm text-black">
+                      {originalPrice}
+                    </p>
+                  )}
                   <p className="font-bold text-sm text-black">
                     {Strings.Inclusive_of_all_taxes}
                   </p>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Images } from "@/constant";
 
-const ShareOptions = ({ onOptionClick }) => {
+const ShareOptions = ({ onOptionClick }:any) => {
     const [copySuccess, setCopySuccess] = useState<boolean>(false);
   const [isXS, setIsXS] = useState(false);
 

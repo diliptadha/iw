@@ -4,6 +4,9 @@ import { Images, Strings } from "@/constant";
 import axios from "axios";
 import { useRouter } from "next/router";
 import RazorPage from "@/Razorpay/razorpage";
+import HeaderHeadline from "./header-headline";
+import Link from "next/link";
+import { formatDate } from "date-fns";
 
 interface AddressData {
   city: any;
@@ -29,16 +32,24 @@ interface CardData {
   quantity: number;
 }
 
+interface CouponData {
+  id: any;
+  couponCode: String;
+  discountAmount: any;
+  validUntil: any;
+  maxAmount: any;
+  discountType: any;
+}
+
 const AddAdress = () => {
   const router = useRouter();
-  const { toOrPr, toDiPr, toDi, toDiAfPr, tQty, appliedDiscount } =
-    router.query;
-  const mrp = parseInt((toOrPr as string) || "0", 10);
-  const itemDiscount = parseInt((toDi as string) || "0", 10);
-  const [selectedAddressId, setSelectedAddressId] = useState(null);
-  const netPrice = Array.isArray(toDiAfPr)
-    ? parseInt(toDiAfPr[0] ?? "0", 10)
-    : parseInt(toDiAfPr ?? "0", 10);
+  // const { toOrPr, toDiPr, toDi, toDiAfPr, tQty } = router.query;
+  // const mrp = parseInt((toOrPr as string) || "0", 10);
+  // const itemDiscount = parseInt((toDi as string) || "0", 10);
+  // const [selectedAddressId, setSelectedAddressId] = useState(null);
+  // const netPrice = Array.isArray(toDiAfPr)
+  //   ? parseInt(toDiAfPr[0] ?? "0", 10)
+  //   : parseInt(toDiAfPr ?? "0", 10);
 
   const [updateId, setUpdateId] = useState(null);
   const [updatedData, setUpdatedData] = useState({
@@ -60,26 +71,94 @@ const AddAdress = () => {
   const [cardDetails, setCardDetails] = useState<CardData[]>([]);
   const [toggle, setToggle] = useState(false);
   const [showRazorPage, setShowRazorPage] = useState(false);
+  const [couponData, setCouponData] = useState<CouponData[]>([]);
+  const [appliedDiscount, setAppliedDiscount] = useState<number>(0);
+  const [couponAmount, setCouponAmount] = useState(null);
+  const [couponSlide, setCouponSlide] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
 
-  const toggleRazorPage = () => {
-    setShowRazorPage(!showRazorPage); // Toggle the state variable
+  const applyCoupon = (couponId: string) => {
+    if (appliedDiscount > 0) {
+      return;
+    }
+
+    const selectedCoupon = couponData.find((coupon) => coupon.id === couponId);
+    if (selectedCoupon) {
+      setAppliedDiscount(selectedCoupon.discountAmount);
+      setCouponSlide(false);
+
+      axios
+        .post(`${process.env.NEXT_PUBLIC_API_URL}coupon/addCouponData`, {
+          couponId,
+        })
+        .then((response) => {
+          axios
+            .get(
+              `${process.env.NEXT_PUBLIC_API_URL}coupon/getCouponDataById?couponId=${couponId}`
+            )
+            .then((response) => {
+              setCouponAmount(response?.data?.couponList);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        })
+        .catch((error) => {
+          console.log("Error applying coupon:", error);
+        });
+    } else {
+      console.log("Coupon not found");
+    }
   };
 
-  const handleRazorPageCancel = () => {
-    setShowRazorPage(!showRazorPage); // Ensure showRazorPage is false when RazorPage is canceled
+  // Function to handle removing applied coupon
+  const removeCoupon = () => {
+    setAppliedDiscount(0);
+  };
+
+  const handleCouponSidebar = () => {
+    setCouponSlide(!couponSlide);
+  };
+
+ 
+
+  // Coupon API
+  useEffect(() => {
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}coupon/getCouponListData`)
+      .then((response) => {
+        setCouponData(response?.data?.couponList);
+      })
+      .catch((error) => {
+        console.log("Error fetching data", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (couponSlide) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+  }, [couponSlide]);
+
+  const toggleRazorPage = () => {
+    setShowRazorPage((prevShowRazorPage) => {
+      return !prevShowRazorPage;
+    });
   };
 
   const handleProceedToShipping = () => {
     router.push({
       pathname: "/shipping-address",
-      query: {
-        toOrPr,
-        toDiPr,
-        toDi,
-        toDiAfPr,
-        tQty,
-        appliedDiscount,
-      },
+      // query: {
+      //   toOrPr,
+      //   toDiPr,
+      //   toDi,
+      //   toDiAfPr,
+      //   tQty,
+      //   appliedDiscount,
+      // },
     });
   };
 
@@ -133,7 +212,7 @@ const AddAdress = () => {
   useEffect(() => {
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000003`
+        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000002`
       )
       .then((response) => {
         setCardDetails(response?.data?.cartData);
@@ -222,9 +301,103 @@ const AddAdress = () => {
       });
   };
 
+  // Calculate total original price
+  const toOrPr = cardDetails.reduce(
+    (total, ele) => total + ele.originalPrice * ele.quantity,
+    0
+  );
+
+  // Calculate total discounted price
+  const toDiPr = cardDetails.reduce(
+    (total, ele) => total + ele.salePrice * ele.quantity,
+    0
+  );
+
+  // Calculate total discount
+  const toDi = toOrPr - toDiPr + appliedDiscount;
+
+  // Calculate total price after discount
+  const toDiAfPr = toOrPr - toDi;
+
+  const tQty = cardDetails.reduce((total, ele) => total + ele.quantity, 0);
+
+
   return (
     <>
+      <HeaderHeadline />
       <div className=" px-[1rem] py-[1rem] md:px-[3rem] xl:px-[6rem]">
+        {/* Coupon  */}
+        <div
+          className={`fixed top-0 right-0 h-[100vh] bg-white z-50  transition-all duration-500 ease-in-out ${
+            couponSlide ? "w-[100%] sm:w-[70%] lg:w-[45%]" : "w-0"
+          }`}
+        >
+          {couponSlide && (
+            <>
+              <div className="p-7">
+                <div className="flex justify-between my-5 ">
+                  <h3 className="text-[20px] font-bold">Promo Offers</h3>
+                  <div className="w-7 h-7 cursor-pointer">
+                    <img
+                      src={Images.CROSS_ICON}
+                      alt="Cross-icon"
+                      onClick={() => setCouponSlide(false)}
+                      className="w-full h-full"
+                    />
+                  </div>
+                </div>
+
+                <div></div>
+
+                {couponData.map((ele) => {
+                  const dateEnd = new Date(ele.validUntil);
+                  const formatDateEnd = formatDate(dateEnd, "MMM, dd yyyy");
+                  return (
+                    <>
+                      <div className="border-[2px] bg-[#d3d3d338] mb-4 border-dashed py-3 px-3 flex items-center sm:items-start sm:gap-8 gap-4 rounded-[6px]">
+                        <div className="sm:py-[30px] sm:px-[20px] px-2 py-4 bg-white">
+                          <div className="sm:w-[100px] sm:h-[60px] w-[45px] h-[35px]">
+                            <img
+                              src={Images.COUPON_OFFER}
+                              alt="Coupon-icon"
+                              className="w-full h-full"
+                            />
+                          </div>
+                        </div>
+                        <div className="w-full">
+                          <div className="flex justify-between py-2">
+                            <h3 className="sm:text-[13px] text-[11px] bg-[#DBF4ED] font-semibold flex items-center px-3 rounded-[20px] border-2 ">
+                              {ele.couponCode}
+                            </h3>
+                            <button
+                              className="text-PictonBlue p-[6px] rounded-[5px] border-PictonBlue border sm:text-[13px] text-[11px] font-semibold hover:bg-PictonBlue hover:text-white"
+                              onClick={() => applyCoupon(ele.id)}
+                            >
+                              {Strings.APPLY}
+                            </button>
+                          </div>
+                          <h4 className="text-[10px] sm:py-2 pb-1">
+                            {Strings.MAX_DISC} ₹{ele.maxAmount}
+                          </h4>
+                          <div className="flex justify-between">
+                            <Link href="#" className="text-[blue] text-[10px]">
+                              {Strings.TERMS_COND}
+                            </Link>
+                            <p className="text-[10px]">
+                              {Strings.VALID_TILL} {formatDateEnd}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })}
+              </div>
+            </>
+          )}
+        </div>
+        {/* Coupon  */}
+
         <div className="wrap-div flex gap-5 flex-wrap sm:flex-nowrap">
           <div className="left-card sm:min-w-[65%] w-full">
             <h2 className="mb-[15px] font-semibold">
@@ -239,7 +412,7 @@ const AddAdress = () => {
                         <div className="card py-6 px-3 mb-4 shadow-box">
                           <div className="flex justify-between">
                             <h2 className="sm:text-[18px] font-semibold sm:mb-8 mb-3">
-                              Update address
+                              {Strings.UPDATE_ADD}
                             </h2>
                             <h3
                               onClick={toggleUpdate}
@@ -500,6 +673,72 @@ const AddAdress = () => {
               </div>
             </div>
 
+            <div className="shadow-box mb-4">
+              {appliedDiscount ? (
+                <div className="p-3">
+                  <h3 className="flex items-center justify-between rounded-[100px] py-[10px] px-[20px] text-[13px] border bg-green-600 font-semibold text-white">
+                    You got ₹{appliedDiscount} discount{" "}
+                    <span
+                      className="py-[2px] px-[10px] border rounded-[50%] hover:text-green-600 hover:border-green-600 hover:bg-white cursor-pointer transition duration-300 text-[17px]"
+                      onClick={removeCoupon}
+                    >
+                      x
+                    </span>
+                  </h3>
+                </div>
+              ) : (
+                <>
+                  {/* <div className='p-3 flex items-baseline gap-4'>
+                            <input type="checkbox" />
+                            <div>
+                                <h3 className='text-[14px] font-semibold'>{Strings.EMECASH}</h3>
+                                <h5 className='text-[10px]'>You can use upto <span className='text-blue-400'> ₹0 out of ₹0 </span> on this order.</h5>
+                            </div>
+                        </div>
+                        <div className='line-circle relative border-t border-[darkgray] w-full'></div> */}
+                  <div className="p-3 ">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="h-7 w-7">
+                          <img
+                            src={Images.COUPON}
+                            alt="Coupon-icon"
+                            className="w-full h-full"
+                          />
+                        </div>
+                        <div>
+                          <h3 className="text-[14px] font-semibold">
+                            {Strings.APPLY_COUPON_CODE}
+                          </h3>
+                          <h5 className="text-[10px]">
+                            You Have{" "}
+                            <span className="text-blue-400">
+                              {" "}
+                              {couponData.length} {Strings.COUPONS}
+                            </span>{" "}
+                            to Apply*
+                          </h5>
+                        </div>
+                      </div>
+
+                      <div className="">
+                        <button
+                          className={`focus:outline-none transition-transform duration-400 ease-in-out `}
+                          onClick={handleCouponSidebar}
+                        >
+                          <img
+                            src={Images.RIGHT_ARROW}
+                            alt="Dropdown Arrow"
+                            className="h-4 w-4"
+                          />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
             <div className="shadow-box mb-4 p-3">
               <div className="lg:p-4 p-2 border flex items-center justify-between text-[10px] lg:text-[13px]">
                 <h4 className=" font-semibold">
@@ -583,13 +822,11 @@ const AddAdress = () => {
               <div className="p-4">
                 <div className="flex w-[100%] items-center mb-2 justify-between">
                   <h3 className="text-[14px]">{Strings.MRP}</h3>
-                  <p className="text-[13px]">₹{mrp.toLocaleString()}</p>
+                  <p className="text-[13px]">₹{toOrPr.toLocaleString()}</p>
                 </div>
                 <div className="flex w-[100%] items-center text-green-600 mb-2 justify-between border-b pb-1">
                   <h3 className="text-[14px]">{Strings.ITEM_DISC}</h3>
-                  <p className="text-[13px]">
-                    -₹{itemDiscount.toLocaleString()}
-                  </p>
+                  <p className="text-[13px]">-₹{toDi.toLocaleString()}</p>
                 </div>
                 {appliedDiscount ? (
                   <div className="flex w-[100%] items-center text-green-600 mb-2 justify-between border-b pb-1">
@@ -604,27 +841,23 @@ const AddAdress = () => {
                 <div className="flex w-[100%] items-center mb-2 font-semibold justify-between border-b pb-1">
                   <h3 className="text-[13px] md:[14px]">{Strings.NET_PRICE}</h3>
                   <p className="text-[12px] md:[13px]">
-                    ₹{netPrice.toLocaleString()}
+                    ₹{toDiAfPr.toLocaleString()}
                   </p>
                 </div>
                 <div className="flex w-[100%] items-center mb-4 font-semibold justify-between">
                   <h3 className="text-[13px] md:[14px]">{Strings.YOU_PAY}</h3>
                   <p className="text-[12px] md:[13px]">
-                    ₹{netPrice.toLocaleString()}
+                    ₹{toDiAfPr.toLocaleString()}
                   </p>
                 </div>
-                <div>
-                  <button
-                    disabled={!selectedAddressId}
-                    onClick={toggleRazorPage}
-                    className="w-full p-3 bg-PictonBlue text-[#fff] text-[14px] hover:bg-opacity-80 rounded-[6px]"
-                  >
-                    {Strings.PROCEED_TO_CHECKOUT}
-                  </button>
-                  {showRazorPage ? (
-                    <RazorPage onCancel={handleRazorPageCancel}/>
-                  ): ""}
-                </div>
+                <button
+                  disabled={!selectedAddressId}
+                  onClick={toggleRazorPage}
+                  className="w-full p-3 bg-PictonBlue text-[#fff] text-[14px] hover:bg-opacity-80 rounded-[6px]"
+                >
+                  {Strings.PROCEED_TO_CHECKOUT}
+                </button>
+                {showRazorPage && <RazorPage onCancel={toggleRazorPage} toDiAfPr={toDiAfPr}/>}
               </div>
             </div>
 

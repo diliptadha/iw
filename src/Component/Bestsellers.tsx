@@ -3,22 +3,30 @@ import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
 import StarRating from "./StarRating";
+import Link from "next/link";
 
 interface BestsellersProps {
   image: string;
   title: string;
   description: string;
-  price: string;
+  salePrice: string;
   rating?: number;
   isBestseller?: boolean;
+  productId: string;
+  subProductId: string;
+  originalPrice: string;
 }
+
 const Bestsellers: React.FC<BestsellersProps> = ({
   image,
   title,
   description,
-  price,
+  salePrice,
   rating = 0,
   isBestseller = false,
+  productId,
+  subProductId,
+  originalPrice,
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -42,13 +50,13 @@ const Bestsellers: React.FC<BestsellersProps> = ({
           </div>
         )}
         <div className="relative">
-          <div className="flex justify-center">
-            <Image src={image} alt="/" height={128} width={169} />
+          <div className="flex justify-center my-0 mx-auto w-[100px]">
+            <img src={image} alt="/" />
           </div>
           <div className="absolute top-[96px] w-full">
             <h1 className="font-extrabold text-sm text-black">{title}</h1>
             <p className="font-normal text-sm text-black">{description} </p>
-            <p className="font-extrabold text-sm text-black">{price}</p>
+            <p className="font-extrabold text-sm text-black">{salePrice ?  salePrice :  originalPrice}</p>
             <p className="font-bold text-xs text-black">
               {Strings.Inclusive_of_all_taxes}
             </p>
@@ -57,9 +65,13 @@ const Bestsellers: React.FC<BestsellersProps> = ({
                 <StarRating rating={rating} />
               </div>
               <div className="flex justify-between items-center mt-3">
-                <button className=" flex justify-center items-center border-black border w-[130px] h-[34px] rounded-[5px] font-bold text-xs text-black bg-white">
-                  {Strings.KNOW_MORE}
-                </button>
+                <Link
+                  href={`/product_details?productId=${productId}&subProductId=${subProductId}`}
+                >
+                  <button className=" flex justify-center items-center border-black border w-[130px] h-[34px] rounded-[5px] font-bold text-xs text-black bg-white">
+                    {Strings.KNOW_MORE}
+                  </button>
+                </Link>
                 <Image
                   src={Images.Zoom}
                   alt="/"
@@ -83,7 +95,7 @@ const Bestsellers: React.FC<BestsellersProps> = ({
             )}
             <div className="absolute top-2 right-2">
               <Image
-                src={Images.Close}
+                src={Images.Closeblack}
                 alt="/"
                 height={24}
                 width={24}
@@ -91,8 +103,8 @@ const Bestsellers: React.FC<BestsellersProps> = ({
                 onClick={openModal}
               />
             </div>
-            <div className="flex justify-center relative ">
-              <Image src={image} alt="/" height={256} width={338} />
+            <div className="flex justify-center relative w-[100px] my-0 mx-auto">
+              <img src={image} alt="/" />
 
               <div className="absolute top-[170px] text-center">
                 <div className="">
@@ -100,10 +112,15 @@ const Bestsellers: React.FC<BestsellersProps> = ({
                   <p className="font-semibold text-sm text-black">
                     {description}
                   </p>
-
-                  <p className="font-extrabold text-xl text-black mt-2">
-                    {price}
-                  </p>
+                  {salePrice ? (
+                    <p className="font-extrabold text-sm text-black">
+                      {salePrice}
+                    </p>
+                  ) : (
+                    <p className="font-extrabold text-sm text-black">
+                      {originalPrice}
+                    </p>
+                  )}
                   <p className="font-bold text-sm text-black">
                     {Strings.Inclusive_of_all_taxes}
                   </p>

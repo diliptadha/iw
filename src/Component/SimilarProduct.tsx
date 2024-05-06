@@ -10,7 +10,6 @@ interface SimilarProductsProps {
   description: string;
   salePrice: string;
   rating?: number;
-  // isBestseller?: boolean;
   color: any;
 }
 const SimilarProduct: React.FC<SimilarProductsProps> = ({
@@ -19,7 +18,6 @@ const SimilarProduct: React.FC<SimilarProductsProps> = ({
   description,
   salePrice,
   rating = 0,
-  // isBestseller = false,
   color,
 }) => {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -63,7 +61,14 @@ const SimilarProduct: React.FC<SimilarProductsProps> = ({
               className={`absolute top-[100px] md:top-[100px] flex flex-row justify-between w-full`}
             >
               <StarRating rating={rating} />
-              <div className="flex items-center">{color}</div>
+              <div className="flex items-center">
+                <div className="flex items-center">
+                  <div
+                    className="w-4 h-4 rounded-full mr-1"
+                    style={{ backgroundColor: color }}
+                  ></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

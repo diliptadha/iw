@@ -51,7 +51,7 @@ const SuccessPayment = () => {
 
   const gettingData = () => {
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000003`)
+      .get(`${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000002`)
       .then((response) => {
         setCardDetails(response?.data?.cartData);
       })
@@ -73,9 +73,9 @@ const SuccessPayment = () => {
   return (
     <div className=" px-[1rem] py-[1rem] md:px-[3rem] xl:px-[6rem] ">
       <div className="-bg-[#90e9c1] ">
-        <div className="flex items-center justify-center mt-8">
+        <div className="flex items-center justify-center mt-2">
           <img
-            src={Images.SUCCESS_TICK}
+            src={Images.SuccessIcon}
             alt="success-icon"
             className="w-[40px] mr-[15px]"
           />
@@ -155,7 +155,6 @@ const SuccessPayment = () => {
                   </p>
                   </>
                 )}
-                {/* <>{console.log("true data", addGet.fullName)}</> */}
               </div>
               <div className="py-3 px-6 text-[13px]">
                 <h3 className="text-PictonBlue">{Strings.PAYMENT_SMALL}</h3>
@@ -172,12 +171,12 @@ const SuccessPayment = () => {
 
         <div className="text-center mt-[30px] flex flex-col sm:block items-center">
           <button 
-          onClick={() => router.push('/Home-screen')}
+          onClick={() => router.push('/')}
           className="w-[170px] py-[10px] px-[15px] border bg-black text-white border-[black] bg-opacity-80 duration-200 hover:bg-white hover:text-black rounded sm:mr-[10px] sm:mb-0 mb-3">
             Continue Shopping
           </button>
           <button 
-          onClick={()=> router.push('/cart')}
+          // onClick={()=> router.push('/cart')}
           className="w-[170px] py-[10px] px-[15px] hover:text-PictonBlue border border-PictonBlue text-white hover:bg-white bg-PictonBlue hover:bg-opacity-80 duration-200 rounded ">
             My Orders
           </button>

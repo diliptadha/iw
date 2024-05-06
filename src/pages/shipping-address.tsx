@@ -32,13 +32,13 @@ interface CardData {
 
 const ShippingAddress = () => {
   const router = useRouter();
-  const { toOrPr, toDiPr, toDi, toDiAfPr, tQty, appliedDiscount } =
-    router.query;
-  const mrp = parseInt((toOrPr as string) || "0", 10);
-  const itemDiscount = parseInt((toDi as string) || "0", 10);
-  const netPrice = Array.isArray(toDiAfPr)
-    ? parseInt(toDiAfPr[0] ?? "0", 10)
-    : parseInt(toDiAfPr ?? "0", 10);
+  // const { toOrPr, toDiPr, toDi, toDiAfPr, tQty, appliedDiscount } =
+  //   router.query;
+  // const mrp = parseInt((toOrPr as string) || "0", 10);
+  // const itemDiscount = parseInt((toDi as string) || "0", 10);
+  // const netPrice = Array.isArray(toDiAfPr)
+  //   ? parseInt(toDiAfPr[0] ?? "0", 10)
+  //   : parseInt(toDiAfPr ?? "0", 10);
 
   const [formData, setFormData] = useState<FormData>({
     userId: "IK0000001",
@@ -58,6 +58,26 @@ const ShippingAddress = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [cardDetails, setCardDetails] = useState<CardData[]>([]);
+
+  const gettingData = () => {
+    axios
+      .get(
+        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000002`
+      )
+      .then((response) => {
+        const cartData = response?.data?.cartData;
+        setCardDetails(cartData);
+        // setIsCartEmpty(cartData.length === 0);
+      })
+      .catch((error) => {
+        console.log("Error fetching data", error);
+      });
+  };
+
+  useEffect(() => {
+    // fetchAddressData();
+    gettingData();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -86,14 +106,14 @@ const ShippingAddress = () => {
   const handleProceedToAddAddress = () => {
     router.push({
       pathname: "/add-adress",
-      query: {
-        toOrPr,
-        toDiPr,
-        toDi,
-        toDiAfPr,
-        tQty,
-        appliedDiscount,
-      },
+      // query: {
+      //   toOrPr,
+      //   toDiPr,
+      //   toDi,
+      //   toDiAfPr,
+      //   tQty,
+      //   appliedDiscount,
+      // },
     });
   };
 
@@ -150,16 +170,35 @@ const ShippingAddress = () => {
     }
   };
 
-  useEffect(() => {
-    axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000003`)
-      .then((response) => {
-        setCardDetails(response?.data?.cartData);
-      })
-      .catch((error) => {
-        console.log("Error fetching data", error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get(`${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000003`)
+  //     .then((response) => {
+  //       setCardDetails(response?.data?.cartData);
+  //     })
+  //     .catch((error) => {
+  //       console.log("Error fetching data", error);
+  //     });
+  // }, []);
+
+  const toOrPr = cardDetails.reduce(
+    (total, ele) => total + ele.originalPrice * ele.quantity,
+    0
+  );
+
+  // Calculate total discounted price
+  const toDiPr = cardDetails.reduce(
+    (total, ele) => total + ele.salePrice * ele.quantity,
+    0
+  );
+
+  // Calculate total discount
+  const toDi = toOrPr - toDiPr ;
+
+  // Calculate total price after discount
+  const toDiAfPr = toOrPr - toDi;
+
+  const tQty = cardDetails.reduce((total, ele) => total + ele.quantity, 0);
 
   return (
     <>
@@ -431,17 +470,15 @@ const ShippingAddress = () => {
 
             <div className="shadow-box">
               <div className="p-4">
-                <div className="flex w-[100%] items-center mb-2 justify-between">
-                  <h3 className="text-[14px]">{Strings.MRP}</h3>
-                  <p className="text-[13px]">₹{mrp.toLocaleString()}</p>
-                </div>
-                <div className="flex w-[100%] items-center text-green-600 mb-2 justify-between border-b pb-1">
-                  <h3 className="text-[14px]">{Strings.ITEM_DISC}</h3>
-                  <p className="text-[13px]">
-                    -₹{itemDiscount.toLocaleString()}
-                  </p>
-                </div>
-                {appliedDiscount ? (
+              <div className="flex w-[100%] items-center mb-2 justify-between">
+                    <h3 className="text-[14px]">{Strings.MRP}</h3>
+                    <p className="text-[13px]">₹{toOrPr.toLocaleString()}</p>
+                  </div>
+                  <div className="flex w-[100%] items-center text-green-600 mb-2 justify-between border-b pb-1">
+                    <h3 className="text-[14px]">{Strings.ITEM_DISC}</h3>
+                    <p className="text-[13px]">-₹{toDi.toLocaleString()}</p>
+                  </div>
+                {/* {appliedDiscount ? (
                   <div className="flex w-[100%] items-center text-green-600 mb-2 justify-between border-b pb-1">
                     <h3 className="text-[14px]">{Strings.COUPON_DISC}</h3>
                     <p className="text-[13px]">
@@ -450,19 +487,21 @@ const ShippingAddress = () => {
                   </div>
                 ) : (
                   ""
-                )}
+                )} */}
                 <div className="flex w-[100%] items-center mb-2 font-semibold justify-between border-b pb-1">
-                  <h3 className="text-[13px] md:[14px]">{Strings.NET_PRICE}</h3>
-                  <p className="text-[12px] md:[13px]">
-                    ₹{netPrice.toLocaleString()}
-                  </p>
-                </div>
-                <div className="flex w-[100%] items-center mb-4 font-semibold justify-between">
-                  <h3 className="text-[13px] md:[14px]">{Strings.YOU_PAY}</h3>
-                  <p className="text-[12px] md:[13px]">
-                    ₹{netPrice.toLocaleString()}
-                  </p>
-                </div>
+                    <h3 className="text-[13px] md:[14px]">
+                      {Strings.NET_PRICE}
+                    </h3>
+                    <p className="text-[12px] md:[13px]">
+                      ₹{toDiAfPr.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="flex w-[100%] items-center mb-4 font-semibold justify-between">
+                    <h3 className="text-[13px] md:[14px]">{Strings.YOU_PAY}</h3>
+                    <p className="text-[12px] md:[13px]">
+                      ₹{toDiAfPr.toLocaleString()}
+                    </p>
+                  </div>
 
                 <button
                   onClick={handleProceedToAddAddress}

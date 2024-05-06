@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface MenuItem {
   category: string;
@@ -32,6 +33,10 @@ interface MenuItem {
   updatedAt: string;
 }
 
+interface CardData {
+  quantity: number;
+}
+
 const Header = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<string | null>(
     "English"
@@ -39,7 +44,7 @@ const Header = () => {
   const [rotateImage, setRotateImage] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
-
+  const [cartQuantity, setCartQuantity] = useState<CardData[]>([]);
   const [stringsArray, setStringsArray] = useState([
     {
       id: 0,
@@ -335,6 +340,32 @@ const Header = () => {
     },
   ]);
 
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000002`
+      )
+      .then((response) => {
+        console.log(response.data);
+        setCartQuantity(response?.data?.cartData);
+      })
+      .catch((error) => {
+        console.log("Error fetching data", error);
+      });
+  }, []);
+
+  const tQty = cartQuantity.reduce((total, ele) => total + ele.quantity, 0);
+
+  const router = useRouter();
+
+  const handleCartPage = () => {
+    if (tQty <= 0) {
+      router.push("/cartEmpty"); // Replace '/another-page' with the path to the page you want to navigate to// Return null or a loading state while navigating
+    } else {
+      router.push("/cart");
+    }
+  };
+
   const [menuData, setMenuData] = useState<MenuItem[]>([]);
 
   const fetchData = async () => {
@@ -348,7 +379,7 @@ const Header = () => {
 
       const response = await axios.request(config);
       setMenuData(response.data.menu);
-      console.log("MENU DATA :", JSON.stringify(response.data.menu));
+      // console.log("MENU DATA :", JSON.stringify(response.data.menu));
     } catch (error) {
       console.log(error);
     }
@@ -682,6 +713,7 @@ const Header = () => {
           </div>
         </div>
       </div>
+
       <div className="flex mt-8 xs:flex-col sm:flex-row sm:justify-between xs:space-y-4 md:space-y-0 items-center xs:mx-4 md:mx-12">
         <Image
           src={Images.Logo}
@@ -704,15 +736,23 @@ const Header = () => {
               className="absolute right-4 top-3 "
             />
           </div>
-          <div className="relative">
-            <Image
-              src={Images.Bag}
-              alt="/"
-              height={21}
-              width={19}
-              className="xs:w-[16px] md:w-[18px]"
-            />
-            <p className="rounded-full xs:h-2 xs:w-2 md:h-3 md:w-3 bg-[#FF4307] absolute top-0 left-2.5"></p>
+
+          <div className="relative" onClick={handleCartPage}>
+            <button>
+              <Image
+                src={Images.Bag}
+                alt="/"
+                height={21}
+                width={19}
+                className="w-[24px]"
+              />
+            </button>
+            <div className="rounded-full h-5 w-5 bg-[#FF4307] absolute top-0 right-[-7px] translate-x-0 translate-y-[-50%]">
+            <span className="absolute text-[11px] top-[50%] right-[50%] text-white translate-x-[50%] translate-y-[-50%]">
+              {tQty}
+            </span>
+            </div>
+            
           </div>
         </div>
       </div>
@@ -757,13 +797,14 @@ const Header = () => {
             </div>
           ))}
         </div>
+
         <div className="flex justify-center xs:hidden lg:flex">
           {menuData.map(
             (item, index) =>
               item.megaMenuOpen && (
                 <div
                   key={index}
-                  className="w-[700px] h-auto bg-[#F2F2F2] absolute top-56 p-5 rounded-[10px] shadow-md"
+                  className="w-[700px] z-50 h-auto bg-[#F2F2F2] absolute top-56 p-5 rounded-[10px] shadow-md"
                 >
                   <div className="flex text-base justify-between font-normal">
                     <div>

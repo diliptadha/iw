@@ -65,7 +65,6 @@ const Listingpage = () => {
   const handleCheckboxGender = (category: keyof typeof gender) => {
     const newCheckedState = { ...gender, [category]: !gender[category] };
     setGender(newCheckedState);
-    console.log("GENDER:", newCheckedState);
   };
   const handleCheckboxFrameStyle = (category: keyof typeof framestyle) => {
     const newCheckedState = {
@@ -73,7 +72,6 @@ const Listingpage = () => {
       [category]: !framestyle[category],
     };
     setFrameStyle(newCheckedState);
-    console.log("FRAMESTYLE:", newCheckedState);
   };
   const handleCheckboxFrameMaterial = (
     category: keyof typeof framematerial
@@ -83,12 +81,10 @@ const Listingpage = () => {
       [category]: !framematerial[category],
     };
     setFrameMaterial(newCheckedState);
-    console.log("FRAMEMATERIAL:", newCheckedState);
   };
   const handleCheckboxChangeBrands = (category: keyof typeof brands) => {
     const newCheckedState = { ...brands, [category]: !brands[category] };
     setBrands(newCheckedState);
-    console.log("BRANDS:", newCheckedState);
   };
 
   const toggleDropdown = () => {
@@ -290,7 +286,6 @@ const Listingpage = () => {
   };
 
   useEffect(() => {
-    console.log("Selected shapes:", selectedShapes);
   }, [selectedShapes]);
 
   return (

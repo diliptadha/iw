@@ -1,10 +1,7 @@
 "use client";
-
 import "../app/globals.css";
-
 import { Images, Strings } from "@/constant";
 import React, { Fragment, useRef, useState } from "react";
-
 import Bestsellers from "@/Component/Bestsellers";
 import Customerssay from "@/Component/Customerssay";
 import Frame from "@/Component/Frame";
@@ -17,17 +14,26 @@ import { Tab } from "@headlessui/react";
 import Under500 from "@/Component/Under500";
 import { useEffect } from "react";
 import { Footer } from "@/Component/footer";
+import axios from "axios";
 import Link from "next/link";
 
-interface FrameData {
-  image: string;
-  buttonText: string;
-}
 interface CustomerssayProps {
-  image: string;
-  h1: string;
-  p: string;
-  style?: React.CSSProperties;
+  comment: any;
+  fName: any;
+  lName: any;
+  rating: any;
+}
+
+interface NewArrival {
+  SKU: any;
+  brands: any;
+  productImage: any;
+  rating: any;
+  originalPrice: any;
+  salePrice: any;
+  isBestSeller: boolean;
+  subProductId: any;
+  productId: string;
 }
 const Homescreen = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -35,6 +41,18 @@ const Homescreen = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [visibleIndex, setVisibleIndex] = useState(0);
   const [windowWidth, setWindowWidth] = useState<number>(0);
+  const [customerData, setCustomerData] = useState<CustomerssayProps[]>([]);
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}home/getRecenetReviews`)
+      .then((response) => {
+        setCustomerData(response?.data?.recentReviews);
+      })
+      .catch((error) => {
+        console.log("Error fetching data", error);
+      });
+  }, []);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollStepDesktop = 650;
@@ -43,42 +61,103 @@ const Homescreen = () => {
   const containerRef3 = useRef<HTMLDivElement>(null);
   const scrollStep2 = 250;
   const [currIndex, setCurrIndex] = useState(0);
+  const [newArrival, setNewArrival] = useState<NewArrival[]>([]);
+  const [bestSeller, setBestSeller] = useState<NewArrival[]>([]);
+  const [underFive, setUnderFive] = useState<NewArrival[]>([]);
 
-  const imagesData = [
-    {
-      image: Images.OCEAN,
-      title: "OCEAN",
-      descreption: "OC-12322-BROWN TORTOISE-50",
-      price_: "950",
-      price: "700",
-      rating: 4,
-    },
-    {
-      image: Images.OCEAN,
-      title: "KADIYAM",
-      descreption: "A-25172-PINK_GOLD-52-1",
-      price_: "900",
-      price: "650",
-      rating: 3.5,
-    },
-    {
-      image: Images.OCEAN,
-      title: "PRATA",
-      descreption: "6604-GOLDEN_BROWN-51-1",
-      price_: "950",
-      price: "600",
-      rating: 5,
-    },
-  ];
+  useEffect(() => {
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}home/products`)
+      .then((response) => {
+        const data = response.data.productsDataByCriteria;
+
+        setNewArrival(data.newArrivals);
+        setBestSeller(data.isBestSeller);
+        setUnderFive(data.under500);
+      })
+      .catch((error) => {
+        console.log("Error fetching data", error);
+      });
+  }, []);
+
+  const [cartMessage, setCartMessage] = useState<string | null>(null);
+
+  const showCartMessage = (message: string) => {
+    setCartMessage(message);
+    setTimeout(() => {
+      setCartMessage(null);
+    }, 5000);
+  };
+
+  const addToCart = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=IK0000002`,
+        {
+          cartProducts: [
+            {
+              productId: newArrival[currIndex].productId,
+              subProductId: newArrival[currIndex].subProductId,
+              size: "60", // Example size, you should get this from the product data if applicable
+              quantity: 1, // Example quantity, adjust as needed
+              salePrice: newArrival[currIndex].salePrice,
+              originalPrice: newArrival[currIndex].originalPrice,
+              productImage: newArrival[currIndex].productImage,
+            },
+          ],
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      showCartMessage("Product added to cart successfully!");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/product/addToCartProduct?userId=IK0000002",
+        {
+          cartProducts: [
+            {
+              productId: newArrival[currIndex].productId,
+              subProductId: newArrival[currIndex].subProductId,
+              size: "60", // Example size, you should get this from the product data if applicable
+              quantity: 1, // Example quantity, adjust as needed
+              salePrice: newArrival[currIndex].salePrice,
+              originalPrice: newArrival[currIndex].originalPrice,
+              productImage: newArrival[currIndex].productImage,
+            },
+          ],
+        },
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // showCartMessage("Product added to cart successfully!");
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+    }
+  };
 
   const handleNext2 = () => {
-    setCurrIndex((prevIndex) => (prevIndex + 1) % imagesData.length);
+    setCurrIndex((prevIndex) => (prevIndex + 1) % newArrival.length);
   };
   const handlePrev2 = () => {
-    setCurrIndex((prevIndex) => (prevIndex - 1) % imagesData.length);
-  };  
+    setCurrIndex((prevIndex) => (prevIndex - 1) % newArrival.length);
+  };
 
-  const currentItem = imagesData[currIndex];
+  const currentItem = newArrival[currIndex];
 
   useEffect(() => {
     const handleResize = () => {
@@ -102,7 +181,7 @@ const Homescreen = () => {
         behavior: "smooth",
       });
       setVisibleIndex((prevIndex) =>
-        prevIndex < CustomerData.length - 1 ? prevIndex + 1 : prevIndex
+        prevIndex < customerData.length - 1 ? prevIndex + 1 : prevIndex
       );
     }
   };
@@ -242,146 +321,6 @@ const Homescreen = () => {
       buttonUrl: "https://www.iksanaopticals.in/computer-glasses/kids",
     },
   ];
-  const CustomerData = [
-    {
-      id: 0,
-      rating: 3.5,
-      h1: "NAME SURNAME",
-      p: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.",
-    },
-    {
-      id: 1,
-      rating: 3,
-      h1: "NAME SURNAME",
-      p: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.",
-    },
-    {
-      id: 2,
-      rating: 4.5,
-      h1: "NAME SURNAME",
-      p: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.",
-    },
-    {
-      id: 3,
-      rating: 3,
-      h1: "NAME SURNAME",
-      p: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.",
-    },
-    {
-      id: 4,
-      rating: 2.5,
-      h1: "NAME SURNAME",
-      p: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.",
-    },
-    {
-      id: 5,
-      rating: 4,
-      h1: "NAME SURNAME",
-      p: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.",
-    },
-  ];
-  const Under500products = [
-    {
-      image: Images.product1,
-      title: "100%",
-      description: "6604-GOLDEN_BROWN-51-1",
-      rating: 4,
-      price: "499",
-    },
-    {
-      image: Images.product2,
-      title: "KADIYAM",
-      description: "65003-MATTEBLACK_SILVER-52-1",
-      rating: 3.5,
-      price: "350",
-    },
-    {
-      image: Images.product3,
-      title: "KADIYAM ",
-      description: "70029-18-BROWN-50-1",
-      rating: 2,
-      price: "450",
-    },
-    {
-      image: Images.product4,
-      title: "K_D ",
-      description: "17140-CY-MAROON_SILVER-49-1",
-      rating: 5,
-      price: "500",
-    },
-    {
-      image: Images.product5,
-      title: "K_D ",
-      description: "A-25172-PINK_GOLD-52-1",
-      rating: 4,
-      price: "400",
-    },
-    {
-      image: Images.product1,
-      title: "K_D ",
-      description: "A-25172-PINK_GOLD-52-1",
-      rating: 3.5,
-      price: "400",
-    },
-    {
-      image: Images.product1,
-      title: "K_D ",
-      description: "A-25172-PINK_GOLD-52-1",
-      rating: 4.5,
-      price: "400",
-    },
-  ];
-  const Bestsellerproducts = [
-    {
-      image: Images.product1,
-      title: "100%",
-      description: "6604-GOLDEN_BROWN-51-1",
-      rating: 4,
-      price: "499",
-    },
-    {
-      image: Images.product2,
-      title: "KADIYAM",
-      description: "65003-MATTEBLACK_SILVER-52-1",
-      rating: 5,
-      price: "350",
-    },
-    {
-      image: Images.product3,
-      title: "KADIYAM ",
-      description: "70029-18-BROWN-50-1",
-      rating: 3.5,
-      price: "450",
-    },
-    {
-      image: Images.product4,
-      title: "K_D ",
-      description: "17140-CY-MAROON_SILVER-49-1",
-      rating: 4,
-      price: "500",
-    },
-    {
-      image: Images.product5,
-      title: "K_D ",
-      description: "A-25172-PINK_GOLD-52-1",
-      rating: 2.5,
-      price: "400",
-    },
-    {
-      image: Images.product1,
-      title: "K_D ",
-      description: "A-25172-PINK_GOLD-52-1",
-      rating: 4,
-      price: "400",
-    },
-    {
-      image: Images.product1,
-      title: "K_D ",
-      description: "A-25172-PINK_GOLD-52-1",
-      rating: 3.5,
-      price: "400",
-    },
-  ];
 
   const handleScrollRight2 = () => {
     if (containerRef2.current) {
@@ -488,8 +427,9 @@ const Homescreen = () => {
             </button>
             <button
               onClick={() => handleNext(1)}
-              className={`mr-4 ${currentIndex === images.length - 1 ? "opacity-50 " : ""
-                }`}
+              className={`mr-4 ${
+                currentIndex === images.length - 1 ? "opacity-50 " : ""
+              }`}
               disabled={currentIndex === images.length - 1}
             >
               <Image
@@ -546,8 +486,9 @@ const Homescreen = () => {
               </button>
               <button
                 onClick={() => handleNext(2)}
-                className={`mr-2 ${currentIndex2 === images.length - 1 ? "opacity-50 " : ""
-                  }`}
+                className={`mr-2 ${
+                  currentIndex2 === images.length - 1 ? "opacity-50 " : ""
+                }`}
                 disabled={currentIndex2 === images.length - 1}
               >
                 <Image
@@ -571,10 +512,11 @@ const Homescreen = () => {
               <Tab as={Fragment}>
                 {({ selected }) => (
                   <button
-                    className={` text-[15px] text-black  ${selected
+                    className={` text-[15px] text-black  ${
+                      selected
                         ? "border-b-[5px] border-black p-2 outline-none font-extrabold relative top-[3px]"
                         : "font-normal"
-                      }
+                    }
                   xs:px-2 md:px-4 py-3`}
                   >
                     {Strings.MEN}
@@ -584,10 +526,11 @@ const Homescreen = () => {
               <Tab as={Fragment}>
                 {({ selected }) => (
                   <button
-                    className={`${selected
+                    className={`${
+                      selected
                         ? "border-b-[5px] border-black p-2 outline-none font-extrabold relative top-[3px]"
                         : "font-normal"
-                      }
+                    }
                   xs:px-2 md:px-4 py-3 text-[15px] text-black `}
                   >
                     {Strings.WOMEN}
@@ -597,10 +540,11 @@ const Homescreen = () => {
               <Tab as={Fragment}>
                 {({ selected }) => (
                   <button
-                    className={`${selected
+                    className={`${
+                      selected
                         ? "border-b-[5px] border-black p-2 outline-none font-extrabold relative top-[3px]"
                         : "font-normal"
-                      }
+                    }
                   xs:px-2 md:px-4 py-3 text-[15px] text-black `}
                   >
                     {Strings.UNISEX}
@@ -610,10 +554,11 @@ const Homescreen = () => {
               <Tab as={Fragment}>
                 {({ selected }) => (
                   <button
-                    className={`${selected
+                    className={`${
+                      selected
                         ? "border-b-[5px] border-black p-2 outline-none font-extrabold relative top-[3px]"
                         : "font-normal"
-                      }
+                    }
                   xs:px-2 md:px-4 py-3 text-[15px] text-black `}
                   >
                     {Strings.KIDS}
@@ -672,80 +617,115 @@ const Homescreen = () => {
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
-          <div className="flex items-center  justify-between xs:mt-10 lg:mt-28">
-            <Image
-              onClick={handlePrev2}
-              src={Images.Lefticon}
-              alt="/"
-              height={16}
-              width={16}
-              className={`ml-0 xs:mb-[200px] xl:mb-0 ${currIndex === 0
-                  ? "opacity-60 cursor-not-allowed"
-                  : "cursor-pointer"
+
+          <div className="xs:mt-10 lg:mt-28">
+            <h1 className="font-extrabold text-2xl text-black">
+              {Strings.NEW_ARRIVALS}
+            </h1>
+
+            <div className="flex items-center justify-between ">
+              <Image
+                onClick={handlePrev2}
+                src={Images.Lefticon}
+                alt="/"
+                height={16}
+                width={16}
+                className={`ml-0 xl:mb-0 transform:translateX(-${
+                  currIndex * 100
+                }%) ${
+                  currIndex === 0
+                    ? "opacity-60 cursor-not-allowed"
+                    : "cursor-pointer"
                 }`}
-              style={{ pointerEvents: currIndex === 0 ? "none" : "auto" }}
-            />
-            <div className="xs:flex-col-reverse xl:flex-row xl:space-x-8 flex items-center justify-center">
-              <div className="">
-                <h1 className="font-extrabold text-2xl text-black">
-                  {Strings.NEW_ARRIVALS}
-                </h1>
-                <p className="text-xl font-extrabold text-PictonBlue">
-                  {currentItem.title}
-                  <br />
-                  {currentItem.descreption}
-                </p>
-                <div className="flex space-x-2">
-                  <p className="font-normal text-xl text-black line-through	">
-                    ₹{currentItem.price_}
-                  </p>
-                  <p className="font-extrabold text-xl text-black">
-                    ₹{currentItem.price}
-                  </p>
-                </div>
-                <p className="font-normal text-sm text-black mb-6">
-                  {Strings.Inclusive_of_all_taxes}
-                </p>
-                <StarRating rating={currentItem.rating} />
-                <div className="flex space-x-4 mt-4">
-                  <button className="border-black border w-[137px] h-[34px] rounded-[5px] font-normal text-xs text-black bg-white">
-                    {Strings.ADD_TO_CART}
-                  </button>
-                  <Link href="/cart">
-                    <button className="border w-[137px] h-[34px] rounded-[5px] font-normal text-xs text-white bg-black">
-                      {Strings.BUY_NOW}
-                    </button>
-                  </Link>
-                </div>
-              </div>
-              <div className="xs:w-[280px] md:w-[674px] overflow-hidden flex rounded-[0px] bg-black-">
-                {imagesData.map(() => (
-                  <Image
-                    src={currentItem.image}
-                    alt="/"
-                    height={324}
-                    width={674}
-                    className="relative transition-transform duration-700 ease-in-out"
-                    style={{ transform: `translateX(-${currIndex * 100}%)` }}
-                  />
-                ))}
-              </div>
+                style={{ pointerEvents: currIndex === 0 ? "none" : "auto" }}
+              />
+
+              {newArrival.map((currentItem, index) => {
+                // Render only the item corresponding to the current index
+                if (index === currIndex) {
+                  return (
+                    <div
+                      className="xs:flex-col-reverse xl:flex-row xl:space-x-8 flex items-center justify-evenly w-[100%]"
+                      key={index}
+                    >
+                      <div className="">
+                        <p className="text-xl font-extrabold text-PictonBlue">
+                          {currentItem.brands}
+                          <br />
+                          {currentItem.SKU}
+                        </p>
+                        {currentItem.salePrice ? (
+                          <div className="flex space-x-2">
+                            <p className="font-normal text-xl text-black line-through">
+                              ₹{currentItem.originalPrice.toLocaleString("en-IN")}
+                            </p>
+                            <p className="font-extrabold text-xl text-black">
+                              ₹{currentItem.salePrice.toLocaleString("en-IN")}
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="flex space-x-2">
+                            <p className="font-normal text-xl text-black">
+                              ₹{currentItem.originalPrice.toLocaleString("en-IN")}
+                            </p>
+                          </div>
+                        )}
+
+                        <p className="font-normal text-sm text-black mb-6">
+                          {Strings.Inclusive_of_all_taxes}
+                        </p>
+                        <StarRating rating={currentItem.rating} />
+                        <div className="flex space-x-4 mt-4">
+                          <button
+                            onClick={addToCart}
+                            className="w-[136px] h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border-2 border-black outline-none px-2 lg:px-4 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold"
+                          >
+                            {Strings.ADD_TO_CART}
+                          </button>
+                          <Link onClick={handleBuyNow} href="/cart">
+                            <button className="ml-2 lg:ml-4 w-[136px] h-38 rounded-md text-sm text-white bg-black flex items-center justify-center border-none px-2 lg:px-4 py-2 hover:bg-PictonBlue">
+                              {Strings.BUY_NOW}
+                            </button>
+                          </Link>
+                        </div>
+                        {cartMessage && (
+                          <div className="mt-4 text-sm text-green-600">
+                            {cartMessage}
+                          </div>
+                        )}
+                      </div>
+                      <div className="xs:w-[280px] md:w-[400px] h-[350px] overflow-hidden flex rounded-[0px] bg-black-">
+                        <img
+                          src={currentItem.productImage}
+                          alt="/"
+                          className="relative transition-transform duration-700 ease-in-out"
+                        />
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              })}
+
+              <Image
+                onClick={handleNext2}
+                src={Images.Righticon}
+                alt="/"
+                height={16}
+                width={16}
+                className={`mr-0 xl:mb-0 transform:translateX(-${
+                  currIndex * 100
+                }%) ${
+                  currIndex === newArrival.length - 1
+                    ? "opacity-60 cursor-not-allowed"
+                    : "cursor-pointer"
+                }`}
+                style={{
+                  pointerEvents:
+                    currIndex === newArrival.length - 1 ? "none" : "auto",
+                }}
+              />
             </div>
-            <Image
-              onClick={handleNext2}
-              src={Images.Righticon}
-              alt="/"
-              height={16}
-              width={16}
-              className={`mr-0 xs:mb-[200px] xl:mb-0 ${currIndex === imagesData.length - 1
-                  ? "opacity-60 cursor-not-allowed"
-                  : "cursor-pointer"
-                }`}
-              style={{
-                pointerEvents:
-                  currIndex === imagesData.length - 1 ? "none" : "auto",
-              }}
-            />
           </div>
         </div>
         <div className="h-[512px] py-14 xs:pl-4 md:pl-12 bg-Darkblue overflow-hidden mt-5">
@@ -766,15 +746,18 @@ const Homescreen = () => {
               ref={containerRef2}
               className="mt-5 overflow-hidden flex space-x-10- w-full overflow-x-scroll no-scrollbar"
             >
-              {Under500products.map((product, index) => (
+              {underFive.map((product, index) => (
                 <Under500
+                  productId={product.productId}
+                  subProductId={product.subProductId}
                   key={index}
-                  image={product.image}
-                  title={product.title}
-                  description={product.description}
-                  price={`₹${product.price}`}
+                  image={product.productImage}
+                  title={product.brands}
+                  description={product.SKU}
+                  salePrice={`₹${product.salePrice.toLocaleString("en-IN")}`}
+                  originalPrice={`₹${product.originalPrice.toLocaleString("en-IN")}`}
                   rating={product.rating}
-                  isBestseller={index === 3}
+                  isBestseller={product.isBestSeller}
                 />
               ))}
             </div>
@@ -860,15 +843,18 @@ const Homescreen = () => {
               ref={containerRef3}
               className="mt-5 overflow-hidden flex space-x-10- w-full overflow-x-scroll no-scrollbar"
             >
-              {Bestsellerproducts.map((product, index) => (
+              {bestSeller.map((product, index) => (
                 <Bestsellers
+                  productId={product.productId}
+                  subProductId={product.subProductId}
                   key={index}
-                  image={product.image}
-                  title={product.title}
-                  description={product.description}
-                  price={`₹${product.price}`}
+                  image={product.productImage}
+                  title={product.brands}
+                  description={product.SKU}
+                  salePrice={`₹${product.salePrice.toLocaleString("en-IN")}`}
+                  originalPrice={`₹${product.originalPrice.toLocaleString("en-IN")}`}
                   rating={product.rating}
-                  isBestseller={index === 1}
+                  isBestseller={product.isBestSeller}
                 />
               ))}
             </div>
@@ -903,20 +889,20 @@ const Homescreen = () => {
               ref={containerRef}
               className="flex xl:overflow-hidden rounded-[10px] xs:space-x-7 md:space-x-10 xs:overflow-x-scroll no-scrollbar"
             >
-              {CustomerData.map((Customer, index) => (
+              {customerData.map((Customer, index) => (
                 <Customerssay
                   key={index}
                   rating={Customer.rating}
-                  h1={Customer.h1}
-                  p={Customer.p}
+                  h1={Customer.fName}
+                  p={Customer.comment}
                   style={{
                     opacity:
                       windowWidth > 768
                         ? index === visibleIndex
                           ? 1
                           : Math.abs(index - visibleIndex) < 3
-                            ? 0.5
-                            : 0
+                          ? 0.5
+                          : 0
                         : 1,
                   }}
                 />

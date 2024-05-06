@@ -112,16 +112,24 @@ export const Images = {
   Downiconblack: "/Images/Downiconblack.png",
   Menu: "/Images/Menu.png",
   Close: "/Images/Close.png",
-
   Closeblack: "/Images/Closeblack.png",
-
   Locationwhite: "/Images/Locationwhite.png",
   Eyewhite: "/Images/Eyewhite.png",
   Phonewhite: "/Images/Phonewhite.png",
   Userwhite: "/Images/userwhite.png",
+  ShopCart: "/Images/shop-cart.png",
+  SuccessIcon: "/Images/right-tick.png"
 };
 
 export const Strings = {
+  MEDIUM: "Medium",
+  COUPONS: "Coupons",
+  YOUR_CART_EMPTY: "Your shopping cart is empty!",
+  ADD_ITEMS_NOW: "Add items to it now",
+  SHOP_EYEGLASSES: "Shop Eyeglasses",
+  UPDATE_ADD: "Update address",
+  DELETE_ITEM: "Delete Item",
+  SURE_DELETE: "Are you sure you want to delete this item?",
   THE_BEST_QUALITY: "THE BEST QUALITY.",
   THE_BEST_GUARANTEES: "THE BEST GUARANTEES.",
   PARAGRAPH1:
