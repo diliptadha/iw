@@ -18,7 +18,7 @@ const Frame: React.FC<FrameProps> = ({ image, buttonText, buttonUrl }) => {
           rel="noopener noreferrer"
           className="absolute bottom-4"
         >
-          <button className="bg-black font-normal text-xs text-white  h-[34px] w-[137px] rounded-[5px] flex justify-center items-center">
+          <button className="bg-black font-normal text-xs text-white  h-[34px] w-[137px] rounded-[5px] flex justify-center items-center transition-transform hover:scale-105 transform">
             {buttonText}
           </button>
         </a>

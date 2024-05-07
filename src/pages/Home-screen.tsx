@@ -1,21 +1,27 @@
 "use client";
+
 import "../app/globals.css";
+
 import { Images, Strings } from "@/constant";
+import LoginModal, { toggleModal } from "@/Component/LoginModal";
 import React, { Fragment, useRef, useState } from "react";
+
 import Bestsellers from "@/Component/Bestsellers";
 import Customerssay from "@/Component/Customerssay";
+import { Footer } from "@/Component/footer";
 import Frame from "@/Component/Frame";
 import Frameforkids from "@/Component/Frameforkids";
 import Frameformen from "@/Component/Frameformen";
 import Frameforunisex from "@/Component/Frameforunisex";
+import Header from "@/Component/header";
 import Image from "next/image";
+import Link from "next/link";
+import ProductDetails from "./product_details";
 import StarRating from "@/Component/StarRating";
 import { Tab } from "@headlessui/react";
 import Under500 from "@/Component/Under500";
-import { useEffect } from "react";
-import { Footer } from "@/Component/footer";
 import axios from "axios";
-import Link from "next/link";
+import { useEffect } from "react";
 
 interface CustomerssayProps {
   comment: any;
@@ -35,7 +41,7 @@ interface NewArrival {
   subProductId: any;
   productId: string;
 }
-const Homescreen = () => {
+const Homescreen: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentIndex2, setCurrentIndex2] = useState(0);
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -64,6 +70,17 @@ const Homescreen = () => {
   const [newArrival, setNewArrival] = useState<NewArrival[]>([]);
   const [bestSeller, setBestSeller] = useState<NewArrival[]>([]);
   const [underFive, setUnderFive] = useState<NewArrival[]>([]);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !!localStorage.getItem("userId");
+    }
+    return false;
+  });
+
+  const handleButtonClick = () => {
+    setShowLoginModal(true);
+  };
 
   useEffect(() => {
     axios
@@ -389,9 +406,12 @@ const Homescreen = () => {
     }
   };
 
+  const [search, setSearch] = useState("");
+
   return (
     <>
       <div className="max-w-screen-2xl m-auto">
+        <Header setSearch={setSearch} />
         <div className="flex justify-center mt-[40px]  items-center ">
           <div className="xs:w-full xl:w-[1272px]- xl:w-[1289px] overflow-hidden flex rounded-[10px] xs:mx-[20px] xlg:mx-0">
             {images.map(() => (
@@ -617,13 +637,11 @@ const Homescreen = () => {
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
-
           <div className="xs:mt-10 lg:mt-28">
-            <h1 className="font-extrabold text-2xl text-black">
+            <h1 className="font-extrabold text-2xl text-black xs:flex xl:hidden">
               {Strings.NEW_ARRIVALS}
             </h1>
-
-            <div className="flex items-center justify-between ">
+            <div className="relative flex items-center  justify-between ">
               <Image
                 onClick={handlePrev2}
                 src={Images.Lefticon}
@@ -657,7 +675,10 @@ const Homescreen = () => {
                         {currentItem.salePrice ? (
                           <div className="flex space-x-2">
                             <p className="font-normal text-xl text-black line-through">
-                              ₹{currentItem.originalPrice.toLocaleString("en-IN")}
+                              ₹
+                              {currentItem.originalPrice.toLocaleString(
+                                "en-IN"
+                              )}
                             </p>
                             <p className="font-extrabold text-xl text-black">
                               ₹{currentItem.salePrice.toLocaleString("en-IN")}
@@ -666,7 +687,10 @@ const Homescreen = () => {
                         ) : (
                           <div className="flex space-x-2">
                             <p className="font-normal text-xl text-black">
-                              ₹{currentItem.originalPrice.toLocaleString("en-IN")}
+                              ₹
+                              {currentItem.originalPrice.toLocaleString(
+                                "en-IN"
+                              )}
                             </p>
                           </div>
                         )}
@@ -755,7 +779,9 @@ const Homescreen = () => {
                   title={product.brands}
                   description={product.SKU}
                   salePrice={`₹${product.salePrice.toLocaleString("en-IN")}`}
-                  originalPrice={`₹${product.originalPrice.toLocaleString("en-IN")}`}
+                  originalPrice={`₹${product.originalPrice.toLocaleString(
+                    "en-IN"
+                  )}`}
                   rating={product.rating}
                   isBestseller={product.isBestSeller}
                 />
@@ -779,7 +805,7 @@ const Homescreen = () => {
             <p className="text-black font-normal text-xl">
               {Strings.BOOK_AN_EYE_TEST_TODAY}
             </p>
-            <button className="bg-black text-white font-normal text-xs w-[137px] h-[34px] rounded-[5px] mt-2">
+            <button className="bg-black hover:bg-PictonBlue text-white font-normal text-xs w-[137px] h-[34px] rounded-[5px] mt-2">
               {Strings.BOOK_NOW}
             </button>
           </div>
@@ -821,9 +847,19 @@ const Homescreen = () => {
               <br />
               <span className="font-extrabold ">{Strings.ENDLESS_OFFERS}</span>
             </h1>
-            <button className="bg-black text-white font-normal text-xs xs:w-[100px] xs:h-[22px] xl:w-[137px] xl:h-[34px] rounded-[5px] xs:mt-1 md:mt-2 xl:mt-4">
+            <button
+              onClick={handleButtonClick}
+              className="bg-black hover:bg-PictonBlue text-white font-normal text-xs xs:w-[100px] xs:h-[22px] xl:w-[137px] xl:h-[34px] rounded-[5px] xs:mt-1 md:mt-2 xl:mt-4"
+              disabled={isLoggedIn}
+            >
               {Strings.SIGN_UP}
             </button>
+            <LoginModal
+              showLoginModal={showLoginModal}
+              setShowLoginModal={setShowLoginModal}
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+            />
           </div>
         </div>
         <div className="mt-20 h-[512px] py-14 xs:pl-4 md:pl-12 bg-[#D2E7EE] overflow-hidden">
@@ -852,7 +888,9 @@ const Homescreen = () => {
                   title={product.brands}
                   description={product.SKU}
                   salePrice={`₹${product.salePrice.toLocaleString("en-IN")}`}
-                  originalPrice={`₹${product.originalPrice.toLocaleString("en-IN")}`}
+                  originalPrice={`₹${product.originalPrice.toLocaleString(
+                    "en-IN"
+                  )}`}
                   rating={product.rating}
                   isBestseller={product.isBestSeller}
                 />
@@ -860,7 +898,7 @@ const Homescreen = () => {
             </div>
           </div>
         </div>
-        <div className="xs:my-[60px] xl:my-[100px] xs:mx-[20px] xl:mx-[60px]">
+        <div className=" xs:my-[60px] xl:my-[100px] xs:mx-[20px] xl:mx-[60px]">
           <h1 className="text-black font-extrabold xl:mx-5 xs:text-xl xl:text-2xl mb-7">
             {Strings.What_our_customers_have_to_say}
           </h1>
@@ -882,12 +920,12 @@ const Homescreen = () => {
               alt="/"
               height={16}
               width={16}
-              className="xs:flex md:hidden cursor-pointer"
+              className="xs:block md:hidden cursor-pointer ml-[-10px] mr-2"
             />
 
             <div
               ref={containerRef}
-              className="flex xl:overflow-hidden rounded-[10px] xs:space-x-7 md:space-x-10 xs:overflow-x-scroll no-scrollbar"
+              className="flex xl:overflow-hidden rounded-[10px] xs:space-x-5 md:space-x-10 xs:overflow-x-scroll no-scrollbar"
             >
               {customerData.map((Customer, index) => (
                 <Customerssay
@@ -916,7 +954,7 @@ const Homescreen = () => {
               width={16}
               className="xs:hidden md:flex cursor-pointer"
             />
-            <div className="space-y-2 top-64 z-10 right-2 absolute">
+            <div className=" space-y-2 top-64 z-10 right-2 absolute">
               <button
                 onClick={handleScrollToTop}
                 className="bg-PictonBlue h-12 w-12 rounded-full flex justify-center items-center"

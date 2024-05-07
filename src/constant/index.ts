@@ -118,7 +118,8 @@ export const Images = {
   Phonewhite: "/Images/Phonewhite.png",
   Userwhite: "/Images/userwhite.png",
   ShopCart: "/Images/shop-cart.png",
-  SuccessIcon: "/Images/right-tick.png"
+  SuccessIcon: "/Images/right-tick.png",
+  profile: "/Images/profile.png",
 };
 
 export const Strings = {
@@ -717,10 +718,10 @@ export const Strings = {
   BRANDS: "BRANDS",
   SORT_BY: "SORT BY",
   BEST_SELLERS: "Best Sellers",
-  PRICE_HIGH_TO_LOW: "Price High To Low",
-  PRICE_LOW_TO_HIGH: "Price Low To High",
-  RATING_HIGH_TO_LOW: "Rating High To Low",
-  BestSeller: "BestSeller",
+  PRICE_HIGH_TO_LOW: "Price high to low",
+  PRICE_LOW_TO_HIGH: "Price low to high",
+  RATING_HIGH_TO_LOW: "Rating high to low",
+  BestSeller: "Best seller",
   NEW: "New",
 
   // Product add
@@ -781,13 +782,26 @@ export const Strings = {
   SWIMMING_GLASSES: "SWIMMING GLASSES",
   READING_GLASS: "READING GLASS",
   COMPUTER_GLASS: "COMPUTER GLASS",
-
   ENGLISH: "ENGLISH",
   हिन्दी: "हिन्दी",
   NEED_HELP1: "NEED HELP? CALL US ON +91 82912 51241",
   FIND_THE_NEAREST_STORE: "FIND THE NEAREST STORE",
   BOOK_AN_APPOINTMENT: "BOOK AN APPOINTMENT",
+  TALK_WITH_US: "TALK WITH US",
   SIGN_IN: "SIGN IN",
+  Frame_Style: "FRAME STYLE",
+  Frame_Shape: "FRAME SHAPE",
+  Frame_Material: "FRAME MATERIAL",
+  Sign_in: "Sign in",
+  Email: "Email*",
+  OTP: "OTP*",
+  Login: "Login",
+  Verify_OTP: "Verify OTP",
+  Send_OTP: " Send OTP",
+  Resend_OTP: "Resend OTP",
+  Bestseller: "BESTSELLER",
+  SORRY_NO_PRODUCTS_FOUND: "SORRY! NO PRODUCTS FOUND.",
+  NO_PRODUCTS_AVAILABLE: " NO PRODUCTS AVAILABLE.",
 };
 
 export const Faqs = {

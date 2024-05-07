@@ -424,7 +424,7 @@ body {
 }
 .drawer {
   width: 333px;
-  transition: transform 0.3s ease;
+   transition: transform 0.7s ease-in-out;
   z-index: 50;
 }
 
@@ -440,9 +440,16 @@ body {
     height: 100%;
     z-index: 1000;
     background-color: white;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  
   }
 }
 
-/* @media (min-width: 768px) { */
-  /* .drawer {
-    width: 333px; /* Adjust as needed for your design */
+/* @media (min-width: 768px) {
+   .drawer {
+    width: 333px; }}  */
+ 
+.z-index {
+  z-index: 2000;
+}

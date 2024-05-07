@@ -1,10 +1,14 @@
-import { Images, Strings } from "@/constant";
 import "../app/globals.css";
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import SimilarProductPage from "./similar_products";
 import Review from "@/Component/reviews";
+
+import { Images, Strings } from "@/constant";
+
+
 import GiveRatings from "@/Component/GiveRatings";
+
 import ShareOptions from "@/Component/share";
 import axios from "axios";
 import Header from "./header";

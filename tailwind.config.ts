@@ -17,6 +17,7 @@ const config: Config = {
       },
       screens: {
         xs: "320px",
+        xr: "1280px",
         xlg: "1480px",
       },
       colors: {

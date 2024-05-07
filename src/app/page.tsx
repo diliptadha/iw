@@ -1,15 +1,15 @@
 "use client";
 
-import Header from "@/pages/header";
 import Homescreen from "@/pages/Home-screen";
-import Listingpage from "@/pages/Listing-page";
+import Listingpage from "@/pages/advanced-search";
+import ProductDetails from "@/pages/product_details";
 
 export default function Home() {
   return (
     <div>
-      <Header />
-      <Listingpage />
       {/* <Homescreen /> */}
+      {/* <Listingpage /> */}
+      <ProductDetails />
     </div>
   );
 }

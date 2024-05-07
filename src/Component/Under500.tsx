@@ -2,8 +2,8 @@ import { Images, Strings } from "@/constant";
 import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
-import StarRating from "./StarRating";
 import Link from "next/link";
+import StarRating from "./StarRating";
 import { useRouter } from "next/navigation";
 
 interface Under500Props {
@@ -55,7 +55,7 @@ const Under500: React.FC<Under500Props> = ({
       <div className="bg-white h-[330px] w-[240px] rounded-[10px] p-8 relative mr-10">
         {isBestseller && (
           <div className="absolute top-0 right-0 bg-[#FF4307] font-extrabold text-xs text-white h-[27px] w-[121px] flex justify-center items-center rounded-[5px]">
-            BESTSELLER
+            {Strings.Bestseller}
           </div>
         )}
         <div className="relative">
@@ -100,7 +100,7 @@ const Under500: React.FC<Under500Props> = ({
           <div className="relative p-8 rounded-md bg-white xs:h-[420px] xs:w-[310px] md:h-[420px] md:w-[460px] xl:h-[430px] xl:w-[400px] ">
             {isBestseller && (
               <div className="absolute top-0 left-0 bg-[#FF4307] font-extrabold text-xs text-white h-[30px] w-[125px] flex justify-center items-center rounded-[5px]">
-                BESTSELLER
+                {Strings.Bestseller}
               </div>
             )}
             <div className="absolute top-2 right-2">
@@ -140,7 +140,7 @@ const Under500: React.FC<Under500Props> = ({
                       <div>
                         <StarRating rating={rating} />
                       </div>
-                      <button className="flex justify-center items-center border-black border w-[137px] h-[36px] rounded-[5px] font-bold text-sm text-black bg-white">
+                      <button className="flex justify-center items-center border-black border w-[137px] h-[36px] rounded-[5px] font-bold text-sm text-black bg-white hover:border-PictonBlue hover:text-PictonBlue">
                         {Strings.ADD_TO_CART}
                       </button>
                     </div>

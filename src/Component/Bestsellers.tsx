@@ -2,8 +2,8 @@ import { Images, Strings } from "@/constant";
 import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
-import StarRating from "./StarRating";
 import Link from "next/link";
+import StarRating from "./StarRating";
 
 interface BestsellersProps {
   image: string;
@@ -56,7 +56,9 @@ const Bestsellers: React.FC<BestsellersProps> = ({
           <div className="absolute top-[96px] w-full">
             <h1 className="font-extrabold text-sm text-black">{title}</h1>
             <p className="font-normal text-sm text-black">{description} </p>
-            <p className="font-extrabold text-sm text-black">{salePrice ?  salePrice :  originalPrice}</p>
+            <p className="font-extrabold text-sm text-black">
+              {salePrice ? salePrice : originalPrice}
+            </p>
             <p className="font-bold text-xs text-black">
               {Strings.Inclusive_of_all_taxes}
             </p>
@@ -90,7 +92,7 @@ const Bestsellers: React.FC<BestsellersProps> = ({
           <div className="relative p-8 rounded-md bg-white xs:h-[420px] xs:w-[310px] md:h-[420px] md:w-[460px] xl:h-[430px] xl:w-[400px] ">
             {isBestseller && (
               <div className="absolute top-0 left-0 bg-[#FF4307] font-extrabold text-xs text-white h-[30px] w-[125px] flex justify-center items-center rounded-[5px]">
-                BESTSELLER
+                {Strings.Bestseller}
               </div>
             )}
             <div className="absolute top-2 right-2">
@@ -129,7 +131,7 @@ const Bestsellers: React.FC<BestsellersProps> = ({
                       <div>
                         <StarRating rating={rating} />
                       </div>
-                      <button className="flex justify-center items-center border-black border w-[137px] h-[36px] rounded-[5px] font-bold text-sm text-black bg-white">
+                      <button className="flex justify-center items-center border-black border w-[137px] h-[36px] rounded-[5px] font-bold text-sm text-black bg-white hover:border-PictonBlue hover:text-PictonBlue">
                         {Strings.ADD_TO_CART}
                       </button>
                     </div>
