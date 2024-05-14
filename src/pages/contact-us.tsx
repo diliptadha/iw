@@ -2,7 +2,7 @@ import axios from "axios";
 import "../app/globals.css";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { ContactUs } from "@/constant";
+import { ContactUs, Strings } from "@/constant";
 
 interface IFormInput {
   firstname: string;
@@ -19,13 +19,14 @@ const Contactus = () => {
     formState: { errors },
   } = useForm<IFormInput>();
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => sendEmail(data);
+  const onSubmit: SubmitHandler<IFormInput> = (data: IFormInput) =>
+    sendEmail(data);
 
   const sendEmail = async (data: IFormInput) => {
     try {
       console.log(data);
       const res = await axios.post(
-        "http://localhost:4000/contact-us/email",
+        `${process.env.NEXT_PUBLIC_API_URL}contact-us/email`,
         data
       );
       console.log(res.data);
@@ -51,7 +52,7 @@ const Contactus = () => {
               />
               <br />
               {errors.firstname && (
-                <span className="text-red-500">*This field is required</span>
+                <span className="text-red-500">{Strings.FIELD_REQUIRED}</span>
               )}
             </div>
             <div className="mb-4">
@@ -62,7 +63,7 @@ const Contactus = () => {
               />
               <br />
               {errors.lastname && (
-                <span className="text-red-500">*This field is required</span>
+                <span className="text-red-500">{Strings.FIELD_REQUIRED}</span>
               )}
             </div>
             <div className="mb-4">
@@ -74,7 +75,7 @@ const Contactus = () => {
               />
               <br />
               {errors.phone && (
-                <span className="text-red-500">*This field is required</span>
+                <span className="text-red-500">{Strings.FIELD_REQUIRED}</span>
               )}
             </div>
             <div className="mb-4">
@@ -86,7 +87,7 @@ const Contactus = () => {
               />
               <br />
               {errors.email && (
-                <span className="text-red-500">*This field is required</span>
+                <span className="text-red-500">{Strings.FIELD_REQUIRED}</span>
               )}
             </div>
             <div className="mb-4">
@@ -97,7 +98,7 @@ const Contactus = () => {
               />
               <br />
               {errors.message && (
-                <span className="text-red-500">*This field is required</span>
+                <span className="text-red-500">{Strings.FIELD_REQUIRED}</span>
               )}
             </div>
             <input

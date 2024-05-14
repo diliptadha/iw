@@ -206,7 +206,7 @@ const HeaderHeadline = () => {
                               item.usage.length > 0 && (
                                 <div>
                                   <h1 className="font-bold text-black">
-                                    Usage
+                                    {Strings.USAGE}
                                   </h1>
                                   <ul className="mt-2">
                                     {item.usage.map((usage, subIndex) => (
@@ -221,7 +221,7 @@ const HeaderHeadline = () => {
                               item.gender.length > 0 && (
                                 <div>
                                   <h1 className="font-bold text-black">
-                                    Gender
+                                    {Strings.Gender}
                                   </h1>
                                   <ul className="mt-2">
                                     {item.gender.map((gender, subIndex) => (
@@ -256,7 +256,6 @@ const HeaderHeadline = () => {
                             )}
                           </div>
 
-                          {/* <p className="border border-black"></p> */}
                           <div>
                             <h1 className="font-bold text-black">
                               {item.data?.framecolor.submenuData.map(

@@ -120,6 +120,7 @@ export const Images = {
   ShopCart: "/Images/shop-cart.png",
   SuccessIcon: "/Images/right-tick.png",
   profile: "/Images/profile.png",
+  Iksana_Eye_Logo: "/Images/iksana_eye_logo.png"
 };
 
 export const Strings = {
@@ -164,6 +165,16 @@ export const Strings = {
   EXCHANGE_POLICY: "Exchange and refund policy",
   PART_EASY_EXC: "Part A: EASY EXCHANGE/REFUND POLICY- 14 DAYS FOR",
   EYEGLASSES_7_DAYS: "EYEGLASSES & 7 DAYS FOR SUNGLASSES",
+  Gender: "Gender",
+  USAGE: "Usage",
+  ORDER_PLACED: "Order Placed",
+  DELIVER_TO: "Delivery To",
+  CONTINUE_SHOP: "Continue Shopping",
+  MY_ORDERS: "My Orders",
+  AMOUNT_PAID: " Amount Paid:",
+  ORDER_ID: "Order Id : ",
+  SIMILAR_PRODUCT: "Similar Products",
+  FIELD_REQUIRED: "*This field is required",
   PRIVACY_1PARA:
     "We are committed to providing you high quality products. In a rare event, if you aren't fully satisfied with our product and find it is not 'As described' on our website, or is received in a 'damaged' condition, you can request an Exchange or Refund within 14 days of receiving the order for eyeglasses and within 7 days of receiving the order for sunglasses for Iksana Opticals LLP  in-house brands. We allow exchange/refund with the following exceptions:",
   CONTACT_LENSES: "Contact Lenses:",
@@ -335,6 +346,10 @@ export const Strings = {
   EYEGLASSES: "EYEGLASSES",
   EXPLORE: "EXPLORE",
   THANK_YOU_FOR_REVIEW: "Thank you for submitting your review!",
+  PRODUCT_WILL_DELIVER: "Product will be delivered by:",
+  PLEASE_GIVE_RATING: "Please give rating.",
+  PLEASE_WRITE_ABOUT_PRODUCT: "Please write something about this product.",
+  EDIT: "Edit",
 
   //Privacy page
   PRIVACY_POLICY: "Privacy Policy",

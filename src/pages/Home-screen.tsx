@@ -22,6 +22,9 @@ import { Tab } from "@headlessui/react";
 import Under500 from "@/Component/Under500";
 import axios from "axios";
 import { useEffect } from "react";
+import Link from "next/link";
+import { useCart } from "./CartContext";
+import getCartQuantity from "@/utils/getCartQty";
 
 interface CustomerssayProps {
   comment: any;
@@ -40,6 +43,11 @@ interface NewArrival {
   isBestSeller: boolean;
   subProductId: any;
   productId: string;
+  frameColor: any;
+  frameShape: any;
+  gender: any;
+  category: any;
+  frameSize: any;
 }
 const Homescreen: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -48,6 +56,8 @@ const Homescreen: React.FC = () => {
   const [visibleIndex, setVisibleIndex] = useState(0);
   const [windowWidth, setWindowWidth] = useState<number>(0);
   const [customerData, setCustomerData] = useState<CustomerssayProps[]>([]);
+
+  const { setCart }: any = useCart();
 
   useEffect(() => {
     axios
@@ -91,6 +101,7 @@ const Homescreen: React.FC = () => {
         setNewArrival(data.newArrivals);
         setBestSeller(data.isBestSeller);
         setUnderFive(data.under500);
+        console.log(data.newArrivals);
       })
       .catch((error) => {
         console.log("Error fetching data", error);
@@ -106,7 +117,7 @@ const Homescreen: React.FC = () => {
     }, 5000);
   };
 
-  const addToCart = async () => {
+  const addToCart = async (product: any) => {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=IK0000002`,
@@ -115,7 +126,7 @@ const Homescreen: React.FC = () => {
             {
               productId: newArrival[currIndex].productId,
               subProductId: newArrival[currIndex].subProductId,
-              size: "60", // Example size, you should get this from the product data if applicable
+              size: newArrival[currIndex].frameSize, // Example size, you should get this from the product data if applicable
               quantity: 1, // Example quantity, adjust as needed
               salePrice: newArrival[currIndex].salePrice,
               originalPrice: newArrival[currIndex].originalPrice,
@@ -129,9 +140,8 @@ const Homescreen: React.FC = () => {
           },
         }
       );
-
+      setCart(await getCartQuantity());
       showCartMessage("Product added to cart successfully!");
-      window.location.reload();
     } catch (error) {
       console.error("Error adding item to cart:", error);
     }
@@ -140,13 +150,13 @@ const Homescreen: React.FC = () => {
   const handleBuyNow = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:4000/product/addToCartProduct?userId=IK0000002",
+        `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=IK0000002`,
         {
           cartProducts: [
             {
               productId: newArrival[currIndex].productId,
               subProductId: newArrival[currIndex].subProductId,
-              size: "60", // Example size, you should get this from the product data if applicable
+              size: newArrival[currIndex].frameSize, // Example size, you should get this from the product data if applicable
               quantity: 1, // Example quantity, adjust as needed
               salePrice: newArrival[currIndex].salePrice,
               originalPrice: newArrival[currIndex].originalPrice,
@@ -161,7 +171,6 @@ const Homescreen: React.FC = () => {
           },
         }
       );
-      // showCartMessage("Product added to cart successfully!");
     } catch (error) {
       console.error("Error adding item to cart:", error);
     }
@@ -427,10 +436,6 @@ const Homescreen: React.FC = () => {
               />
             ))}
           </div>
-          {/* <div className="text-white lg:leading-[60px] text-center absolute font-extrabold xs:text-xl lg:text-[64px]">
-          <p>{Strings.We_ensure_your_eyes}</p>
-          <p>{Strings.are_taken_care_of}</p>
-        </div> */}
           <div className="absolute flex justify-between xs:w-full xl:w-[1289px] ">
             <button
               onClick={() => handlePrev(1)}
@@ -659,7 +664,6 @@ const Homescreen: React.FC = () => {
               />
 
               {newArrival.map((currentItem, index) => {
-                // Render only the item corresponding to the current index
                 if (index === currIndex) {
                   return (
                     <div
@@ -772,18 +776,22 @@ const Homescreen: React.FC = () => {
             >
               {underFive.map((product, index) => (
                 <Under500
+                  useCart={useCart}
                   productId={product.productId}
                   subProductId={product.subProductId}
                   key={index}
                   image={product.productImage}
-                  title={product.brands}
-                  description={product.SKU}
-                  salePrice={`₹${product.salePrice.toLocaleString("en-IN")}`}
-                  originalPrice={`₹${product.originalPrice.toLocaleString(
-                    "en-IN"
-                  )}`}
+                  Brand={product.brands}
+                  SKU={product.SKU}
+                  salePrice={product.salePrice}
+                  originalPrice={product.originalPrice}
                   rating={product.rating}
                   isBestseller={product.isBestSeller}
+                  color={product.frameColor}
+                  shape={product.frameShape}
+                  gender={product.gender}
+                  category={product.category}
+                  size={product.frameSize}
                 />
               ))}
             </div>
@@ -886,13 +894,17 @@ const Homescreen: React.FC = () => {
                   key={index}
                   image={product.productImage}
                   title={product.brands}
-                  description={product.SKU}
-                  salePrice={`₹${product.salePrice.toLocaleString("en-IN")}`}
-                  originalPrice={`₹${product.originalPrice.toLocaleString(
-                    "en-IN"
-                  )}`}
+                  Brand={product.brands}
+                  SKU={product.SKU}
+                  salePrice={product.salePrice}
+                  originalPrice={product.originalPrice}
                   rating={product.rating}
                   isBestseller={product.isBestSeller}
+                  color={product.frameColor}
+                  shape={product.frameShape}
+                  gender={product.gender}
+                  category={product.category}
+                  size={product.frameSize}
                 />
               ))}
             </div>

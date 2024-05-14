@@ -12,21 +12,6 @@ const SimilarProductPage = () => {
   const [similarProductData, setSimilarProductData] = useState([]);
 
   const router = useRouter();
-  const { productId } = router.query;
-
-  // const fetchSimilarProductData = async () => {
-  //   await axios.get(
-  //     `http://localhost:4000/product/getSimilarProductData?productId=${productId}`
-  //   );
-  //   const similarProductData = response.data.similarProductData;
-  //   setSimilarProductData(similarProductData);
-  //   // console.log('similar',similarProductData.color);
-  // } catch (error) {
-  //   console.error("Error fetching similar product data:", error);
-  // }
-  // }
-
-  // use
 
   useEffect(() => {
     async function fetchSimilarProductData() {
@@ -96,7 +81,9 @@ const SimilarProductPage = () => {
   return (
     <div className="h-[520px] px-[1rem] md:px-[2rem] xl:px-[4rem] w-full  overflow-hidden bg-[#F2F2F2]">
       <div className=""></div>
-      <p className="mt-8 px-[2rem] md:px-[2rem] font-bold text-[12px] lg:text-[16px]">Similar Products</p>
+      <p className="mt-8 px-[2rem] md:px-[2rem] font-bold text-[12px] lg:text-[16px]">
+        {Strings.SIMILAR_PRODUCTS}
+      </p>
       <div className="flex items-center">
         <Image
           onClick={handleScrollLeft2}
@@ -138,8 +125,6 @@ const SimilarProductPage = () => {
               salePrice={`₹ ${product.salePrice.toLocaleString("en-IN")}`}
               rating={product.rating}
               color={product.color}
-
-              // isBestseller={index === 3}
             />
           ))}
         </div>

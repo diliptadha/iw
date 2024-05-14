@@ -78,7 +78,7 @@ export default function RazorPage({
         currency: "INR",
         name: "Iksana Opticals",
         description: "Test Transaction",
-        image: "https://example.com/your_logo",
+        image: Images.Iksana_Eye_Logo,
         order_id: orderId,
         handler: function (response) {
           handlePaymentSuccess(orderId);

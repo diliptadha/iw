@@ -33,7 +33,9 @@ const SuccessPayment = () => {
 
   const fetchAddressData = () => {
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}user/getAddressDataById?userId=IK0000001`)
+      .get(
+        `${process.env.NEXT_PUBLIC_API_URL}user/getAddressDataById?userId=IK0000001`
+      )
       .then((response) => {
         const defaultAddresses = response?.data?.addressList.filter(
           (address: any) => address.isDefault
@@ -51,7 +53,9 @@ const SuccessPayment = () => {
 
   const gettingData = () => {
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000002`)
+      .get(
+        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000002`
+      )
       .then((response) => {
         setCardDetails(response?.data?.cartData);
       })
@@ -80,13 +84,16 @@ const SuccessPayment = () => {
             className="w-[40px] mr-[15px]"
           />
           <h1 className="text-[#32BA7C] text-[20px] sm:text-[30px] font-semibold">
-           {Strings.YOUR_ORDER_SUCCESSFUL}
+            {Strings.YOUR_ORDER_SUCCESSFUL}
           </h1>
         </div>
-        <h4 className="text-center my-2 text-[12px]">{Strings.NOW_SIT_BACK_RELAX}</h4>
+        <h4 className="text-center my-2 text-[12px]">
+          {Strings.NOW_SIT_BACK_RELAX}
+        </h4>
         <div>
           <h2 className="text-center font-semibold text-[14px] pt-5">
-            Order Id : <span className="font-normal">{orderId}</span>
+            {Strings.ORDER_ID}
+            <span className="font-normal">{orderId}</span>
           </h2>
         </div>
 
@@ -126,40 +133,48 @@ const SuccessPayment = () => {
                       <div className="flex items-center">
                         <h2>Qty: {ele.quantity}</h2>
                       </div>
-
                     </div>
                   </div>
                 </div>
               );
             })}
             <div className="mt-6">
-              <h3 className="text-[12px] py-5 text-center bg-[#FFE194]">Got a feedback for us? Drop a word at <span className="font-semibold text-[13px]"><a href="mailto:-">{Strings.term_head9_p5_anchor}</a></span> or Call us on : <span className="font-semibold text-[13px]"><a href="tel:-">{Faqs.IKSANA_NUMBER_7977}</a></span></h3>
+              <h3 className="text-[12px] py-5 text-center bg-[#FFE194]">
+                Got a feedback for us? Drop a word at{" "}
+                <span className="font-semibold text-[13px]">
+                  <a href="mailto:-">{Strings.term_head9_p5_anchor}</a>
+                </span>{" "}
+                or Call us on :{" "}
+                <span className="font-semibold text-[13px]">
+                  <a href="tel:-">{Faqs.IKSANA_NUMBER_7977}</a>
+                </span>
+              </h3>
             </div>
           </div>
 
           <div className="right sm:min-w-[30%] w-full">
             <div className="shadow-box">
               <div className="py-3 px-6 text-[13px] border-b border-[lightgray]">
-                <h3 className="text-PictonBlue">Order Placed</h3>
+                <h3 className="text-PictonBlue">{Strings.ORDER_PLACED}</h3>
                 <p>Delivery by 10-Apr-2024</p>
               </div>
               <div className="py-3 pb-2 px-6 text-[13px] border-b border-[lightgray]">
-                <h3 className="text-PictonBlue">Delivery To</h3>
+                <h3 className="text-PictonBlue">{Strings.DELIVER_TO}</h3>
                 {addGet && (
                   <>
-                  <p>
-                    {addGet.fullName}  (Mob: {addGet.mobileNo})
-                  </p>
-                  <p>
-                  {addGet.houseNo} {addGet.state} {addGet.pinCode}
-                  </p>
+                    <p>
+                      {addGet.fullName} (Mob: {addGet.mobileNo})
+                    </p>
+                    <p>
+                      {addGet.houseNo} {addGet.state} {addGet.pinCode}
+                    </p>
                   </>
                 )}
               </div>
               <div className="py-3 px-6 text-[13px]">
                 <h3 className="text-PictonBlue">{Strings.PAYMENT_SMALL}</h3>
                 <p>
-                  Amount Paid:{" "}
+                  {Strings.AMOUNT_PAID}{" "}
                   <span className="text-[orangered] font-semibold">
                     ₹{netPrice.toLocaleString()}
                   </span>
@@ -170,15 +185,14 @@ const SuccessPayment = () => {
         </div>
 
         <div className="text-center mt-[30px] flex flex-col sm:block items-center">
-          <button 
-          onClick={() => router.push('/')}
-          className="w-[170px] py-[10px] px-[15px] border bg-black text-white border-[black] bg-opacity-80 duration-200 hover:bg-white hover:text-black rounded sm:mr-[10px] sm:mb-0 mb-3">
-            Continue Shopping
+          <button
+            onClick={() => router.push("/")}
+            className="w-[170px] py-[10px] px-[15px] border bg-black text-white border-[black] bg-opacity-80 duration-200 hover:bg-white hover:text-black rounded sm:mr-[10px] sm:mb-0 mb-3"
+          >
+            {Strings.CONTINUE_SHOP}
           </button>
-          <button 
-          // onClick={()=> router.push('/cart')}
-          className="w-[170px] py-[10px] px-[15px] hover:text-PictonBlue border border-PictonBlue text-white hover:bg-white bg-PictonBlue hover:bg-opacity-80 duration-200 rounded ">
-            My Orders
+          <button className="w-[170px] py-[10px] px-[15px] hover:text-PictonBlue border border-PictonBlue text-white hover:bg-white bg-PictonBlue hover:bg-opacity-80 duration-200 rounded ">
+            {Strings.MY_ORDERS}
           </button>
         </div>
       </div>

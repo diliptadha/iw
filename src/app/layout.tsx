@@ -4,6 +4,7 @@ export const metadata = {
 };
 
 import "./globals.css";
+import { CartProvider } from "@/pages/CartContext";
 
 export default function RootLayout({
   children,
@@ -12,7 +13,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <CartProvider>{children}</CartProvider>
+      </body>
     </html>
   );
 }

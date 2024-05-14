@@ -32,13 +32,6 @@ interface CardData {
 
 const ShippingAddress = () => {
   const router = useRouter();
-  // const { toOrPr, toDiPr, toDi, toDiAfPr, tQty, appliedDiscount } =
-  //   router.query;
-  // const mrp = parseInt((toOrPr as string) || "0", 10);
-  // const itemDiscount = parseInt((toDi as string) || "0", 10);
-  // const netPrice = Array.isArray(toDiAfPr)
-  //   ? parseInt(toDiAfPr[0] ?? "0", 10)
-  //   : parseInt(toDiAfPr ?? "0", 10);
 
   const [formData, setFormData] = useState<FormData>({
     userId: "IK0000001",
@@ -67,7 +60,6 @@ const ShippingAddress = () => {
       .then((response) => {
         const cartData = response?.data?.cartData;
         setCardDetails(cartData);
-        // setIsCartEmpty(cartData.length === 0);
       })
       .catch((error) => {
         console.log("Error fetching data", error);
@@ -75,7 +67,6 @@ const ShippingAddress = () => {
   };
 
   useEffect(() => {
-    // fetchAddressData();
     gettingData();
   }, []);
 
@@ -96,7 +87,7 @@ const ShippingAddress = () => {
     setErrors({
       ...errors,
       [name]: "",
-    })
+    });
   };
 
   const toggleDropdown = () => {
@@ -106,14 +97,6 @@ const ShippingAddress = () => {
   const handleProceedToAddAddress = () => {
     router.push({
       pathname: "/add-adress",
-      // query: {
-      //   toOrPr,
-      //   toDiPr,
-      //   toDi,
-      //   toDiAfPr,
-      //   tQty,
-      //   appliedDiscount,
-      // },
     });
   };
 
@@ -145,7 +128,7 @@ const ShippingAddress = () => {
           `${process.env.NEXT_PUBLIC_API_URL}user/addAddressData`,
           formData
         );
-        response
+        response;
         setIsFormSubmitted(true);
 
         setFormData({
@@ -170,17 +153,6 @@ const ShippingAddress = () => {
     }
   };
 
-  // useEffect(() => {
-  //   axios
-  //     .get(`${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000003`)
-  //     .then((response) => {
-  //       setCardDetails(response?.data?.cartData);
-  //     })
-  //     .catch((error) => {
-  //       console.log("Error fetching data", error);
-  //     });
-  // }, []);
-
   const toOrPr = cardDetails.reduce(
     (total, ele) => total + ele.originalPrice * ele.quantity,
     0
@@ -193,7 +165,7 @@ const ShippingAddress = () => {
   );
 
   // Calculate total discount
-  const toDi = toOrPr - toDiPr ;
+  const toDi = toOrPr - toDiPr;
 
   // Calculate total price after discount
   const toDiAfPr = toOrPr - toDi;
@@ -425,7 +397,10 @@ const ShippingAddress = () => {
                     {cardDetails.map((ele, index) => {
                       return (
                         <>
-                          <div className=" mt-2 text-[14px] flex gap-2 py-3 justify-around" key={index}>
+                          <div
+                            className=" mt-2 text-[14px] flex gap-2 py-3 justify-around"
+                            key={index}
+                          >
                             <div className="border h-[60px] w-[100px] mr-3 mb-2 ">
                               <img
                                 src={ele.productImage}
@@ -470,38 +445,26 @@ const ShippingAddress = () => {
 
             <div className="shadow-box">
               <div className="p-4">
-              <div className="flex w-[100%] items-center mb-2 justify-between">
-                    <h3 className="text-[14px]">{Strings.MRP}</h3>
-                    <p className="text-[13px]">₹{toOrPr.toLocaleString()}</p>
-                  </div>
-                  <div className="flex w-[100%] items-center text-green-600 mb-2 justify-between border-b pb-1">
-                    <h3 className="text-[14px]">{Strings.ITEM_DISC}</h3>
-                    <p className="text-[13px]">-₹{toDi.toLocaleString()}</p>
-                  </div>
-                {/* {appliedDiscount ? (
-                  <div className="flex w-[100%] items-center text-green-600 mb-2 justify-between border-b pb-1">
-                    <h3 className="text-[14px]">{Strings.COUPON_DISC}</h3>
-                    <p className="text-[13px]">
-                      -₹{appliedDiscount.toLocaleString()}
-                    </p>
-                  </div>
-                ) : (
-                  ""
-                )} */}
+                <div className="flex w-[100%] items-center mb-2 justify-between">
+                  <h3 className="text-[14px]">{Strings.MRP}</h3>
+                  <p className="text-[13px]">₹{toOrPr.toLocaleString()}</p>
+                </div>
+                <div className="flex w-[100%] items-center text-green-600 mb-2 justify-between border-b pb-1">
+                  <h3 className="text-[14px]">{Strings.ITEM_DISC}</h3>
+                  <p className="text-[13px]">-₹{toDi.toLocaleString()}</p>
+                </div>
                 <div className="flex w-[100%] items-center mb-2 font-semibold justify-between border-b pb-1">
-                    <h3 className="text-[13px] md:[14px]">
-                      {Strings.NET_PRICE}
-                    </h3>
-                    <p className="text-[12px] md:[13px]">
-                      ₹{toDiAfPr.toLocaleString()}
-                    </p>
-                  </div>
-                  <div className="flex w-[100%] items-center mb-4 font-semibold justify-between">
-                    <h3 className="text-[13px] md:[14px]">{Strings.YOU_PAY}</h3>
-                    <p className="text-[12px] md:[13px]">
-                      ₹{toDiAfPr.toLocaleString()}
-                    </p>
-                  </div>
+                  <h3 className="text-[13px] md:[14px]">{Strings.NET_PRICE}</h3>
+                  <p className="text-[12px] md:[13px]">
+                    ₹{toDiAfPr.toLocaleString()}
+                  </p>
+                </div>
+                <div className="flex w-[100%] items-center mb-4 font-semibold justify-between">
+                  <h3 className="text-[13px] md:[14px]">{Strings.YOU_PAY}</h3>
+                  <p className="text-[12px] md:[13px]">
+                    ₹{toDiAfPr.toLocaleString()}
+                  </p>
+                </div>
 
                 <button
                   onClick={handleProceedToAddAddress}
@@ -523,10 +486,6 @@ const ShippingAddress = () => {
                 <li>{Strings.EASY_RETURN}</li>
               </ul>
             </div>
-
-            {/* <div className="shadow-box">
-              <img src={Images.PAYMENT_CARD} alt="card-payment-icon" />
-            </div> */}
 
             <div className="relative mt-4 lg:mt-6 flex justify-between mb-4 lg:mb-6 w-full lg:w-[410px] xl:w-[520px]"></div>
           </div>

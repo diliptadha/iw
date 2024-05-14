@@ -43,13 +43,6 @@ interface CouponData {
 
 const AddAdress = () => {
   const router = useRouter();
-  // const { toOrPr, toDiPr, toDi, toDiAfPr, tQty } = router.query;
-  // const mrp = parseInt((toOrPr as string) || "0", 10);
-  // const itemDiscount = parseInt((toDi as string) || "0", 10);
-  // const [selectedAddressId, setSelectedAddressId] = useState(null);
-  // const netPrice = Array.isArray(toDiAfPr)
-  //   ? parseInt(toDiAfPr[0] ?? "0", 10)
-  //   : parseInt(toDiAfPr ?? "0", 10);
 
   const [updateId, setUpdateId] = useState(null);
   const [updatedData, setUpdatedData] = useState({
@@ -119,8 +112,6 @@ const AddAdress = () => {
   const handleCouponSidebar = () => {
     setCouponSlide(!couponSlide);
   };
-
- 
 
   // Coupon API
   useEffect(() => {
@@ -320,7 +311,6 @@ const AddAdress = () => {
   const toDiAfPr = toOrPr - toDi;
 
   const tQty = cardDetails.reduce((total, ele) => total + ele.quantity, 0);
-
 
   return (
     <>
@@ -633,14 +623,14 @@ const AddAdress = () => {
                             className="py-[2px] px-5 rounded-[5px] text-PictonBlue hover:bg-PictonBlue border hover:text-[#fff] hover:bg-opacity-80 border-PictonBlue duration-200 text-[12px] sm:text-[13px] mb-2"
                             onClick={() => toggleUpdate(ele.id)}
                           >
-                            Edit{" "}
+                            {Strings.EDIT}{" "}
                           </button>
                           <br />
                           <button
                             className="py-[2px] px-3 rounded-[5px] text-[#be123c] hover:bg-[#be123c] border hover:text-[#fff] hover:bg-opacity-80 border-[#be123c] duration-200 text-[12px] sm:text-[13px]"
                             onClick={() => deleteAddress(ele.id)}
                           >
-                            Delete
+                            {Strings.DELETE}
                           </button>
                         </div>
                       </div>
@@ -857,7 +847,9 @@ const AddAdress = () => {
                 >
                   {Strings.PROCEED_TO_CHECKOUT}
                 </button>
-                {showRazorPage && <RazorPage onCancel={toggleRazorPage} toDiAfPr={toDiAfPr}/>}
+                {showRazorPage && (
+                  <RazorPage onCancel={toggleRazorPage} toDiAfPr={toDiAfPr} />
+                )}
               </div>
             </div>
 

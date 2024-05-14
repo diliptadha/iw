@@ -5,31 +5,62 @@ import Image from "next/image";
 import Link from "next/link";
 import StarRating from "./StarRating";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 interface Under500Props {
   image: string;
-  title: string;
-  description: string;
-  salePrice: string;
-  originalPrice: string;
+  Brand: string;
+  SKU: string;
+  salePrice: any;
+  originalPrice: any;
   rating?: number;
   isBestseller?: boolean;
-  productId: string;
+  productId: any;
   subProductId: any;
+  color: any;
+  shape: any;
+  gender: any;
+  category: any;
+  useCart: any;
+  size: any;
 }
+
+interface NewArrival {
+  NewArrival: any;
+  SKU: any;
+  brands: any;
+  productImage: any;
+  rating: any;
+  originalPrice: any;
+  salePrice: any;
+  isBestSeller: boolean;
+  subProductId: any;
+  productId: any;
+  frameColor: any;
+  frameShape: any;
+  gender: any;
+  category: any;
+  frameSize: any;
+}
+
 const Under500: React.FC<Under500Props> = ({
   image,
-  title,
-  description,
+  Brand,
+  SKU,
   salePrice,
   originalPrice,
   rating = 0,
   isBestseller = false,
   productId,
   subProductId,
+  color,
+  shape,
+  gender,
+  category,
+  useCart,
+  size,
 }) => {
   const [open, setOpen] = useState(false);
-
   const openModal = () => {
     setOpen(!open);
   };
@@ -43,11 +74,50 @@ const Under500: React.FC<Under500Props> = ({
   }, [open]);
 
   const router = useRouter();
-
   const handleProductPage = () => {
-    router.push(
-      `/product_details?productId=${productId}&subProductId=${subProductId}`
-    );
+    const lowercaseBrand = Brand.toLowerCase().replace(/\s+/g, "-");
+    const lowercaseColor = color.toLowerCase().replace(/\s+/g, "-");
+    const lowercaseShape = shape.toLowerCase().replace(/\s+/g, "-");
+    const lowercaseCategory = category.toLowerCase().replace(/\s+/g, "-");
+    const lowercaseGender = gender.toLowerCase().replace(/\s+/g, "-");
+    const lowercaseSKU = SKU.toLowerCase().replace(/\s+/g, "-");
+
+    // Construct the actual route with all lowercase words
+    const actualRoute = `/eyeglasses/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseCategory}-${lowercaseGender}-${lowercaseSKU}`;
+
+    localStorage.setItem("productId", productId);
+    localStorage.setItem("subProductId", subProductId);
+
+    router.push(actualRoute);
+  };
+
+  const addToCart = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=IK0000002`,
+        {
+          cartProducts: [
+            {
+              productId: productId,
+              subProductId: subProductId,
+              size: size,
+              quantity: 1,
+              salePrice: salePrice,
+              originalPrice: originalPrice,
+              productImage: image,
+            },
+          ],
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      window.location.reload();
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+    }
   };
 
   return (
@@ -55,7 +125,7 @@ const Under500: React.FC<Under500Props> = ({
       <div className="bg-white h-[330px] w-[240px] rounded-[10px] p-8 relative mr-10">
         {isBestseller && (
           <div className="absolute top-0 right-0 bg-[#FF4307] font-extrabold text-xs text-white h-[27px] w-[121px] flex justify-center items-center rounded-[5px]">
-            {Strings.Bestseller}
+            {Strings.BESTSELLER}
           </div>
         )}
         <div className="relative">
@@ -63,10 +133,13 @@ const Under500: React.FC<Under500Props> = ({
             <img src={image} alt="/" className="w-[100%]" />
           </div>
           <div className="absolute top-[96px] w-full">
-            <h1 className="font-extrabold text-sm text-black">{title}</h1>
-            <p className="font-normal text-sm text-black">{description} </p>
+            <h1 className="font-extrabold text-sm text-black">{Brand}</h1>
+            <p className="font-normal text-sm text-black">{SKU} </p>
             <p className="font-extrabold text-sm text-black">
-              {salePrice ? salePrice : originalPrice}
+              ₹
+              {salePrice
+                ? salePrice.toLocaleString("en-IN")
+                : originalPrice.toLocaleString("en-IN")}
             </p>
             <p className="font-bold text-xs text-black">
               {Strings.Inclusive_of_all_taxes}
@@ -100,7 +173,7 @@ const Under500: React.FC<Under500Props> = ({
           <div className="relative p-8 rounded-md bg-white xs:h-[420px] xs:w-[310px] md:h-[420px] md:w-[460px] xl:h-[430px] xl:w-[400px] ">
             {isBestseller && (
               <div className="absolute top-0 left-0 bg-[#FF4307] font-extrabold text-xs text-white h-[30px] w-[125px] flex justify-center items-center rounded-[5px]">
-                {Strings.Bestseller}
+                {Strings.BESTSELLER}
               </div>
             )}
             <div className="absolute top-2 right-2">
@@ -118,20 +191,14 @@ const Under500: React.FC<Under500Props> = ({
 
               <div className="absolute top-[170px] text-center">
                 <div className="">
-                  <h1 className="font-extrabold text-lg text-black">{title}</h1>
-                  <p className="font-semibold text-sm text-black">
-                    {description}
+                  <h1 className="font-extrabold text-lg text-black">{Brand}</h1>
+                  <p className="font-semibold text-sm text-black">{SKU}</p>
+                  <p className="font-extrabold text-sm text-black">
+                    ₹
+                    {salePrice
+                      ? salePrice.toLocaleString("en-IN")
+                      : originalPrice.toLocaleString("en-IN")}
                   </p>
-
-                  {salePrice ? (
-                    <p className="font-extrabold text-sm text-black">
-                      {salePrice}
-                    </p>
-                  ) : (
-                    <p className="font-extrabold text-sm text-black">
-                      {originalPrice}
-                    </p>
-                  )}
                   <p className="font-bold text-sm text-black">
                     {Strings.Inclusive_of_all_taxes}
                   </p>
@@ -140,7 +207,10 @@ const Under500: React.FC<Under500Props> = ({
                       <div>
                         <StarRating rating={rating} />
                       </div>
-                      <button className="flex justify-center items-center border-black border w-[137px] h-[36px] rounded-[5px] font-bold text-sm text-black bg-white hover:border-PictonBlue hover:text-PictonBlue">
+                      <button
+                        onClick={addToCart}
+                        className="flex justify-center items-center border-black border w-[137px] h-[36px] rounded-[5px] font-bold text-sm text-black bg-white"
+                      >
                         {Strings.ADD_TO_CART}
                       </button>
                     </div>

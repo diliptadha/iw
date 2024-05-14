@@ -51,12 +51,9 @@ const SimilarProduct: React.FC<SimilarProductsProps> = ({
           <div className="h-[0.5px] bg-black rounded-xl mt-2"></div>
           <div className="absolute top-[96px] w-full mt-12">
             <h1 className="font-extrabold text-sm text-black">{title}</h1>
-
-            {/* <p className="font-bold text-sm text-black">{description} </p> */}
             <p className="font-extrabold text-md lg:text-2xl text-black mt-3">
               {salePrice}
             </p>
-
             <div
               className={`absolute top-[100px] md:top-[100px] flex flex-row justify-between w-full`}
             >
