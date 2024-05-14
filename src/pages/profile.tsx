@@ -1,11 +1,11 @@
 import "../app/globals.css";
 
+import { Images, Strings } from "@/constant";
 import React, { useState } from "react";
 
 import { Footer } from "@/Component/footer";
 import Header from "@/Component/header";
 import Image from "next/image";
-import { Images } from "@/constant";
 import Product from "@/Component/Product";
 
 const Profile = () => {
@@ -36,14 +36,12 @@ const Profile = () => {
     localStorage.removeItem("accessToken");
   };
 
+  const [search, setSearch] = useState("");
+
   return (
     <div>
-      <Header
-        setSearch={function (search: string): void {
-          throw new Error("Function not implemented.");
-        }}
-      />
-      <div className="mt-10 bg-[#f2f2f2] border-t-[1.5px] border-x-[1.5px] xs:mx-[20px] xl:mx-[70px] rounded-t-lg p-7">
+      <Header setSearch={setSearch} />
+      <div className="mt-10 bg-[#f2f2f2] border-t-[1.5px] border-gray-300 border-x-[1.5px] xs:mx-[20px] xl:mx-[70px] rounded-t-lg p-7">
         <div className="flex items-center justify-between ">
           <Image
             src={Images.Logo}
@@ -70,11 +68,13 @@ const Profile = () => {
                 d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
               />
             </svg>
-            <p className="font-semibold xs:text-sm md:text-base">Log out</p>
+            <p className="font-semibold xs:text-sm md:text-base">
+              {Strings.LOG_OUT}
+            </p>
           </button>
         </div>
       </div>
-      <div className="mb-28 bg-[#f2f2f2] border-[1.5px] xs:mx-[20px] xl:mx-[70px] rounded-b-lg xs:p-3 xl:p-7 flex  xs:flex-col md:flex-row  md:justify-between">
+      <div className="mb-28 bg-[#f2f2f2] border-[1.5px] border-slate-300 xs:mx-[20px] xl:mx-[70px] rounded-b-lg xs:p-3 xl:p-7 flex  xs:flex-col md:flex-row  md:justify-between">
         <div className="flex text-black bg-red-300- xs:mb-6 md:mb-0 xs:flex-row md:flex-col xs:justify-between md:justify-normal md:space-y-6">
           <button
             className={`flex items-center hover:text-PictonBlue  ${
@@ -96,7 +96,9 @@ const Profile = () => {
                 d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
               />
             </svg>
-            <p className="font-semibold xs:text-sm md:text-base">General</p>
+            <p className="font-semibold xs:text-sm md:text-base">
+              {Strings.GENERAL}
+            </p>
           </button>
           <button
             className={`flex items-center hover:text-PictonBlue ${
@@ -120,7 +122,7 @@ const Profile = () => {
             </svg>
 
             <p className="font-semibold xs:text-sm md:text-base">
-              Edit Profile
+              {Strings.Edit_Profile}
             </p>
           </button>
           <button
@@ -144,77 +146,76 @@ const Profile = () => {
               />
             </svg>
             <p className="font-semibold xs:text-sm md:text-base">
-              My Favorites
+              {Strings.My_Favorites}
             </p>
           </button>
         </div>
         <div className="xs:w-full bg-PictonBlue- md:w-[45rem] lg:w-[50rem] xl:w-[65rem] xs:px-0 md:px-5 ">
           {showProfile && (
-            <div className="space-y-4">
+            <div className="space-y-4 text-black ">
               <div className="space-y-2">
-                <h1 className="text-black font-semibold text-base">Pofile</h1>
-                <p>
-                  This information will be displayed publicly so be careful what
-                  you share.
-                </p>
+                <h1 className="text-black font-semibold text-base">
+                  {Strings.POFILE}
+                </h1>
+                <p>{Strings.PROFILE_SUB}</p>
               </div>
-              <p className="border-t-[1.5px]" />
+              <p className="border-t-[1.5px] border-slate-300" />
 
               <div className="flex  overflow-x-auto space-x-4">
-                <h1>Full name : </h1>
-                <p>Tom cook</p>
+                <h1>{Strings.Full_name}</h1>
+                <p>{Strings.Tom_cook}</p>
               </div>
-              <p className="border-t-[1.5px]" />
+              <p className="border-t-[1.5px] border-slate-300" />
               <div className="flex  space-x-12 overflow-x-auto">
-                <h1>Email : </h1>
-                <p>tom.cook@example.com</p>
+                <h1>{Strings.email}</h1>
+                <p>{Strings.example_email}</p>
               </div>
-              <p className="border-t-[1.5px]" />
+              <p className="border-t-[1.5px] border-slate-300" />
               <div className="flex space-x-10">
-                <h1>Phone : </h1>
-                <p>02667-77777</p>
+                <h1>{Strings.Phone}</h1>
+                <p>{Strings.Phone_No}</p>
               </div>
             </div>
           )}
           {showEditProfile && (
-            <div className="space-y-4">
+            <div className="space-y-4 text-black">
               <div className="space-y-2">
                 <h1 className="text-black font-semibold text-base">
-                  Edit Profile
+                  {Strings.Edit_Profile}
                 </h1>
-                <p>Update your personal details here.</p>
+                <p>{Strings.Edit_Profile_Sub}</p>
               </div>
-              <p className="border-t-[1.5px]" />
+              <p className="border-t-[1.5px] border-slate-300" />
 
               <div className="flex space-x-4">
-                <h1>Full name :</h1>
+                <h1>{Strings.Full_name}</h1>
                 <input
                   type="text"
-                  className="flex justify-center outline-none border-b border-gray-500"
+                  className="flex bg-[#f2f2f2] justify-center outline-none border-b border-gray-500"
                   defaultValue="Tom cook"
                 />
               </div>
-              <p className="border-t-[1.5px]" />
+              <p className="border-t-[1.5px] border-slate-300" />
               <div className="flex space-x-12">
-                <h1>Email :</h1>
+                <h1>{Strings.email}</h1>
                 <input
                   type="email"
-                  className="flex justify-center outline-none border-b border-gray-500"
+                  className="flex bg-[#f2f2f2] justify-center outline-none border-b border-gray-500"
                   defaultValue="tom.cook@example.com"
                 />
               </div>
-              <p className="border-t-[1.5px]" />
+              <p className="border-t-[1.5px] border-slate-300" />
               <div className="flex space-x-10">
-                <h1>Phone :</h1>
+                <h1>{Strings.Phone}</h1>
                 <input
                   type="tel"
-                  className="flex justify-center outline-none border-b border-gray-500"
+                  className="flex bg-[#f2f2f2] justify-center outline-none border-b border-gray-500"
                   defaultValue="02667-77777"
                 />
               </div>
-              <p className="border-t-[1.5px]" />
+              <p className="border-t-[1.5px] border-slate-300" />
               <button className="hover:bg-PictonBlue border w-[137px] h-[34px] rounded-[5px] font-normal text-sm text-white bg-black">
-                Update
+                {Strings.Update}
               </button>
             </div>
           )}
@@ -222,11 +223,11 @@ const Profile = () => {
             <div className="space-y-4 ">
               <div className="space-y-2">
                 <h1 className="text-black font-semibold text-base">
-                  My Favorites
+                  {Strings.My_Favorites}
                 </h1>
-                <p>Here are your Favourites.</p>
+                <p>{Strings.My_Favorites_Sub}</p>
               </div>
-              <p className="border-t-[1.5px]" />
+              <p className="border-t-[1.5px] border-slate-300" />
               <Product
                 image={""}
                 title={""}

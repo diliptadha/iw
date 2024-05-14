@@ -151,7 +151,7 @@ const Under500: React.FC<Under500Props> = ({
               <div className="flex justify-between items-center mt-3">
                 <button
                   onClick={handleProductPage}
-                  className=" flex justify-center items-center border-black border w-[130px] h-[34px] rounded-[5px] font-bold text-xs text-black bg-white"
+                  className="hover:border-PictonBlue hover:text-PictonBlue flex justify-center items-center border-black border w-[130px] h-[34px] rounded-[5px] font-bold text-xs text-black bg-white"
                 >
                   {Strings.KNOW_MORE}
                 </button>

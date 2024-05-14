@@ -79,6 +79,13 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
   };
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    const storedSearch = localStorage.getItem("searchTerm");
+    if (storedSearch) {
+      setSearchLocal(storedSearch);
+    }
+  }, []);
+
   const handleChange = (e: any) => {
     const searchTerm = e.target.value;
     setSearchLocal(e.target.value);
@@ -89,14 +96,22 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
     }
   };
 
+  useEffect(() => {
+    const savedSearchTerm = localStorage.getItem("searchTerm");
+    if (savedSearchTerm) {
+      setSearch(savedSearchTerm);
+      setSearchLocal(savedSearchTerm);
+    }
+  }, []);
+
   const handleSearch = () => {
     if (search.trim() !== "") {
+      localStorage.setItem("searchTerm", search);
       router.push(
         `/advanced-search?q=${encodeURIComponent(
           search.toLowerCase().replace(/\s+/g, "-")
         )}`
       );
-      localStorage.setItem("search", search);
     }
   };
 
@@ -144,13 +159,14 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
       const config = {
         method: "get",
         maxBodyLength: Infinity,
-        url: "http://localhost:4000/home/getMenu",
+        url: `${process.env.NEXT_PUBLIC_API_URL}home/getMenu`,
         headers: {},
       };
 
       const response = await axios.request(config);
+      // console.log("response", response.data.menu);
       setMenuData(response.data.menu);
-      console.log("MENU DATA :", JSON.stringify(response.data.menu));
+      // console.log("MENU DATA :", JSON.stringify(response.data.menu));
     } catch (error) {
       console.log(error);
     }
@@ -159,6 +175,34 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleGenderClick = (category: string, gender: string) => {
+    const searchQuery = {
+      category: category,
+      gender: gender,
+    };
+    setSearch(JSON.stringify(searchQuery));
+
+    console.log("CATEGORY :", category, "GENDER :", gender);
+  };
+
+  const handleUsageClick = (category: string, usage: string) => {
+    const searchQuery = {
+      category: category,
+      usage: usage,
+    };
+    setSearch(JSON.stringify(searchQuery));
+    console.log("CATEGORY :", category, "USEGE :", usage);
+  };
+
+  const handleBrandsClick = (category: string, brand: string) => {
+    const searchQuery = {
+      category: category,
+      brands: brand,
+    };
+    setSearch(JSON.stringify(searchQuery));
+    console.log("CATEGORY :", category, "BRANDS :", brand);
+  };
 
   const toggleMegaMenu = (index: number) => {
     const updatedMenuData = menuData.map((item, i) => ({
@@ -198,6 +242,20 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
   };
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+  // useEffect(() => {
+  //   const handleScroll = (event) => {
+  //     if (menuRef.current && menuRef.current.contains(event.target)) {
+  //       event.stopPropagation();
+  //     }
+  //   };
+
+  //   document.addEventListener("scroll", handleScroll, { passive: false });
+
+  //   return () => {
+  //     document.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, []);
 
   return (
     <>
@@ -243,7 +301,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
           {showMenu && (
             <div
               ref={menuRef}
-              className="absolute overflow-y-scroll right-0 top-0 z-10 h-screen w-screen bg-[#1A82A4]"
+              className="fixed overflow-y-scroll top-0 left-0 right-0 bottom-0 z-50 h-full w-full pb-10 bg-[#1A82A4]"
             >
               <Image
                 onClick={handleMenuItemClick}
@@ -282,7 +340,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       item.megaMenuOpen && (
                         <div
                           key={index}
-                          className="w-full h-screen bg-[#F2F2F2] absolute top-[80px] p-5 rounded-t-[10px] overflow-y-scroll"
+                          className="w-full h-full bg-[#F2F2F2] absolute top-[80px] p-5 rounded-t-[10px] overflow-y-scroll"
                         >
                           <div className="flex justify-end">
                             <Image
@@ -305,7 +363,18 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     <ul className="mt-2">
                                       {item.usage.map((usage, subIndex) => (
                                         <li key={subIndex}>
-                                          {usage.toUpperCase()}
+                                          <Link
+                                            href={`/${item.category
+                                              .toLowerCase()
+                                              .replace(/\s+/g, "-")}/${usage
+                                              .toLowerCase()
+                                              .replace(
+                                                /\s+/g,
+                                                "-"
+                                              )}-contact-lenses`}
+                                          >
+                                            {usage.toUpperCase()}
+                                          </Link>
                                         </li>
                                       ))}
                                     </ul>
@@ -320,7 +389,15 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     <ul className="mt-2">
                                       {item.gender.map((gender, subIndex) => (
                                         <li key={subIndex}>
-                                          {gender.toUpperCase()}
+                                          <Link
+                                            href={`/${item.category
+                                              .toLowerCase()
+                                              .replace(/\s+/g, "-")}/${gender
+                                              .toLowerCase()
+                                              .replace(/\s+/g, "-")}`}
+                                          >
+                                            {gender.toUpperCase()}
+                                          </Link>
                                         </li>
                                       ))}
                                     </ul>
@@ -344,7 +421,23 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                   >
                                     {item.brand.map((brand, subIndex) => (
                                       <li key={subIndex}>
-                                        {brand.toUpperCase()}
+                                        <Link
+                                          href={`/${item.category
+                                            .toLowerCase()
+                                            .replace(/\s+/g, "-")}/${brand
+                                            .toLowerCase()
+                                            .replace(/\s+/g, "-")
+                                            .replace(/&/g, "and")}${
+                                            item.category.toLowerCase() ===
+                                              "contact lenses" ||
+                                            item.category.toLowerCase() ===
+                                              "myopia control glasses"
+                                              ? "-lens"
+                                              : "-frames"
+                                          }`}
+                                        >
+                                          {brand.toUpperCase()}
+                                        </Link>
                                       </li>
                                     ))}
                                   </ul>
@@ -352,56 +445,87 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                               )}
                             </div>
 
-                            {/* <p className="border border-black"></p> */}
+                            <p className="border border-black"></p>
                             <div>
-                              <h1 className="font-bold text-black">
-                                {item.data?.framecolor.submenuData.map(
-                                  (framecolor, index) => (
-                                    <h1 key={index}>{framecolor}</h1>
-                                  )
-                                )}
-                              </h1>
-                              <ul className="grid grid-cols-3">
-                                {item.data?.framecolor.framecolorheading.map(
-                                  (framecolor, subIndex) => (
-                                    <li key={subIndex}>{framecolor}</li>
-                                  )
-                                )}
-                              </ul>
+                              {item.color && item.color.length > 0 && (
+                                <>
+                                  <h1 className="font-bold text-black">
+                                    Color
+                                  </h1>
+                                  <ul className="mt-2 grid grid-cols-3">
+                                    {item.color.map((color, subIndex) => (
+                                      <li key={subIndex}>
+                                        <Link
+                                          href={`/${item.category
+                                            .toLowerCase()
+                                            .replace(/\s+/g, "-")}/${color
+                                            .toLowerCase()
+                                            .replace(/\s+/g, "-")}${
+                                            item.category.toLowerCase() ===
+                                              "contact lenses" ||
+                                            item.category.toLowerCase() ===
+                                              "myopia control glasses"
+                                              ? "-lens"
+                                              : "-frames"
+                                          }`}
+                                        >
+                                          {color.toUpperCase()}
+                                        </Link>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </>
+                              )}
                             </div>
                             <p className="border border-black"></p>
                             <div>
-                              <h1 className="font-bold text-black">
-                                {item.data?.framestyle.submenuData.map(
-                                  (framestyle, index) => (
-                                    <h1 key={index}>{framestyle}</h1>
-                                  )
-                                )}
-                              </h1>
-                              <ul className="flex space-x-4">
-                                {item.data?.framestyle.framestyleheading.map(
-                                  (framestyle, subIndex) => (
-                                    <li key={subIndex}>{framestyle}</li>
-                                  )
-                                )}
-                              </ul>
+                              {item.style && item.style.length > 0 && (
+                                <>
+                                  <h1 className="font-bold text-black">
+                                    Style
+                                  </h1>
+                                  <ul className="mt-2">
+                                    {item.style.map((style, subIndex) => (
+                                      <li key={subIndex}>
+                                        <Link
+                                          href={`/${item.category
+                                            .toLowerCase()
+                                            .replace(/\s+/g, "-")}/${style
+                                            .toLowerCase()
+                                            .replace(/\s+/g, "-")}-frames`}
+                                        >
+                                          {style.toUpperCase()}
+                                        </Link>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </>
+                              )}
                             </div>
                             <p className="border border-black"></p>
                             <div>
-                              <h1 className="font-bold text-black">
-                                {item.data?.frameshape.submenuData.map(
-                                  (frameshape, index) => (
-                                    <h1 key={index}>{frameshape}</h1>
-                                  )
-                                )}
-                              </h1>
-                              <ul className="grid grid-cols-3">
-                                {item.data?.frameshape.frameshapeheading.map(
-                                  (frameshape, subIndex) => (
-                                    <li key={subIndex}>{frameshape}</li>
-                                  )
-                                )}
-                              </ul>
+                              {item.shape && item.shape.length > 0 && (
+                                <>
+                                  <h1 className="font-bold text-black">
+                                    Shape
+                                  </h1>
+                                  <ul className="mt-2 grid grid-cols-3">
+                                    {item.shape.map((shape, subIndex) => (
+                                      <li key={subIndex}>
+                                        <Link
+                                          href={`/${item.category
+                                            .toLowerCase()
+                                            .replace(/\s+/g, "-")}/${shape
+                                            .toLowerCase()
+                                            .replace(/\s+/g, "-")}-frames`}
+                                        >
+                                          {shape.toUpperCase()}
+                                        </Link>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -514,7 +638,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
           </div>
         </div>
         <div className="bg-[] flex mt-8 xs:flex-col sm:flex-row sm:justify-between xs:space-y-4 md:space-y-0 items-center xs:mx-4 md:mx-12">
-          <Link href={"/Home-screen"}>
+          <Link href={"/"}>
             <Image
               src={Images.Logo}
               alt="/"
@@ -539,7 +663,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                 }}
               />
               {showTrendingSearches && (
-                <div className="z-index absolute top-10 left-0 w-full bg-white border rounded-md shadow-lg">
+                <div className="z-index absolute  w-full bg-white border rounded-md shadow-lg">
                   <p className="p-2 text-gray-500">TRENDING</p>
                   {trendingSearches.map((term, index) => (
                     <div
@@ -552,14 +676,12 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                   ))}
                 </div>
               )}
-              <button disabled={search.trim() === ""} onClick={handleSearch}>
-                <Image
-                  src={Images.Search}
-                  alt="/"
-                  height={18}
-                  width={18}
-                  className="absolute right-4 top-3"
-                />
+              <button
+                disabled={search.trim() === ""}
+                onClick={handleSearch}
+                className="absolute right-4 top-3 transition-transform hover:scale-75 transform"
+              >
+                <Image src={Images.Search} alt="/" height={18} width={18} />
               </button>
             </div>
             <div className="relative">
@@ -603,7 +725,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       />
                     ) : (
                       <Image
-                        src={Images.Downiconblack}
+                        src={Images.DOWN_ARROW}
                         alt="/"
                         height={12}
                         width={12}
@@ -629,20 +751,18 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                           item.usage.length > 0 && (
                             <div>
                               <h1 className="font-bold text-black">Usage</h1>
-                              <ul>
+                              <ul className="space-y-[2px]">
                                 {item.usage.map((usage, subIndex) => (
                                   <li
                                     key={subIndex}
-                                    className="hover:text-PictonBlue cursor-pointer"
+                                    className="hover:text-PictonBlue cursor-pointer text-black font-medium text-sm"
                                   >
                                     <Link
-                                      href={`${baseUrl}${encodeURIComponent(
-                                        item.category
-                                          .toLowerCase()
-                                          .replace(/\s+/g, "-")
-                                      )}/${encodeURIComponent(
-                                        usage.toLowerCase().replace(/\s+/g, "-")
-                                      )}-contact-lenses`}
+                                      href={`/${item.category
+                                        .toLowerCase()
+                                        .replace(/\s+/g, "-")}/${usage
+                                        .toLowerCase()
+                                        .replace(/\s+/g, "-")}-contact-lenses`}
                                     >
                                       {usage.toUpperCase()}
                                     </Link>
@@ -656,18 +776,26 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                           item.gender.length > 0 && (
                             <div>
                               <h1 className="font-bold text-black">Gender</h1>
-                              <ul>
+                              <ul className="space-y-[2px]">
                                 {item.gender.map((gender, subIndex) => (
                                   <li
                                     key={subIndex}
-                                    className="hover:text-PictonBlue cursor-pointer"
+                                    className="hover:text-PictonBlue cursor-pointer text-black font-medium text-sm"
                                   >
                                     <Link
-                                      href={`${baseUrl}${encodeURIComponent(
-                                        item.category
-                                          .toLowerCase()
-                                          .replace(/\s+/g, "-")
-                                      )}/glasses-for-${gender
+                                      //  {/* href={`${baseUrl}${encodeURIComponent(
+                                      //     item.category
+                                      //       .toLowerCase()
+                                      //       .replace(/\s+/g, "-")
+                                      //   )}/glasses-for-${gender
+                                      //     .toLowerCase()
+                                      //     .replace(/\s+/g, "-")}`} */}
+                                      // onClick={() =>
+                                      //   handleGenderClick(item.category, gender)
+                                      // }
+                                      href={`/${item.category
+                                        .toLowerCase()
+                                        .replace(/\s+/g, "-")}/${gender
                                         .toLowerCase()
                                         .replace(/\s+/g, "-")}`}
                                     >
@@ -684,28 +812,44 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                         {item.brand && item.brand.length > 0 && (
                           <>
                             <h1 className="font-bold text-black">Brand</h1>
-                            <ul>
+                            <ul className="space-y-[2px]">
                               {item.brand.map((brand, subIndex) => (
                                 <li
                                   key={subIndex}
-                                  className="hover:text-PictonBlue cursor-pointer"
+                                  className="hover:text-PictonBlue cursor-pointer text-black font-medium text-sm"
                                 >
                                   <Link
-                                    href={`${baseUrl}${encodeURIComponent(
-                                      item.category
-                                        .toLowerCase()
-                                        .replace(/\s+/g, "-")
-                                    )}/${encodeURIComponent(
-                                      brand
-                                        .toLowerCase()
-                                        .replace(/\s+/g, "-")
-                                        .replace(/&/g, "and")
-                                    )}${
+                                    // href={`${baseUrl}${encodeURIComponent(
+                                    //   item.category
+                                    //     .toLowerCase()
+                                    //     .replace(/\s+/g, "-")
+                                    // )}/${encodeURIComponent(
+                                    //   brand
+                                    //     .toLowerCase()
+                                    //     .replace(/\s+/g, "-")-
+                                    //     .replace(/&/g, "and")
+                                    // )}${
+                                    //   item.category.toLowerCase() ===
+                                    //   "contact lenses"
+                                    //     ? "-lens"
+                                    //     : "-glasses"
+                                    // }`}
+                                    href={`/${item.category
+                                      .toLowerCase()
+                                      .replace(/\s+/g, "-")}/${brand
+                                      .toLowerCase()
+                                      .replace(/\s+/g, "-")
+                                      .replace(/&/g, "and")}${
                                       item.category.toLowerCase() ===
-                                      "contact lenses"
+                                        "contact lenses" ||
+                                      item.category.toLowerCase() ===
+                                        "myopia control glasses"
                                         ? "-lens"
-                                        : "-glasses"
+                                        : "-frames"
                                     }`}
+                                    // onClick={() =>
+                                    //   handleBrandsClick(item.category, brand)
+                                    // }
                                   >
                                     {brand.toUpperCase()}
                                   </Link>
@@ -717,67 +861,86 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       </div>
 
                       <div>
-                        <h1 className="font-bold text-black">
-                          {item.data?.framecolor.submenuData.map(
-                            (framecolor, index) => (
-                              <h1 key={index}>{framecolor}</h1>
-                            )
-                          )}
-                        </h1>
-                        <ul>
-                          {item.data?.framecolor.framecolorheading.map(
-                            (framecolor, subIndex) => (
-                              <li
-                                key={subIndex}
-                                className="hover:text-PictonBlue cursor-pointer"
-                              >
-                                {framecolor}
-                              </li>
-                            )
-                          )}
-                        </ul>
+                        {item.color && item.color.length > 0 && (
+                          <>
+                            <h1 className="font-bold text-black">Color</h1>
+                            <ul className="space-y-[2px]">
+                              {item.color.map((color, subIndex) => (
+                                <li
+                                  key={subIndex}
+                                  className="hover:text-PictonBlue cursor-pointer text-black font-medium text-sm"
+                                >
+                                  <Link
+                                    href={`/${item.category
+                                      .toLowerCase()
+                                      .replace(/\s+/g, "-")}/${color
+                                      .toLowerCase()
+                                      .replace(/\s+/g, "-")}${
+                                      item.category.toLowerCase() ===
+                                        "contact lenses" ||
+                                      item.category.toLowerCase() ===
+                                        "myopia control glasses"
+                                        ? "-lens"
+                                        : "-frames"
+                                    }`}
+                                  >
+                                    {color.toUpperCase()}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </>
+                        )}
                       </div>
                       <div>
-                        <h1 className="font-bold text-black">
-                          {item.data?.framestyle.submenuData.map(
-                            (framestyle, index) => (
-                              <h1 key={index}>{framestyle}</h1>
-                            )
-                          )}
-                        </h1>
-                        <ul>
-                          {item.data?.framestyle.framestyleheading.map(
-                            (framestyle, subIndex) => (
-                              <li
-                                key={subIndex}
-                                className="hover:text-PictonBlue cursor-pointer"
-                              >
-                                {framestyle}
-                              </li>
-                            )
-                          )}
-                        </ul>
+                        {item.style && item.style.length > 0 && (
+                          <>
+                            <h1 className="font-bold text-black">Style</h1>
+                            <ul className="space-y-[2px]">
+                              {item.style.map((style, subIndex) => (
+                                <li
+                                  key={subIndex}
+                                  className="hover:text-PictonBlue cursor-pointer text-black font-medium text-sm"
+                                >
+                                  <Link
+                                    href={`/${item.category
+                                      .toLowerCase()
+                                      .replace(/\s+/g, "-")}/${style
+                                      .toLowerCase()
+                                      .replace(/\s+/g, "-")}-frames`}
+                                  >
+                                    {style.toUpperCase()}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </>
+                        )}
                       </div>
                       <div>
-                        <h1 className="font-bold text-black">
-                          {item.data?.frameshape.submenuData.map(
-                            (frameshape, index) => (
-                              <h1 key={index}>{frameshape}</h1>
-                            )
-                          )}
-                        </h1>
-                        <ul>
-                          {item.data?.frameshape.frameshapeheading.map(
-                            (frameshape, subIndex) => (
-                              <li
-                                key={subIndex}
-                                className="hover:text-PictonBlue cursor-pointer"
-                              >
-                                {frameshape}
-                              </li>
-                            )
-                          )}
-                        </ul>
+                        {item.shape && item.shape.length > 0 && (
+                          <>
+                            <h1 className="font-bold text-black">Shape</h1>
+                            <ul className="space-y-[2px]">
+                              {item.shape.map((shape, subIndex) => (
+                                <li
+                                  key={subIndex}
+                                  className="hover:text-PictonBlue cursor-pointer text-black font-medium text-sm"
+                                >
+                                  <Link
+                                    href={`/${item.category
+                                      .toLowerCase()
+                                      .replace(/\s+/g, "-")}/${shape
+                                      .toLowerCase()
+                                      .replace(/\s+/g, "-")}-frames`}
+                                  >
+                                    {shape.toUpperCase()}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>

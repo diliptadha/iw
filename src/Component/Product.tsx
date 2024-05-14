@@ -99,7 +99,7 @@ const Product: React.FC<ProductProps> = ({
       let config = {
         method: "get",
         maxBodyLength: Infinity,
-        url: "http://localhost:4000/product/getProductData?productId=SC5355&subProductId=PS0000001",
+        url: `${process.env.NEXT_PUBLIC_API_URL}product/getProductData?productId=SC5355&subProductId=PS0000001`,
         headers: {},
         data: data,
       };
@@ -107,7 +107,7 @@ const Product: React.FC<ProductProps> = ({
       axios.request(config).then((response: { data: any }) => {
         setProductData(response?.data?.productData?.ProductData);
         setCurrentImage(response?.data?.productData?.ProductData?.productImage);
-        console.log(JSON.stringify(response?.data));
+        // console.log(JSON.stringify(response?.data));
       });
     } catch (error) {
       console.log(error);
@@ -258,19 +258,21 @@ const Product: React.FC<ProductProps> = ({
 
   return (
     <div>
-      <div className="relative h-[334px] w-[280px] rounded-[10px] bg-white p-6 my-3 hover:shadow-lg">
-        <Link href={`/product-details.tsx/${productId}`}>
+      <div className="relative h-[315px] w-[280px] rounded-[10px] bg-white p-6 my-3 hover:shadow-lg">
+        {/*  iksana.in/eyeglasses/brand-sku-color */}
+        <Link href={`/product_details/${productId}`}>
           <Image
             src={currentImage}
-            height={144}
-            width={243}
+            height={140}
+            width={220}
+            className="h-32 object-cover"
             alt="/"
-            className="h-[144px] w-[243px]"
+            // className="h-[144px] w-[243px]"
           />
         </Link>
         <div className="absolute- bottom-0- ">
           <p className="border-[.5px] border-black mt-[24px] mb-[10px]"></p>
-          <h1 className="font-extrabold text-[16px]">
+          {/* <h1 className="font-extrabold text-[16px]">
             {title?.split("-").map((part, index) => (
               <React.Fragment key={index}>
                 <span
@@ -281,10 +283,11 @@ const Product: React.FC<ProductProps> = ({
                 {index !== title.split("-").length - 1 && <br />}
               </React.Fragment>
             ))}
-          </h1>
+          </h1> */}
+          <h1 className="font-normal text-[16px]">{title}</h1>
           <p>{description}</p>
           <p className="mt-[10px] font-extrabold text-[22px]">{price}</p>
-          <div className="flex justify-between items-center font-extrabold ">
+          <div className="flex mt-[10px] justify-between items-center font-extrabold ">
             <StarRating rating={rating} />
             <div className="flex space-x-1 items-center ">
               <button

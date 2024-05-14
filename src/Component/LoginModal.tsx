@@ -78,7 +78,7 @@ const LoginModal = ({
       let config = {
         method: "post",
         maxBodyLength: Infinity,
-        url: `http://localhost:4000/user/sendOTP?emailId=${email}`,
+        url: `${process.env.NEXT_PUBLIC_API_URL}user/sendOTP?emailId=${email}`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -100,7 +100,7 @@ const LoginModal = ({
       let config = {
         method: "post",
         maxBodyLength: Infinity,
-        url: "http://localhost:4000/user/verifyOTP",
+        url: `${process.env.NEXT_PUBLIC_API_URL}user/verifyOTP`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -128,7 +128,7 @@ const LoginModal = ({
       let config = {
         method: "post",
         maxBodyLength: Infinity,
-        url: "http://localhost:4000/user/login",
+        url: `${process.env.NEXT_PUBLIC_API_URL}user/login`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -238,7 +238,7 @@ const LoginModal = ({
   return (
     <div>
       {showLoginModal && (
-        <div className="fixed left-0 top-0 z-50 flex h-full w-full items-start  justify-center  bg-gray-500 bg-opacity-[20%] backdrop-blur-sm ">
+        <div className="fixed left-0 top-0 z-index flex h-full w-full items-start  justify-center  bg-gray-500 bg-opacity-[20%] backdrop-blur-sm ">
           <div className=" mt-10 items-center- justify-center- flex- rounded-md bg-white p-5 xs:h-[270px]- xs:w-[310px] md:h-[270px]- md:w-[460px] ">
             <div>
               <div className="flex justify-between">
@@ -249,7 +249,12 @@ const LoginModal = ({
                   className="outline-none"
                   onClick={() => setShowLoginModal(false)}
                 >
-                  <Image src={Images.Close} alt="" height={20} width={20} />
+                  <Image
+                    src={Images.Closeblack}
+                    alt=""
+                    height={20}
+                    width={20}
+                  />
                 </button>
               </div>
               <p className="border my-4"></p>

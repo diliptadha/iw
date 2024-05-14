@@ -817,6 +817,22 @@ export const Strings = {
   Bestseller: "BESTSELLER",
   SORRY_NO_PRODUCTS_FOUND: "SORRY! NO PRODUCTS FOUND.",
   NO_PRODUCTS_AVAILABLE: " NO PRODUCTS AVAILABLE.",
+  LOG_OUT: "Log out",
+  GENERAL: "General",
+  POFILE: "Pofile",
+  PROFILE_SUB:
+    "This information will be displayed publicly so be careful what you share.",
+  Full_name: "Full name : ",
+  email: "Email : ",
+  Phone: "Phone : ",
+  Edit_Profile: "Edit Profile",
+  Edit_Profile_Sub: "Update your personal details here.",
+  My_Favorites: "My Favorites",
+  My_Favorites_Sub: "Here are your Favourites.",
+  Update: "Update",
+  Tom_cook: "Tom cook",
+  example_email: "tom.cook@example.com",
+  Phone_No: "02667-77777",
 };
 
 export const Faqs = {

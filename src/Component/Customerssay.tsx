@@ -6,11 +6,18 @@ import StarRating from "./StarRating";
 
 interface Customerssay {
   h1: string;
+  h2: string;
   p: string;
   rating?: number;
   style?: React.CSSProperties;
 }
-const Customerssay: React.FC<Customerssay> = ({ h1, p, style, rating = 0 }) => {
+const Customerssay: React.FC<Customerssay> = ({
+  h1,
+  h2,
+  p,
+  style,
+  rating = 0,
+}) => {
   return (
     <div className="customer" style={style}>
       <div className="xs:w-[310px] xs:h-[285px] md:w-[600px] xl:w-[600px] xl:h-[285px] rounded-[10px] bg-[#D2E7EE] xs:p-4 xl:p-12 flex items-center">
@@ -23,7 +30,9 @@ const Customerssay: React.FC<Customerssay> = ({ h1, p, style, rating = 0 }) => {
               <StarRating rating={rating} />
             </div>
           </div>
-          <h1 className="text-PictonBlue font-extrabold text-2xl">{h1}</h1>
+          <h1 className="text-PictonBlue font-extrabold text-2xl">
+            {h1} {h2}
+          </h1>
           <p className="text-black font-normal text-sm">{p}</p>
         </div>
       </div>

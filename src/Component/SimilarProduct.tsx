@@ -1,6 +1,8 @@
+import "../app/globals.css";
+
 import { Images, Strings } from "@/constant";
 import React, { useEffect, useState } from "react";
-import "../app/globals.css";
+
 import Image from "next/image";
 import StarRating from "./StarRating";
 
@@ -11,6 +13,11 @@ interface SimilarProductsProps {
   salePrice: string;
   rating?: number;
   color: any;
+  productId?: string;
+  showLoginModal: boolean;
+  isAuthenticated: boolean;
+  handleToggleFavorite: () => void;
+  isFavorite: boolean;
 }
 const SimilarProduct: React.FC<SimilarProductsProps> = ({
   productImage,
@@ -19,13 +26,18 @@ const SimilarProduct: React.FC<SimilarProductsProps> = ({
   salePrice,
   rating = 0,
   color,
+  productId,
+  showLoginModal,
+  isAuthenticated,
+  handleToggleFavorite,
+  isFavorite,
 }) => {
-  const [isFavorite, setIsFavorite] = useState(false);
+  // const [isFavorite, setIsFavorite] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const handleToggleFavorite = () => {
-    setIsFavorite((prevState) => !prevState);
-  };
+  // const handleToggleFavorite = () => {
+  //   setIsFavorite((prevState) => !prevState);
+  // };
 
   useEffect(() => {
     if (open) {
@@ -50,7 +62,20 @@ const SimilarProduct: React.FC<SimilarProductsProps> = ({
           </div>
           <div className="h-[0.5px] bg-black rounded-xl mt-2"></div>
           <div className="absolute top-[96px] w-full mt-12">
-            <h1 className="font-extrabold text-sm text-black">{title}</h1>
+            <h1 className="font-extrabold text-[16px]">
+              {title?.split("-").map((part, index) => (
+                <React.Fragment key={index}>
+                  <span
+                    className={index === 0 ? "font-extrabold" : "font-normal"}
+                  >
+                    {part}
+                  </span>
+                  {index !== title.split("-").length - 1 && <br />}
+                </React.Fragment>
+              ))}
+            </h1>
+
+            {/* <p className="font-bold text-sm text-black">{description} </p> */}
             <p className="font-extrabold text-md lg:text-2xl text-black mt-3">
               {salePrice}
             </p>

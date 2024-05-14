@@ -1,18 +1,16 @@
 import "../app/globals.css";
-import React, { useState, useRef, useEffect } from "react";
-import Image from "next/image";
-import SimilarProductPage from "./similar_products";
-import Review from "@/Component/reviews";
 
 import { Images, Strings } from "@/constant";
-
+import React, { useEffect, useRef, useState } from "react";
 
 import GiveRatings from "@/Component/GiveRatings";
-
-import ShareOptions from "@/Component/share";
-import axios from "axios";
-import Header from "./header";
+import Header from "@/Component/header";
+import Image from "next/image";
 import Link from "next/link";
+import Review from "@/Component/reviews";
+import ShareOptions from "@/Component/share";
+import SimilarProductPage from "./similar_products";
+import axios from "axios";
 import { useRouter } from "next/router";
 
 interface ProductData {
@@ -120,7 +118,7 @@ const ProductDetails = () => {
         const responseData = response.data;
         if (responseData.productData) {
           setProductData(responseData.productData);
-          setSelectedSubProduct(responseData.productData); // Set selected subProduct initially
+          setSelectedSubProduct(responseData.productData);
         }
       })
       .catch((error) => console.error("Error fetching product data:", error));
@@ -183,10 +181,6 @@ const ProductDetails = () => {
     } catch (error) {
       console.error("Error fetching expected delivery date:", error);
     }
-  };
-
-  const handleToggleFavorite = () => {
-    setIsFavorite((prevState) => !prevState);
   };
 
   const toggleDropdown = () => {
@@ -409,9 +403,221 @@ const ProductDetails = () => {
       setCartMessage(null);
     }, 5000);
   };
+  const [search, setSearch] = useState("");
+
+  const [isValidEmail, setIsValidEmail] = useState(true);
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpValid, setOtpValid] = useState(false);
+  const [isShow, setIsShow] = useState(false);
+  const [lastInteractedProductId, setLastInteractedProductId] = useState<
+    string | null
+  >(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const [favoriteStatus, setFavoriteStatus] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const storedUserId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+
+  const [userId, setUserId] = useState<string | null>(storedUserId);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!userId);
+
+  useEffect(() => {
+    if (userId !== null) {
+      localStorage.setItem("userId", userId);
+    } else {
+      localStorage.removeItem("userId");
+    }
+  }, [userId]);
+
+  const handleEmailChange = (e: { target: { value: any } }) => {
+    const emailValue = e.target.value;
+    setEmail(emailValue);
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidEmail = emailRegex.test(emailValue);
+    setIsValidEmail(isValidEmail);
+  };
+
+  const handleOtpChange = (e: { target: { value: any } }) => {
+    const otpValue = e.target.value;
+
+    if (!isNaN(otpValue)) {
+      setOtp(otpValue);
+    }
+  };
+
+  const handleSendOtp = async () => {
+    try {
+      let data = JSON.stringify({
+        emailId: email,
+      });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}user/sendOTP?emailId=${email}`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+      const response = await axios.request(config);
+      console.log(JSON.stringify(response.data));
+      setIsShow(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const verifyOTP = async () => {
+    try {
+      let data = JSON.stringify({
+        Otp: otp,
+      });
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: "http://localhost:4000/user/verifyOTP",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+      const response = await axios.request(config);
+      console.log(JSON.stringify(response.data));
+      setOtpValid(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (userId && lastInteractedProductId) {
+      addToFavorite(lastInteractedProductId, userId);
+    }
+  }, [userId, lastInteractedProductId]);
+
+  const loginUser = async () => {
+    try {
+      let data = JSON.stringify({
+        emailId: email,
+      });
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}user/login`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      const response = await axios.request(config);
+      console.log(JSON.stringify(response.data));
+      const userData = response.data.signInData.userData;
+      const accessToken = response.data.signInData.access_token;
+
+      localStorage.setItem("userId", userData.userId);
+      localStorage.setItem("accessToken", accessToken);
+      setShowLoginModal(false);
+      setIsAuthenticated(true);
+      setUserId(response.data.signInData.userData.userId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addToFavorite = async (productId: string, userId: string) => {
+    try {
+      let data = JSON.stringify({
+        userId: userId,
+        productId: productId,
+      });
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}product/addToFavorite?userId=${userId}&productId=${productId}`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+      const response = await axios.request(config);
+      console.log(
+        "addToFavorite DATA:",
+        data,
+        JSON.stringify(response.data.similarProductData)
+      );
+
+      setFavoriteStatus((prevState) => ({
+        ...prevState,
+        [productId]: !prevState[productId],
+      }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const removeFavoriteProduct = async (productId: string, userId: string) => {
+    try {
+      let data = JSON.stringify({
+        userId: userId,
+        productId: productId,
+      });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}product/removeFavoriteProduct?userId=${userId}&productId=${productId}`,
+        headers: {},
+        data: data,
+      };
+
+      const response = await axios.request(config);
+      console.log(JSON.stringify(response.data.similarProductData));
+      setFavoriteStatus((prevState) => {
+        const newState = { ...prevState };
+        delete newState[productId];
+        return newState;
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleToggleFavorite = (productId: any) => {
+    if (!isAuthenticated) {
+      setShowLoginModal(true);
+      setLastInteractedProductId(productId);
+      return;
+    }
+    if (userId) {
+      if (favoriteStatus[productId]) {
+        // If product is already favorited, remove it
+        removeFavoriteProduct(productId, userId);
+      } else {
+        // If product is not favorited, add it
+        addToFavorite(productId, userId);
+      }
+    } else {
+      console.log("User ID is null. Cannot add to favorites.");
+    }
+  };
+
+  useEffect(() => {
+    if (showLoginModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [showLoginModal]);
+
   return (
     <>
-      <Header />
+      <Header setSearch={setSearch} />
       {selectedSubProduct && (
         <div className="bg-white px-[2rem] py-[2rem] md:px-[3rem] xl:px-[6rem] p-black mx-auto- md:w-[50%]- lg:w-full-">
           <div className="p-1 bg-white w-full text-lato text-[14px] ">
@@ -425,7 +631,7 @@ const ProductDetails = () => {
           </div>
           <>
             <div className="bg-red-200- mt-2 flex flex-col md:flex-row">
-              {selectedSubProduct?.ProductData?.variantImage.length > 0  ? (
+              {selectedSubProduct?.ProductData?.variantImage.length > 0 ? (
                 <div className="bg-blue-200- flex flex-row md:flex-col items-center ">
                   <Image
                     onClick={handleScrollLeft2}
@@ -496,8 +702,17 @@ const ProductDetails = () => {
                     {selectedSubProduct.ProductData?.productId}
                   </p>
                   <div className="flex justify-end">
-                    <button className="" onClick={handleToggleFavorite}>
-                      {isFavorite ? (
+                    <button
+                      className=""
+                      onClick={() => handleToggleFavorite(productId)}
+                    >
+                      {favoriteStatus[
+                        productId
+                          ? Array.isArray(productId)
+                            ? productId[0]
+                            : productId
+                          : ""
+                      ] ? (
                         <Image
                           src={Images.WISHLIST}
                           alt="/"
@@ -513,6 +728,97 @@ const ProductDetails = () => {
                         />
                       )}
                     </button>
+                    {showLoginModal && !isAuthenticated && (
+                      <div className="fixed left-0 top-0 z-50 flex h-full w-full items-start  justify-center  bg-gray-500 bg-opacity-[20%] backdrop-blur-sm ">
+                        <div className=" mt-10 items-center- justify-center- flex- rounded-md bg-white p-5 xs:h-[270px]- xs:w-[310px] md:h-[270px]- md:w-[460px] ">
+                          <div>
+                            <div className="flex justify-between">
+                              <h1 className="text-base font-medium text-black">
+                                {Strings.SIGN_IN}
+                              </h1>
+                              <button
+                                className="outline-none"
+                                onClick={() => setShowLoginModal(false)}
+                              >
+                                <Image
+                                  src={Images.Closeblack}
+                                  alt=""
+                                  height={20}
+                                  width={20}
+                                />
+                              </button>
+                            </div>
+                            <p className="border my-4"></p>
+                            <h1 className="text-base font-normal text-black">
+                              {Strings.Email}
+                            </h1>
+                            <input
+                              id="emailInput"
+                              className="outline-none w-full"
+                              type="email"
+                              value={email}
+                              onChange={handleEmailChange}
+                              disabled={isShow}
+                            />
+                            {!isValidEmail && (
+                              <p className="text-red-500 text-xs">
+                                Please enter a valid email address.
+                              </p>
+                            )}
+                            <p className="border border-black my-2"></p>
+                            {isShow && (
+                              <div className="mt-4">
+                                <h1 className="text-base font-normal text-black">
+                                  {Strings.OTP}
+                                </h1>
+                                <input
+                                  className="outline-none w-full"
+                                  value={otp}
+                                  onChange={handleOtpChange}
+                                />
+                                <p className="border border-black mt-2"></p>
+                              </div>
+                            )}
+                            <div>
+                              {isShow ? (
+                                otpValid ? (
+                                  <button
+                                    onClick={loginUser}
+                                    disabled={
+                                      !isValidEmail || email.trim() === ""
+                                    }
+                                    className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                                  >
+                                    {Strings.Login}
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={verifyOTP}
+                                    disabled={
+                                      !isValidEmail || email.trim() === ""
+                                    }
+                                    className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                                  >
+                                    {Strings.Verify_OTP}
+                                  </button>
+                                )
+                              ) : (
+                                <button
+                                  onClick={handleSendOtp}
+                                  disabled={
+                                    !isValidEmail || email.trim() === ""
+                                  }
+                                  className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                                >
+                                  {Strings.Send_OTP}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     <button
                       className="ml-4 mr-2 p-0"
                       onClick={handleShareClick}
@@ -1072,7 +1378,7 @@ const ProductDetails = () => {
         </div>
       )}
       <div style={{ marginTop: isOpenReview ? nextDivMarginTop : "40px" }}>
-      <SimilarProductPage />
+        <SimilarProductPage />
       </div>
     </>
   );

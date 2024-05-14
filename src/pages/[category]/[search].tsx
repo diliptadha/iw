@@ -1,7 +1,10 @@
-import "../app/Listingpage.css";
+"use client";
+
+import "../../app/Listingpage.css";
 
 import { Images, Strings } from "@/constant";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 import { Footer } from "@/Component/footer";
 import Header from "@/Component/header";
@@ -76,10 +79,10 @@ interface filterData {
 
 interface Filters {
   selectedGender: string[];
-  selectedFrameStyle: string[];
-  selectedShape: string[];
   selectedFrameMaterial: string[];
-  selectedBrands: string[];
+  // selectedFrameStyle: string[];
+  // selectedBrands: string[];
+  // selectedShape: string[];
   sortBy: string;
 }
 
@@ -98,6 +101,8 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   );
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedShape, setSelectedShape] = useState<string[]>([]);
+  const [fillterurl, setFillterurl] = useState("");
+  const router = useParams();
 
   const handleCheckboxGender = (gender: string) => {
     const updatedGender = selectedGender.includes(gender)
@@ -139,36 +144,14 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
     updateUrl(updatedShapes, "shape");
   };
 
-  const searchTerm =
-    typeof localStorage !== "undefined"
-      ? localStorage.getItem("searchTerm") || ""
-      : "";
-
-  // const search1 =
-  //   typeof localStorage !== "undefined"
-  //     ? localStorage.getItem("search") || ""
-  //     : "";
+  const category = router?.category || "";
+  const Search = router?.search || "";
 
   const BASEURL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const updateUrl = (params: string[], paramName: string) => {
-    let baseUrl = "http://localhost:3000/advanced-search/#";
-    // const baseUrl = `http://localhost:3000/advanced-search?q=${encodeURIComponent(
-    //   searchTerm.replace(/\s+/g, "-")
-    // )}#`;
+    let baseUrl = `http://localhost:3000/${category}/${Search}/#`;
 
-    if (searchTerm) {
-      baseUrl = `http://localhost:3000/advanced-search?q=${encodeURIComponent(
-        searchTerm.toLowerCase().replace(/\s+/g, "-")
-      )}#`;
-    }
-    // else if (search1) {
-    //   baseUrl = `http://localhost:3000/advanced-search?q=${encodeURIComponent(
-    //     search1.toLowerCase().replace(/\s+/g, "-")
-    //   )}#`;
-    // }
-
-    // Retrieve existing parameters from URL
     const currentUrl = window.location.href;
     const existingParamsIndex = currentUrl.indexOf("#");
     const existingParams =
@@ -176,27 +159,21 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
         ? currentUrl.slice(existingParamsIndex + 1)
         : "";
 
-    // Split existing parameters into an array
     const existingParamsArray = existingParams ? existingParams.split("&") : [];
 
-    // Remove the parameter if it exists
     const updatedParamsArray = existingParamsArray.filter(
       (param) => !param.startsWith(`${paramName}=`)
     );
 
-    // Add the new parameter if it's not empty
     if (params.length > 0) {
       updatedParamsArray.push(`${paramName}=${params.join("=")}`);
     }
 
-    // Construct final URL with updated parameters
     const updatedParams = updatedParamsArray.join("&");
     const url = baseUrl + updatedParams.toLowerCase().replace(/\s+/g, "-");
 
-    // Update URL
     window.history.replaceState({}, "", url);
 
-    // Update localStorage
     if (params.length > 0) {
       localStorage.setItem(paramName, JSON.stringify(params));
     } else {
@@ -322,7 +299,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       let config = {
         method: "get",
         maxBodyLength: Infinity,
-        url: `${process.env.NEXT_PUBLIC_API_URL}product/getProductList?page=1&limit=2`,
+        url: "http://localhost:4000/product/getProductList?page=1&limit=2",
         headers: {},
       };
       const response = await axios.request(config);
@@ -372,7 +349,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
     };
   }, []);
 
-  const fetchFilterData = async () => {
+  const fetchFilterData = async (gender: any) => {
     try {
       const urlSelectedGender = encodeURIComponent(
         JSON.stringify(selectedGender)
@@ -386,48 +363,63 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       const urlSelectedMaterial = encodeURIComponent(
         JSON.stringify(selectedFrameMaterial)
       );
-      const urlSelectedBrands = encodeURIComponent(
-        JSON.stringify(selectedBrands)
+
+      const categoryArray = Array.isArray(category) ? category : [category];
+      // const searchArray = Array.isArray(gender) ? gender : [gender];
+
+      const urlSelectedCategory = encodeURIComponent(
+        JSON.stringify(categoryArray)
       );
+      console.log(urlSelectedCategory);
+      // const toCamelCase = (str: string) => {
+      //   return str.replace(/([-_][a-z])/gi, ($1) => {
+      //     return $1.toUpperCase().replace("-", "").replace("_", "");
+      //   });
+      // };
 
-      let url = `${process.env.NEXT_PUBLIC_API_URL}product/getFilterProductData?`;
+      // const genderArray = [gender.charAt(0).toUpperCase() + gender.slice(1)];
 
-      if (selectedGender.length > 0) {
-        url += `&gender=${urlSelectedGender}`;
-      }
+      const urlSelectedSearch = encodeURIComponent(JSON.stringify(gender));
 
-      if (selectedFrameStyle.length > 0) {
-        url += `&frameStyle=${urlSelectedStyle}`;
-      }
-
-      if (selectedShape.length > 0) {
-        url += `&frameShape=${urlSelectedShape}`;
-      }
+      // console.log("men", urlSelectedSearch);
+      // console.log("CATEGORY Array:", categoryArray);
+      // console.log("SEARCH Array:", searchArray);
+      let url = `${
+        process.env.NEXT_PUBLIC_API_URL
+      }product/getFilterProductData?page=1&limit=9&sortBy=${sortBy}&category=${urlSelectedCategory.replace(
+        /-/g,
+        " "
+      )}&gender=${urlSelectedSearch.replace(/-lens|lenses|frames|-/g, "")}`;
 
       if (selectedFrameMaterial.length > 0) {
-        url += `&frameMaterial=${urlSelectedMaterial}`;
+        const materialFilter = `&frameMaterial=${urlSelectedMaterial.replace(
+          /frames|-/g,
+          ""
+        )}`;
+        url += materialFilter;
       }
 
-      url += `&sortBy=${sortBy}&page=1&limit=9`;
-
-      // console.log("Selected Gender:", selectedGender);
-      // console.log("Selected Style:", selectedFrameStyle);
-      // console.log("Selected Shape:", selectedShape);
-      // console.log("Selected Material:", selectedFrameMaterial);
-      // console.log("Selected Brands:", selectedBrands);
-      // console.log("Selected sortBy:", sortBy);
+      // Check if selectedShape is present and add to URL
+      if (selectedShape.length > 0) {
+        const shapeFilter = `&frameShape=${urlSelectedShape.replace(
+          /frames|-/g,
+          ""
+        )}`;
+        url += shapeFilter;
+      }
 
       let config = {
         method: "get",
         maxBodyLength: Infinity,
-        // url: `${process.env.NEXT_PUBLIC_API_URL}product/getFilterProductData?gender=${urlSelectedGender}&frameStyle=${urlSelectedStyle}&frameShape=${urlSelectedShape}&frameMaterial=${urlSelectedMaterial}&sortBy=${sortBy}&page=1&limit=9`,
-        url: url,
+        url,
+        // url: `${process.env.NEXT_PUBLIC_API_URL}product/getFilterProductData?category=${urlSelectedCategory}&frameMaterial=${urlSelectedMaterial}&sortBy=${sortBy}&page=1&limit=9`,
         headers: {
           "Content-Type": "text/plain",
         },
       };
+      console.log(config.url, "url");
       const response = await axios.request(config);
-      console.log("FILTER DATAAAAAAAAA", JSON.stringify(response.data));
+      // console.log("FILTER DATAAAAAAAAA", JSON.stringify(response.data));
       setFilterData(response.data.productList.data);
       setFilterApplied(true);
     } catch (error) {
@@ -438,14 +430,24 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   useEffect(() => {
     const areFiltersSelected =
       selectedGender?.length > 0 ||
-      selectedFrameStyle?.length > 0 ||
       selectedShape?.length > 0 ||
       selectedFrameMaterial?.length > 0 ||
-      selectedBrands?.length > 0 ||
       sortBy !== "";
 
+    if (router?.search) {
+      if (selectedGender.length > 0) {
+        fetchFilterData(selectedGender);
+      }
+      const genderArray = [
+        router?.search[0].charAt(0).toUpperCase() + router?.search.slice(1),
+      ];
+
+      fetchFilterData(genderArray);
+    }
+    if (selectedGender.length > 0) {
+      fetchFilterData(selectedGender);
+    }
     if (areFiltersSelected) {
-      fetchFilterData();
       setFilterApplied(true);
     } else {
       setFilterData([]);
@@ -454,10 +456,11 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   }, [
     selectedGender,
     selectedFrameStyle,
-    selectedShape,
     selectedFrameMaterial,
     selectedBrands,
+    selectedShape,
     sortBy,
+    router,
   ]);
 
   const [currentPageFilter, setCurrentPageFilter] = useState(0);
@@ -472,7 +475,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   const getFilteredDataForCurrentPage = () => {
     const startIndex = currentPageFilter * perPage;
     const endIndex = startIndex + perPage;
-    return (filterApplied ? filterData : productList)?.slice(
+    return (filterApplied ? filterData : productList).slice(
       startIndex,
       endIndex
     );
@@ -669,7 +672,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       let config = {
         method: "post",
         maxBodyLength: Infinity,
-        url: `${process.env.NEXT_PUBLIC_API_URL}product/removeFavoriteProduct?userId=${userId}&productId=${productId}`,
+        url: `http://localhost:4000/product/removeFavoriteProduct?userId=${userId}&productId=${productId}`,
         headers: {},
         data: data,
       };
@@ -695,59 +698,20 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   }, [showLoginModal]);
 
   const [search, setSearch] = useState("");
-  const [trendingSearchData, setTrendingSearchData] = useState<any[]>([]);
 
-  const fetchTrendingSearch = async (search: string) => {
-    try {
-      const config = {
-        method: "get",
-        maxBodyLength: Infinity,
-        url: `${process.env.NEXT_PUBLIC_API_URL}home/trendingSearch?term=${search}`,
-        headers: {},
-      };
+  // const [searchQuery, setSearchQuery] = useState<{
+  //   category: string;
+  //   gender: string;
+  // } | null>(null);
 
-      const response = await axios.request(config);
-      console.log(JSON.stringify(response.data), "searchbox");
-      setTrendingSearchData(response.data.searchResult);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (search.trim() === "") {
-      fetchData();
-    } else {
-      fetchTrendingSearch(search);
-    }
-  }, [search]);
-
-  const pageCountTrending = Math.ceil(trendingSearchData.length / perPage);
-
-  const getTrendingDataForCurrentPage = () => {
-    const startIndex = currentPageTrending * perPage;
-    const endIndex = startIndex + perPage;
-    return trendingSearchData.slice(startIndex, endIndex);
-  };
-  const handlePageChangeTrending = (selected: {
-    selected: React.SetStateAction<number>;
-  }) => {
-    setCurrentPageTrending(selected.selected);
-  };
-
-  const [searchQuery, setSearchQuery] = useState<{
-    category: string;
-    gender: string;
-  } | null>(null);
-
-  useEffect(() => {
-    if (typeof localStorage !== "undefined") {
-      const storedSearchQuery = localStorage.getItem("searchQuery");
-      if (storedSearchQuery) {
-        setSearchQuery(JSON.parse(storedSearchQuery));
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (typeof localStorage !== "undefined") {
+  //     const storedSearchQuery = localStorage.getItem("searchQuery");
+  //     if (storedSearchQuery) {
+  //       setSearchQuery(JSON.parse(storedSearchQuery));
+  //     }
+  //   }
+  // }, []);
 
   return (
     <div className="list-bg max-w-screen-2xl m-auto">
@@ -949,15 +913,10 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
         </div>
         <div className="md:ml-3 xl:ml-7 w-full">
           <div className="flex items-center xs:justify-center md:justify-between xs:flex-col lg:flex-row xs:space-y-2 lg:space-y-0 text-black font-normal text-sm">
-            <p className="xs:order-1">Eyewear / Reading Glasses</p>
+            <p className="xs:order-1">{`Eyewear / ${category}`}</p>
             <p className="xs:order-3 lg:order-2">
-              {search === ""
-                ? `Showing product data ${
-                    getFilteredDataForCurrentPage()?.length
-                  } of ${
-                    (filterApplied ? filterData : productList)?.length
-                  } results`
-                : `Showing trending search data ${trendingSearchData.length} of ${trendingSearchData.length} results`}
+              Showing {(filterApplied ? filterData : productList)?.length} of{" "}
+              {(filterApplied ? filterData : productList)?.length} results
             </p>
             <div className="flex items-center xs:order-2 lg:order-3">
               <p className="text-black font-normal text-sm">
@@ -974,7 +933,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                 >
                   {selectedSortText}
                   <img
-                    src={Images.Downicon}
+                    src={Images.Downiconblack}
                     alt=""
                     height={9}
                     width={9}
@@ -1053,8 +1012,8 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
           <div
             className={`mt-7 md:mx-5 xl:mx-0 flex flex-wrap xs:justify-center lg:justify-start lg:gap-x-3 xl:gap-x-9`}
           >
-            {search.trim() === "" ? (
-              (filterApplied ? filterData : productList)?.length > 0 ? (
+            {/* {search.trim() === "" ? (
+              (filterApplied ? filterData : productList).length > 0 ? (
                 getFilteredDataForCurrentPage().map((product, index) => (
                   <Product
                     key={product.productId}
@@ -1125,46 +1084,44 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
               <p className="w-full flex justify-center items-center text-black font-semibold xs:text-sm md:text-base">
                 {Strings.SORRY_NO_PRODUCTS_FOUND}
               </p>
-            )}
+            )} */}
 
-            {/* {(filterApplied ? filterData : productList).length > 0 ? (
-              (filterApplied ? filterData : productList).map(
-                (product, index) => (
-                  <Product
-                    key={product.productId}
-                    image={product.data.productImage}
-                    title={product.data.title}
-                    description={product.data.description ?? ""}
-                    price={`₹${product.data.price}`}
-                    rating={product.data.rating}
-                    color={product.data.color}
-                    colors={product.data.color
-                      .replace(/[\[\]"\\]/g, "")
-                      .split(",")
-                      .map((otherColors) => otherColors.trim())}
-                    otherColors={
-                      product.data.otherColors
-                        ? product.data.otherColors.map((color: string) =>
-                            color.trim()
-                          )
-                        : []
-                    }
-                    productId={product.productId}
-                    variantImages={product.data.variantImage}
-                    showLoginModal={showLoginModal}
-                    isAuthenticated={isAuthenticated}
-                    handleToggleFavorite={() =>
-                      handleToggleFavorite(product.productId)
-                    }
-                    isFavorite={favoriteStatus[product.productId] || false}
-                  />
-                )
-              )
+            {(filterApplied ? filterData : productList)?.length > 0 ? (
+              getFilteredDataForCurrentPage().map((product, index) => (
+                <Product
+                  key={product.productId}
+                  image={product.data.productImage}
+                  title={product.data.title}
+                  description={product.data.description ?? ""}
+                  price={`₹${product.data.price}`}
+                  rating={product.data.rating}
+                  color={product.data.color}
+                  colors={product.data.color
+                    .replace(/[\[\]"\\]/g, "")
+                    .split(",")
+                    .map((otherColors) => otherColors.trim())}
+                  otherColors={
+                    product.data.otherColors
+                      ? product.data.otherColors.map((color: string) =>
+                          color.trim()
+                        )
+                      : []
+                  }
+                  productId={product.productId}
+                  variantImages={product.data.variantImage}
+                  showLoginModal={showLoginModal}
+                  isAuthenticated={isAuthenticated}
+                  handleToggleFavorite={() =>
+                    handleToggleFavorite(product.productId)
+                  }
+                  isFavorite={favoriteStatus[product.productId] || false}
+                />
+              ))
             ) : (
               <p className="w-full flex justify-center font-semibold xs:text-sm md:text-base">
-                No product details available.
+                {Strings.NO_PRODUCTS_AVAILABLE}
               </p>
-            )} */}
+            )}
 
             {showLoginModal && !isAuthenticated && (
               <div className="fixed left-0 top-0 z-50 flex h-full w-full items-start  justify-center  bg-gray-500 bg-opacity-[20%] backdrop-blur-sm ">
@@ -1253,127 +1210,65 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
           </div>
 
           <div>
-            {search === "" ? (
-              <ReactPaginate
-                previousLabel={
-                  <svg
-                    className="w-2.5 h-2.5 hover:text-PictonBlue"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M5 1 1 5l4 4"
-                    />
-                  </svg>
-                }
-                nextLabel={
-                  <svg
-                    className="w-2.5 h-2.5 hover:text-PictonBlue "
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m1 9 4-4-4-4"
-                    />
-                  </svg>
-                }
-                breakLabel={"..."}
-                pageCount={pageCountFilter}
-                onPageChange={handlePageChangeFilter}
-                containerClassName={
-                  " bg-gray-200 rounded-md h-10 pagination flex items-center text-sm justify-center"
-                }
-                pageClassName={
-                  " h-7 w-7 rounded-full flex items-center justify-center font-bold hover:font-extrabold"
-                }
-                activeClassName={"bg-PictonBlue text-white rounded-full"}
-                previousClassName={" px-[15px] text-lg"}
-                nextClassName={" px-[15px]"}
-                previousLinkClassName={
-                  currentPageFilter === 0
-                    ? "pointer-events-none opacity-50 bg-PictonBlue text-black hover:text-PictonBlue"
-                    : "bg-PictonBlue text-black hover:text-white"
-                }
-                nextLinkClassName={
-                  currentPageFilter === pageCountFilter - 1
-                    ? "pointer-events-none opacity-50 bg-PictonBlue text-black hover:text-PictonBlue"
-                    : "bg-PictonBlue text-black hover:text-white"
-                }
-                breakClassName={"border p-2 hover:bg-PictonBlue"}
-              />
-            ) : (
-              <ReactPaginate
-                previousLabel={
-                  <svg
-                    className="w-2.5 h-2.5 hover:text-PictonBlue"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M5 1 1 5l4 4"
-                    />
-                  </svg>
-                }
-                nextLabel={
-                  <svg
-                    className="w-2.5 h-2.5 hover:text-PictonBlue "
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m1 9 4-4-4-4"
-                    />
-                  </svg>
-                }
-                breakLabel={"..."}
-                pageCount={pageCountTrending}
-                onPageChange={handlePageChangeTrending}
-                containerClassName={
-                  " bg-gray-200 rounded-md h-10 pagination flex items-center text-sm justify-center"
-                }
-                pageClassName={
-                  " h-7 w-7 rounded-full flex items-center justify-center font-bold hover:font-extrabold"
-                }
-                activeClassName={"bg-PictonBlue text-white rounded-full"}
-                previousClassName={" px-[15px] text-lg"}
-                nextClassName={" px-[15px]"}
-                previousLinkClassName={
-                  currentPageTrending === 0
-                    ? "pointer-events-none opacity-50 bg-PictonBlue text-black hover:text-PictonBlue"
-                    : "bg-PictonBlue text-black hover:text-white"
-                }
-                nextLinkClassName={
-                  currentPageTrending === pageCountTrending - 1
-                    ? "pointer-events-none opacity-50 bg-PictonBlue text-black hover:text-PictonBlue"
-                    : "bg-PictonBlue text-black hover:text-white"
-                }
-                breakClassName={"border p-2 hover:bg-PictonBlue"}
-              />
-            )}
+            <ReactPaginate
+              previousLabel={
+                <svg
+                  className="w-2.5 h-2.5 hover:text-PictonBlue"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 1 1 5l4 4"
+                  />
+                </svg>
+              }
+              nextLabel={
+                <svg
+                  className="w-2.5 h-2.5 hover:text-PictonBlue "
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m1 9 4-4-4-4"
+                  />
+                </svg>
+              }
+              breakLabel={"..."}
+              pageCount={pageCountFilter}
+              onPageChange={handlePageChangeFilter}
+              containerClassName={
+                " bg-gray-200 rounded-md h-10 pagination flex items-center text-sm justify-center"
+              }
+              pageClassName={
+                " h-7 w-7 rounded-full flex items-center justify-center font-bold hover:font-extrabold"
+              }
+              activeClassName={"bg-PictonBlue text-white rounded-full"}
+              previousClassName={" px-[15px] text-lg"}
+              nextClassName={" px-[15px]"}
+              previousLinkClassName={
+                currentPageFilter === 0
+                  ? "pointer-events-none opacity-50 bg-PictonBlue text-black hover:text-PictonBlue"
+                  : "bg-PictonBlue text-black hover:text-white"
+              }
+              nextLinkClassName={
+                currentPageFilter === pageCountFilter - 1
+                  ? "pointer-events-none opacity-50 bg-PictonBlue text-black hover:text-PictonBlue"
+                  : "bg-PictonBlue text-black hover:text-white"
+              }
+              breakClassName={"border p-2 hover:bg-PictonBlue"}
+            />
           </div>
         </div>
       </div>
