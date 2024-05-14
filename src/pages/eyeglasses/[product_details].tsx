@@ -9,7 +9,7 @@ import Review from "@/Component/reviews";
 import GiveRatings from "@/Component/GiveRatings";
 import ShareOptions from "@/Component/share";
 import axios from "axios";
-import Header from "../header";
+import Header from "@/Component/header";
 import Link from "next/link";
 
 interface ProductData {
@@ -309,12 +309,6 @@ const ProductDetails = () => {
     }
   }, [isOpenWriteReview, open]);
 
-  // const handleReviewSubmit = () => {
-  //   setMessage("");
-  //   setRating(0);
-  //   setShowThankYouMessage(true);
-  // };
-
   const handleReviewSubmit = async () => {
     if (message.trim().length === 0 || rating === 0) {
       setShowWarning(message.trim().length === 0);
@@ -435,11 +429,12 @@ const ProductDetails = () => {
       setCartMessage(null);
     }, 5000);
   };
+  const [search, setSearch] = useState("");
 
   return (
     <>
       <div>
-        <Header />
+        <Header setSearch={setSearch} />
         {selectedSubProduct && (
           <div className="bg-white px-[2rem] py-[2rem] md:px-[3rem] xl:px-[6rem] p-black mx-auto- md:w-[50%]- lg:w-full-">
             <div className="p-1 bg-white w-full text-lato text-[14px] ">

@@ -17,7 +17,6 @@ import Frameforunisex from "@/Component/Frameforunisex";
 import Header from "@/Component/header";
 import Image from "next/image";
 import ImageCarousel from "@/Component/Carosel";
-import Link from "next/link";
 import ProductDetails from "./product_details";
 import StarRating from "@/Component/StarRating";
 import { Tab } from "@headlessui/react";
@@ -26,7 +25,7 @@ import axios from "axios";
 import { it } from "node:test";
 import { useEffect } from "react";
 import Link from "next/link";
-import { useCart } from "./CartContext";
+import { useCart } from "../Context/CartContext";
 import getCartQuantity from "@/utils/getCartQty";
 
 interface CustomerssayProps {

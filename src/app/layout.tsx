@@ -4,7 +4,7 @@ export const metadata = {
 };
 
 import "./globals.css";
-import { CartProvider } from "@/pages/CartContext";
+import { CartProvider } from "@/Context/CartContext";
 
 export default function RootLayout({
   children,

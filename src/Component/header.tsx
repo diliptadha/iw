@@ -1,11 +1,11 @@
 import { Images, Strings } from "@/constant";
 import LoginModal, { toggleModal } from "@/Component/LoginModal";
 import { useEffect, useRef, useState } from "react";
-
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/Context/CartContext";
 
 interface MenuItem {
   category: string;
@@ -32,26 +32,23 @@ interface MenuItem {
   updatedAt: string;
 }
 
-// interface HeaderProps {
-//   onChange: (search: string) => void;
-//   onSearch: () => void;
-//   showTrendingSearches: boolean;
-//   trendingSearches: string[];
-//   handleTrendingSearchClick: (term: string) => void;
-// }
-
 interface HeaderProps {
   setSearch: (search: string) => void;
 }
 
+interface CardData {
+  quantity: number;
+}
+
 const Header: React.FC<HeaderProps> = ({ setSearch }) => {
-  const router = useRouter();
+  const { cart }: any = useCart();
   const [selectedLanguage, setSelectedLanguage] = useState<string | null>(
     "English"
   );
   const [rotateImage, setRotateImage] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const [cartQuantity, setCartQuantity] = useState<CardData[]>([]);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [search, setSearchLocal] = useState("");
   const [showTrendingSearches, setShowTrendingSearches] = useState(false);
@@ -112,6 +109,31 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
           search.toLowerCase().replace(/\s+/g, "-")
         )}`
       );
+    }
+  };
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000002`
+      )
+      .then((response) => {
+        setCartQuantity(response?.data?.cartData);
+      })
+      .catch((error) => {
+        console.log("Error fetching data", error);
+      });
+  }, []);
+
+  const tQty = cartQuantity.reduce((total, ele) => total + ele.quantity, 0);
+
+  const router = useRouter();
+
+  const handleCartPage = () => {
+    if (tQty <= 0) {
+      router.push("/cartEmpty"); // Replace '/another-page' with the path to the page you want to navigate to// Return null or a loading state while navigating
+    } else {
+      router.push("/cart");
     }
   };
 
@@ -242,20 +264,6 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
   };
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
-  // useEffect(() => {
-  //   const handleScroll = (event) => {
-  //     if (menuRef.current && menuRef.current.contains(event.target)) {
-  //       event.stopPropagation();
-  //     }
-  //   };
-
-  //   document.addEventListener("scroll", handleScroll, { passive: false });
-
-  //   return () => {
-  //     document.removeEventListener("scroll", handleScroll);
-  //   };
-  // }, []);
 
   return (
     <>
@@ -684,15 +692,21 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                 <Image src={Images.Search} alt="/" height={18} width={18} />
               </button>
             </div>
-            <div className="relative">
-              <Image
-                src={Images.Bag}
-                alt="/"
-                height={21}
-                width={19}
-                className="xs:w-[16px] md:w-[18px]"
-              />
-              <p className="rounded-full xs:h-2 xs:w-2 md:h-3 md:w-3 bg-[#FF4307] absolute top-0 left-2.5"></p>
+            <div className="relative" onClick={handleCartPage}>
+              <button>
+                <Image
+                  src={Images.Bag}
+                  alt="/"
+                  height={21}
+                  width={19}
+                  className="w-[24px]"
+                />
+              </button>
+              <div className="rounded-full h-5 w-5 bg-[#FF4307] absolute top-0 right-[-7px] translate-x-0 translate-y-[-50%]">
+                <span className="absolute text-[11px] top-[50%] right-[50%] text-white translate-x-[50%] translate-y-[-50%]">
+                  {cart || tQty}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -783,16 +797,6 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     className="hover:text-PictonBlue cursor-pointer text-black font-medium text-sm"
                                   >
                                     <Link
-                                      //  {/* href={`${baseUrl}${encodeURIComponent(
-                                      //     item.category
-                                      //       .toLowerCase()
-                                      //       .replace(/\s+/g, "-")
-                                      //   )}/glasses-for-${gender
-                                      //     .toLowerCase()
-                                      //     .replace(/\s+/g, "-")}`} */}
-                                      // onClick={() =>
-                                      //   handleGenderClick(item.category, gender)
-                                      // }
                                       href={`/${item.category
                                         .toLowerCase()
                                         .replace(/\s+/g, "-")}/${gender
@@ -819,21 +823,6 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                   className="hover:text-PictonBlue cursor-pointer text-black font-medium text-sm"
                                 >
                                   <Link
-                                    // href={`${baseUrl}${encodeURIComponent(
-                                    //   item.category
-                                    //     .toLowerCase()
-                                    //     .replace(/\s+/g, "-")
-                                    // )}/${encodeURIComponent(
-                                    //   brand
-                                    //     .toLowerCase()
-                                    //     .replace(/\s+/g, "-")-
-                                    //     .replace(/&/g, "and")
-                                    // )}${
-                                    //   item.category.toLowerCase() ===
-                                    //   "contact lenses"
-                                    //     ? "-lens"
-                                    //     : "-glasses"
-                                    // }`}
                                     href={`/${item.category
                                       .toLowerCase()
                                       .replace(/\s+/g, "-")}/${brand
@@ -847,9 +836,6 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                         ? "-lens"
                                         : "-frames"
                                     }`}
-                                    // onClick={() =>
-                                    //   handleBrandsClick(item.category, brand)
-                                    // }
                                   >
                                     {brand.toUpperCase()}
                                   </Link>

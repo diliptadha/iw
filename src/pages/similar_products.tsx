@@ -41,7 +41,10 @@ const SimilarProductPage = () => {
     []
   );
 
-  const router = useRouter();
+  let productId: string | null;
+  useEffect(() => {
+    productId = localStorage.getItem("productId");
+  }, []);
 
   useEffect(() => {
     async function fetchSimilarProductData() {

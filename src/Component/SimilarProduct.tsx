@@ -32,12 +32,7 @@ const SimilarProduct: React.FC<SimilarProductsProps> = ({
   handleToggleFavorite,
   isFavorite,
 }) => {
-  // const [isFavorite, setIsFavorite] = useState(false);
   const [open, setOpen] = useState(false);
-
-  // const handleToggleFavorite = () => {
-  //   setIsFavorite((prevState) => !prevState);
-  // };
 
   useEffect(() => {
     if (open) {
@@ -75,7 +70,6 @@ const SimilarProduct: React.FC<SimilarProductsProps> = ({
               ))}
             </h1>
 
-            {/* <p className="font-bold text-sm text-black">{description} </p> */}
             <p className="font-extrabold text-md lg:text-2xl text-black mt-3">
               {salePrice}
             </p>

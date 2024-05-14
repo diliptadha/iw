@@ -17,7 +17,6 @@ const Frame: React.FC<FrameProps> = ({
   onClick,
   gender,
 }) => {
-  console.log(buttonText, gender, "href");
   return (
     <div className="flex-none px-2- md:px-0-">
       <div className="relative flex justify-center">

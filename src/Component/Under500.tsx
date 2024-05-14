@@ -2,7 +2,6 @@ import { Images, Strings } from "@/constant";
 import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
-import Link from "next/link";
 import StarRating from "./StarRating";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -23,24 +22,6 @@ interface Under500Props {
   category: any;
   useCart: any;
   size: any;
-}
-
-interface NewArrival {
-  NewArrival: any;
-  SKU: any;
-  brands: any;
-  productImage: any;
-  rating: any;
-  originalPrice: any;
-  salePrice: any;
-  isBestSeller: boolean;
-  subProductId: any;
-  productId: any;
-  frameColor: any;
-  frameShape: any;
-  gender: any;
-  category: any;
-  frameSize: any;
 }
 
 const Under500: React.FC<Under500Props> = ({
