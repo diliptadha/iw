@@ -57,18 +57,7 @@ const SimilarProduct: React.FC<SimilarProductsProps> = ({
           </div>
           <div className="h-[0.5px] bg-black rounded-xl mt-2"></div>
           <div className="absolute top-[96px] w-full mt-12">
-            <h1 className="font-extrabold text-[16px]">
-              {title?.split("-").map((part, index) => (
-                <React.Fragment key={index}>
-                  <span
-                    className={index === 0 ? "font-extrabold" : "font-normal"}
-                  >
-                    {part}
-                  </span>
-                  {index !== title.split("-").length - 1 && <br />}
-                </React.Fragment>
-              ))}
-            </h1>
+            <h1 className="font-normal text-[16px]">{title}</h1>
 
             <p className="font-extrabold text-md lg:text-2xl text-black mt-3">
               {salePrice}

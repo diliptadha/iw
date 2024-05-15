@@ -112,20 +112,33 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
     }
   };
 
+  let userId: string | null;
+  useEffect(() => {
+    userId = localStorage.getItem("userId");
+  }, []);
+
   useEffect(() => {
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000002`
+        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=${userId}`
       )
       .then((response) => {
         setCartQuantity(response?.data?.cartData);
+        console.log("resp", response?.data);
       })
       .catch((error) => {
         console.log("Error fetching data", error);
       });
   }, []);
 
-  const tQty = cartQuantity.reduce((total, ele) => total + ele.quantity, 0);
+  let tQty = 0; // Initialize tQty to 0
+
+  if (Array.isArray(cartQuantity)) {
+    tQty = cartQuantity.reduce((total, ele) => total + ele.quantity, 0);
+  } else {
+    console.error("cartQuantity is not an array."); // Log an error if cartQuantity is not an array
+  }
+  console.log("qty", tQty);
 
   const router = useRouter();
 
@@ -186,9 +199,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
       };
 
       const response = await axios.request(config);
-      // console.log("response", response.data.menu);
       setMenuData(response.data.menu);
-      // console.log("MENU DATA :", JSON.stringify(response.data.menu));
     } catch (error) {
       console.log(error);
     }
@@ -262,8 +273,6 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
     setMenuData(updatedMenuData);
     setRotateImage(!rotateImage);
   };
-
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   return (
     <>
@@ -631,7 +640,9 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
               </Link>
               <button
                 onClick={handleButtonClick}
-                className="text-black font-bold text-xs ml-2"
+                className={`text-black font-bold text-xs ml-2 ${
+                  isLoggedIn ? "cursor-default" : "cursor-pointer"
+                } `}
                 disabled={isLoggedIn}
               >
                 {Strings.SIGN_IN}

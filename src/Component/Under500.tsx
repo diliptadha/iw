@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
 import StarRating from "./StarRating";
-import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface Under500Props {
   image: string;
@@ -42,6 +42,8 @@ const Under500: React.FC<Under500Props> = ({
   size,
 }) => {
   const [open, setOpen] = useState(false);
+  const [userId, setUserId] = useState<string | null>();
+
   const openModal = () => {
     setOpen(!open);
   };
@@ -72,10 +74,10 @@ const Under500: React.FC<Under500Props> = ({
     router.push(actualRoute);
   };
 
-  const addToCart = async () => {
+  const addToCart = async (userId: any) => {
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=IK0000002`,
+        `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=${userId}`,
         {
           cartProducts: [
             {
@@ -100,6 +102,10 @@ const Under500: React.FC<Under500Props> = ({
       console.error("Error adding item to cart:", error);
     }
   };
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    setUserId(userId);
+  }, []);
 
   return (
     <div>
@@ -189,7 +195,7 @@ const Under500: React.FC<Under500Props> = ({
                         <StarRating rating={rating} />
                       </div>
                       <button
-                        onClick={addToCart}
+                        onClick={() => addToCart(userId)}
                         className="flex justify-center items-center border-black border w-[137px] h-[36px] rounded-[5px] font-bold text-sm text-black bg-white"
                       >
                         {Strings.ADD_TO_CART}

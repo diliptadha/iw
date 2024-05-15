@@ -18,7 +18,9 @@ const Carosel = () => {
 
   const fetchSliderData = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/home/slider");
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}home/slider`
+      );
       console.log("Slider", response.data);
       setSlider(response.data.sliderData);
     } catch (error) {

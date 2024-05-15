@@ -19,6 +19,7 @@ const LoginModal = ({
   setShowLoginModal,
   isLoggedIn,
   setIsLoggedIn,
+  
 }: {
   showLoginModal: boolean;
   setShowLoginModal: React.Dispatch<React.SetStateAction<boolean>>;

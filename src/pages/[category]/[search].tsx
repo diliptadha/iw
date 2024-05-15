@@ -299,7 +299,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       let config = {
         method: "get",
         maxBodyLength: Infinity,
-        url: "http://localhost:4000/product/getProductList?page=1&limit=2",
+        url: `${process.env.NEXT_PUBLIC_API_URL}product/getProductList?page=1&limit=2`,
         headers: {},
       };
       const response = await axios.request(config);
@@ -672,7 +672,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       let config = {
         method: "post",
         maxBodyLength: Infinity,
-        url: `http://localhost:4000/product/removeFavoriteProduct?userId=${userId}&productId=${productId}`,
+        url: `${process.env.NEXT_PUBLIC_API_URL}product/removeFavoriteProduct?userId=${userId}&productId=${productId}`,
         headers: {},
         data: data,
       };
@@ -1208,7 +1208,6 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
               </div>
             )}
           </div>
-
           <div>
             <ReactPaginate
               previousLabel={

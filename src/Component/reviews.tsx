@@ -1,7 +1,8 @@
-import React, { useState } from "react";
 import { Images, Strings } from "@/constant";
-import StarRating from "./StarRating";
+import React, { useState } from "react";
+
 import Image from "next/image";
+import StarRating from "./StarRating";
 
 interface ReviewProps {
   userImage: any;
@@ -57,7 +58,7 @@ const Review: React.FC<ReviewProps> = ({
           <StarRating rating={rating} />
         </div>
       </div>
-      <p className="review-text mt-2 mb-6">{comment}</p>
+      <p className="review-text mt-2 mb-6 mx-4">{comment}</p>
     </div>
   );
 };

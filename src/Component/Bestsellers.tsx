@@ -43,6 +43,7 @@ const Bestsellers: React.FC<BestsellersProps> = ({
   size,
 }) => {
   const [open, setOpen] = useState(false);
+  const [userId, setUserId] = useState<string | null>();
 
   const openModal = () => {
     setOpen(!open);
@@ -74,10 +75,10 @@ const Bestsellers: React.FC<BestsellersProps> = ({
     router.push(actualRoute);
   };
 
-  const addToCart = async () => {
+  const addToCart = async (userId: any) => {
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=IK0000002`,
+        `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=${userId}`,
         {
           cartProducts: [
             {
@@ -102,6 +103,10 @@ const Bestsellers: React.FC<BestsellersProps> = ({
       console.error("Error adding item to cart:", error);
     }
   };
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    setUserId(userId);
+  }, []);
 
   return (
     <div>
@@ -188,7 +193,7 @@ const Bestsellers: React.FC<BestsellersProps> = ({
                         <StarRating rating={rating} />
                       </div>
                       <button
-                        onClick={addToCart}
+                        onClick={() => addToCart(userId)}
                         className="flex justify-center items-center border-black border w-[137px] h-[36px] rounded-[5px] font-bold text-sm text-black bg-white"
                       >
                         {Strings.ADD_TO_CART}

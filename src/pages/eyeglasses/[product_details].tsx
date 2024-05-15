@@ -1,17 +1,20 @@
 "use client";
 
-import { Images, Strings } from "@/constant";
 import "../../../src/app/globals.css";
-import React, { useState, useRef, useEffect } from "react";
-import Image from "next/image";
-import SimilarProductPage from "../similar_products";
-import Review from "@/Component/reviews";
-import GiveRatings from "@/Component/GiveRatings";
-import ShareOptions from "@/Component/share";
-import axios from "axios";
-import Header from "@/Component/header";
-import Link from "next/link";
 
+import { Images, Strings } from "@/constant";
+import React, { useEffect, useRef, useState } from "react";
+
+import GiveRatings from "@/Component/GiveRatings";
+import Header from "@/Component/header";
+import Image from "next/image";
+import Link from "next/link";
+import LoginModal from "@/Component/LoginModal";
+import Review from "@/Component/reviews";
+import ShareOptions from "@/Component/share";
+import SimilarProductPage from "../similar_products";
+import axios from "axios";
+import { useRouter } from "next/router";
 interface ProductData {
   ProductData: any;
   FilteredSubProductData: any;
@@ -45,6 +48,7 @@ interface ExpectedDelivery {
 }
 
 interface Recent {
+  length: number;
   userImage: any;
   fName: any;
   lName: any;
@@ -99,6 +103,14 @@ const ProductDetails = () => {
   let productId: string | null;
   let subProductId: string | null;
 
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !!localStorage.getItem("userId");
+    }
+    return false;
+  });
+
   useEffect(() => {
     productId = localStorage.getItem("productId");
     subProductId = localStorage.getItem("subProductId");
@@ -108,23 +120,28 @@ const ProductDetails = () => {
   }, []);
 
   const productdata = async () => {
-    await axios
-      .get(
+    if (!productId || !subProductId) {
+      console.error("productId or subProductId is null.");
+      return;
+    }
+
+    try {
+      const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}product/getProductData?productId=${productId}&subProductId=${subProductId}`,
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
-      )
-      .then((response) => {
-        const responseData = response.data;
-        if (responseData.productData) {
-          setProductData(responseData.productData);
-          setSelectedSubProduct(responseData.productData); // Set selected subProduct initially
-        }
-      })
-      .catch((error) => console.error("Error fetching product data:", error));
+      );
+      const responseData = response.data;
+      if (responseData.productData) {
+        setProductData(responseData.productData);
+        setSelectedSubProduct(responseData.productData); // Set selected subProduct initially
+      }
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+    }
   };
 
   const handleColorClick = (subProduct: { subProductId: any }) => {
@@ -143,21 +160,21 @@ const ProductDetails = () => {
     }
   };
 
-  useEffect(() => {
-    async function fetchRecentReviews() {
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}home/getRecenetReviews`
-        );
-        const recentReviewsData = response.data.recentReviews;
-        setRecentReviews(recentReviewsData.slice(0, 2));
-      } catch (error) {
-        console.error("Error fetching recent reviews:", error);
-      }
-    }
+  // useEffect(() => {
+  //   async function fetchRecentReviews() {
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.NEXT_PUBLIC_API_URL}home/getRecenetReviews`
+  //       );
+  //       const recentReviewsData = response.data.recentReviews;
+  //       setRecentReviews(recentReviewsData.slice(0, 2));
+  //     } catch (error) {
+  //       console.error("Error fetching recent reviews:", error);
+  //     }
+  //   }
 
-    fetchRecentReviews();
-  }, []);
+  //   fetchRecentReviews();
+  // }, []);
 
   const handleSubmit = async () => {
     if (pincode.length !== 6 || isNaN(parseInt(pincode, 10))) {
@@ -186,9 +203,9 @@ const ProductDetails = () => {
     }
   };
 
-  const handleToggleFavorite = () => {
-    setIsFavorite((prevState) => !prevState);
-  };
+  // const handleToggleFavorite = () => {
+  //   setIsFavorite((prevState) => !prevState);
+  // };
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -196,10 +213,6 @@ const ProductDetails = () => {
 
   const toggleDropdownReview = () => {
     setIsOpenReview(!isOpenReview);
-  };
-
-  const openWriteReviewModal = () => {
-    setIsOpenWriteReview(true);
   };
 
   const closeWriteReviewModal = () => {
@@ -316,15 +329,16 @@ const ProductDetails = () => {
     } else {
       try {
         const response = await axios.post(
-          "http://localhost:4000/home/addReview?userId=IK0000001&productId=P0000001",
+          `${process.env.NEXT_PUBLIC_API_URL}home/addReview?userId=${userId}&productId=${productId}`,
           {
-            fname: "John", // Adjust this to fetch the actual user's first name
-            lname: "Doe", // Adjust this to fetch the actual user's last name
+            fname: "John",
+            lname: "Doe",
             rating: rating,
             comment: message,
           }
         );
         console.log("Review submitted successfully:", response.data);
+
         setMessage("");
         setRating(0);
         setShowThankYouMessage(true);
@@ -358,32 +372,42 @@ const ProductDetails = () => {
     window.open(url, "_blank");
   };
 
+  useEffect(() => {
+    var userId: string | null;
+    userId = localStorage.getItem("userId");
+  }, []);
+
   const addToCart = async () => {
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=IK0000002`,
-        {
-          cartProducts: [
-            {
-              productId: selectedSubProduct?.ProductData.productId,
-              subProductId: selectedSubProduct?.ProductData.subProductId,
-              size: selectedSubProduct?.ProductData.frameSize,
-              quantity: 1,
-              salePrice: selectedSubProduct?.ProductData.salePrice,
-              originalPrice: selectedSubProduct?.ProductData.originalPrice,
-              productImage: selectedSubProduct?.ProductData.productImage,
-            },
-          ],
-        },
-
-        {
-          headers: {
-            "Content-Type": "application/json",
+      if (!userId) {
+        setShowLoginModal(true);
+        return;
+      } else {
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=${userId}`,
+          {
+            cartProducts: [
+              {
+                productId: selectedSubProduct?.ProductData.productId,
+                subProductId: selectedSubProduct?.ProductData.subProductId,
+                size: selectedSubProduct?.ProductData.frameSize,
+                quantity: 1,
+                salePrice: selectedSubProduct?.ProductData.salePrice,
+                originalPrice: selectedSubProduct?.ProductData.originalPrice,
+                productImage: selectedSubProduct?.ProductData.productImage,
+              },
+            ],
           },
-        }
-      );
-      showCartMessage("Product added to cart successfully!");
-      window.location.reload();
+
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        showCartMessage("Product added to cart successfully!");
+        window.location.reload();
+      }
     } catch (error) {
       console.error("Error adding item to cart:", error);
     }
@@ -393,8 +417,12 @@ const ProductDetails = () => {
 
   const handleBuyNow = async () => {
     try {
+      if (!userId) {
+        setShowLoginModal(true);
+        return;
+      }
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=IK0000002`,
+        `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=${userId}`,
         {
           cartProducts: [
             {
@@ -416,6 +444,7 @@ const ProductDetails = () => {
         }
       );
       showCartMessage("Product added to cart successfully!");
+      window.location.href = "/cart";
     } catch (error) {
       console.error("Error adding item to cart:", error);
     }
@@ -431,6 +460,237 @@ const ProductDetails = () => {
   };
   const [search, setSearch] = useState("");
 
+  const [review, setReview] = useState<Recent[]>([]);
+
+  const fetchReviews = async () => {
+    try {
+      console.log("Product ID:", productId);
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}home/getReviewsByProductId?productId=${productId}`,
+        headers: {},
+      };
+
+      const response = await axios.request(config);
+      console.log(JSON.stringify(response.data));
+      setReview(response.data.productReviews);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  const [isValidEmail, setIsValidEmail] = useState(true);
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpValid, setOtpValid] = useState(false);
+  const [isShow, setIsShow] = useState(false);
+  const [lastInteractedProductId, setLastInteractedProductId] = useState<
+    string | null
+  >(null);
+  const [showLoginModal1, setShowLoginModal1] = useState(false);
+
+  const [favoriteStatus, setFavoriteStatus] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const storedUserId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+
+  const [userId, setUserId] = useState<string | null>(storedUserId);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!userId);
+
+  useEffect(() => {
+    if (userId !== null) {
+      localStorage.setItem("userId", userId);
+    } else {
+      localStorage.removeItem("userId");
+    }
+  }, [userId]);
+
+  const handleEmailChange = (e: { target: { value: any } }) => {
+    const emailValue = e.target.value;
+    setEmail(emailValue);
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidEmail = emailRegex.test(emailValue);
+    setIsValidEmail(isValidEmail);
+  };
+
+  const handleOtpChange = (e: { target: { value: any } }) => {
+    const otpValue = e.target.value;
+
+    if (!isNaN(otpValue)) {
+      setOtp(otpValue);
+    }
+  };
+
+  const handleSendOtp = async () => {
+    try {
+      let data = JSON.stringify({
+        emailId: email,
+      });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}user/sendOTP?emailId=${email}`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+      const response = await axios.request(config);
+      console.log(JSON.stringify(response.data));
+      setIsShow(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const verifyOTP = async () => {
+    try {
+      let data = JSON.stringify({
+        Otp: otp,
+      });
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}user/verifyOTP`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+      const response = await axios.request(config);
+      console.log(JSON.stringify(response.data));
+      setOtpValid(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (userId && lastInteractedProductId) {
+      addToFavorite(lastInteractedProductId, userId);
+    }
+  }, [userId, lastInteractedProductId]);
+
+  const loginUser = async () => {
+    try {
+      let data = JSON.stringify({
+        emailId: email,
+      });
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}user/login`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      const response = await axios.request(config);
+      console.log(JSON.stringify(response.data));
+      const userData = response.data.signInData.userData;
+      const accessToken = response.data.signInData.access_token;
+
+      localStorage.setItem("userId", userData.userId);
+      localStorage.setItem("accessToken", accessToken);
+      setShowLoginModal1(false);
+      setIsAuthenticated(true);
+      setUserId(response.data.signInData.userData.userId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addToFavorite = async (productId: string, userId: string) => {
+    try {
+      let data = JSON.stringify({
+        userId: userId,
+        productId: productId,
+      });
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}product/addToFavorite?userId=${userId}&productId=${productId}`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+      const response = await axios.request(config);
+      console.log(
+        "addToFavorite DATA:",
+        data,
+        JSON.stringify(response.data.similarProductData)
+      );
+
+      setFavoriteStatus((prevState) => ({
+        ...prevState,
+        [productId]: !prevState[productId],
+      }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const removeFavoriteProduct = async (productId: string, userId: string) => {
+    try {
+      let data = JSON.stringify({
+        userId: userId,
+        productId: productId,
+      });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}product/removeFavoriteProduct?userId=${userId}&productId=${productId}`,
+        headers: {},
+        data: data,
+      };
+
+      const response = await axios.request(config);
+      console.log(JSON.stringify(response.data.similarProductData));
+      setFavoriteStatus((prevState) => {
+        const newState = { ...prevState };
+        delete newState[productId];
+        return newState;
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleToggleFavorite = (productId: any) => {
+    if (!isAuthenticated) {
+      setShowLoginModal1(true);
+      setLastInteractedProductId(productId);
+      return;
+    }
+    if (userId) {
+      if (favoriteStatus[productId]) {
+        removeFavoriteProduct(productId, userId);
+      } else {
+        addToFavorite(productId, userId);
+      }
+    } else {
+      console.log("User ID is null. Cannot add to favorites.");
+    }
+  };
+
+  useEffect(() => {
+    if (showLoginModal1) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [showLoginModal1]);
+
   return (
     <>
       <div>
@@ -439,8 +699,10 @@ const ProductDetails = () => {
           <div className="bg-white px-[2rem] py-[2rem] md:px-[3rem] xl:px-[6rem] p-black mx-auto- md:w-[50%]- lg:w-full-">
             <div className="p-1 bg-white w-full text-lato text-[14px] ">
               <span>Eyewear </span> <span> /</span>
-              <span> Reading Glasses </span> <span> /</span>
-              <span> Unisex </span> <span> /</span>
+              <span> {selectedSubProduct.ProductData?.category} </span>{" "}
+              <span> /</span>
+              <span> {selectedSubProduct.ProductData?.gender} </span>{" "}
+              <span> /</span>
               <span> {selectedSubProduct.ProductData?.productId} </span>{" "}
               <span> / </span>
               <span className="text-PictonBlue">
@@ -520,8 +782,23 @@ const ProductDetails = () => {
                       {selectedSubProduct.ProductData?.productId}
                     </p>
                     <div className="flex justify-end">
-                      <button className="" onClick={handleToggleFavorite}>
-                        {isFavorite ? (
+                      <button
+                        className=""
+                        onClick={() =>
+                          handleToggleFavorite(
+                            selectedSubProduct.ProductData?.productId
+                          )
+                        }
+                      >
+                        {favoriteStatus[
+                          selectedSubProduct.ProductData?.productId
+                            ? Array.isArray(
+                                selectedSubProduct.ProductData?.productId
+                              )
+                              ? selectedSubProduct.ProductData?.productId[0]
+                              : selectedSubProduct.ProductData?.productId
+                            : ""
+                        ] ? (
                           <Image
                             src={Images.WISHLIST}
                             alt="/"
@@ -537,6 +814,96 @@ const ProductDetails = () => {
                           />
                         )}
                       </button>
+                      {showLoginModal1 && !isAuthenticated && (
+                        <div className="fixed left-0 top-0 z-50 flex h-full w-full items-start  justify-center  bg-gray-500 bg-opacity-[20%] backdrop-blur-sm ">
+                          <div className=" mt-10 items-center- justify-center- flex- rounded-md bg-white p-5 xs:h-[270px]- xs:w-[310px] md:h-[270px]- md:w-[460px] ">
+                            <div>
+                              <div className="flex justify-between">
+                                <h1 className="text-base font-medium text-black">
+                                  {Strings.SIGN_IN}
+                                </h1>
+                                <button
+                                  className="outline-none"
+                                  onClick={() => setShowLoginModal1(false)}
+                                >
+                                  <Image
+                                    src={Images.Closeblack}
+                                    alt=""
+                                    height={20}
+                                    width={20}
+                                  />
+                                </button>
+                              </div>
+                              <p className="border my-4"></p>
+                              <h1 className="text-base font-normal text-black">
+                                {Strings.Email}
+                              </h1>
+                              <input
+                                id="emailInput"
+                                className="outline-none w-full"
+                                type="email"
+                                value={email}
+                                onChange={handleEmailChange}
+                                disabled={isShow}
+                              />
+                              {!isValidEmail && (
+                                <p className="text-red-500 text-xs">
+                                  Please enter a valid email address.
+                                </p>
+                              )}
+                              <p className="border border-black my-2"></p>
+                              {isShow && (
+                                <div className="mt-4">
+                                  <h1 className="text-base font-normal text-black">
+                                    {Strings.OTP}
+                                  </h1>
+                                  <input
+                                    className="outline-none w-full"
+                                    value={otp}
+                                    onChange={handleOtpChange}
+                                  />
+                                  <p className="border border-black mt-2"></p>
+                                </div>
+                              )}
+                              <div>
+                                {isShow ? (
+                                  otpValid ? (
+                                    <button
+                                      onClick={loginUser}
+                                      disabled={
+                                        !isValidEmail || email.trim() === ""
+                                      }
+                                      className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                                    >
+                                      {Strings.Login}
+                                    </button>
+                                  ) : (
+                                    <button
+                                      onClick={verifyOTP}
+                                      disabled={
+                                        !isValidEmail || email.trim() === ""
+                                      }
+                                      className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                                    >
+                                      {Strings.Verify_OTP}
+                                    </button>
+                                  )
+                                ) : (
+                                  <button
+                                    onClick={handleSendOtp}
+                                    disabled={
+                                      !isValidEmail || email.trim() === ""
+                                    }
+                                    className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                                  >
+                                    {Strings.Send_OTP}
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                       <button
                         className="ml-4 mr-2 p-0"
                         onClick={handleShareClick}
@@ -600,18 +967,26 @@ const ProductDetails = () => {
                   </div>
 
                   {/* addto cart button  */}
-                  <div className="mt-2 lg:mt-4 flex flex-row">
+                  <div className="mt-2 lg:mt-4 flex flex-row items-center">
                     <button
-                      onClick={addToCart}
-                      className="w-[136px] h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border-2 border-black outline-none px-2 lg:px-4 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold"
+                      onClick={() => addToCart()}
+                      className="w-[136px] h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border border-black outline-none px-2 lg:px-4 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold"
                     >
                       {Strings.ADD_TO_CART}
                     </button>
-                    <Link onClick={handleBuyNow} href="/cart">
-                      <button className="ml-2 lg:ml-4 w-[136px] h-38 rounded-md text-sm text-white bg-black flex items-center justify-center border-none px-2 lg:px-4 py-2 hover:bg-PictonBlue">
-                        {Strings.BUY_NOW}
-                      </button>
-                    </Link>
+                    <LoginModal
+                      showLoginModal={showLoginModal}
+                      setShowLoginModal={setShowLoginModal}
+                      isLoggedIn={isLoggedIn}
+                      setIsLoggedIn={setIsLoggedIn}
+                    />
+
+                    <button
+                      onClick={() => handleBuyNow()}
+                      className="ml-2 lg:ml-4 w-[136px] h-38 rounded-md text-sm text-white bg-black flex items-center justify-center border-none px-2 lg:px-4 py-2 hover:bg-PictonBlue"
+                    >
+                      {Strings.BUY_NOW}
+                    </button>
                   </div>
 
                   {cartMessage && (
@@ -881,31 +1256,36 @@ const ProductDetails = () => {
                       className="absolute right-0 w-full lg:w-[600px] xl:w-[775px]"
                       ref={reviewContainerRef}
                     >
-                      {recentReviews
-                        ?.slice(0, 2)
-                        ?.map((review: any, index: any) => (
+                      {review?.slice(0, 2)?.map((review: any, index: any) => {
+                        const createdAtDate = new Date(review?.createdAt);
+
+                        const formattedDate = createdAtDate
+                          .toISOString()
+                          .split("T")[0];
+                        return (
                           <div key={index}>
                             <Review
                               userImage={review?.userImage}
                               fName={review?.fName}
                               lName={review?.lName}
-                              createdAt={review?.createdAt}
+                              createdAt={formattedDate}
                               rating={review?.rating}
                               comment={review?.comment}
                               index={index}
-                              totalReviews={recentReviews.length}
+                              totalReviews={review.length}
                             />
                             {index !== 1 && (
                               <div className="h-[0.5px] bg-black rounded-xl mt-[2px]"></div>
                             )}
                           </div>
-                        ))}
+                        );
+                      })}
                     </div>
                   )}
                   {open && (
                     <div className="fixed top-0 left-0 z-50 flex justify-center items-center h-full w-full bg-gray-500 bg-opacity-80">
-                      <div className="relative bg-white h-[500px] w-[300px] md:w-[600px] lg:w-[700px] lg:h- overflow-y-auto py-4 px-4 md:py-8 md:px-16 rounded">
-                        <div className="flex flex-row justify-between">
+                      <div className="relative bg-white h-[500px] w-[300px] md:w-[600px] lg:w-[700px] lg:h- overflow-y-auto py-4  md:py-5  rounded">
+                        <div className="flex flex-row justify-between px-4 md:px-16">
                           <p className=" text-lg w-full md:text-xl lg:text-2xl font-bold">
                             {Strings.REVIEWS}
                           </p>
@@ -925,24 +1305,32 @@ const ProductDetails = () => {
                             </button>
                           </div>
                         </div>
-                        <div>
-                          {recentReviews?.slice(2)?.map((review, index) => (
-                            <div key={index}>
-                              <Review
-                                userImage={review?.userImage}
-                                fName={review?.fName}
-                                lName={review?.lName}
-                                createdAt={review?.createdAt}
-                                rating={review?.rating}
-                                comment={review?.comment}
-                                index={index}
-                                totalReviews={recentReviews.length}
-                              />
-                              {index < recentReviews.length - 1 && (
-                                <div className="h-[0.5px] bg-black rounded-xl mt-[2px]"></div>
-                              )}
-                            </div>
-                          ))}
+                        <div className="bg-[#f2f2f2] shadow-md rounded-md mt-2 px-4 py-[1px] mb-1">
+                          {review?.slice(2)?.map((review, index) => {
+                            const createdAtDate = new Date(review?.createdAt);
+
+                            const formattedDate = createdAtDate
+                              .toISOString()
+                              .split("T")[0];
+
+                            return (
+                              <div key={index}>
+                                <Review
+                                  userImage={review?.userImage}
+                                  fName={review?.fName}
+                                  lName={review?.lName}
+                                  createdAt={formattedDate}
+                                  rating={review?.rating}
+                                  comment={review?.comment}
+                                  index={index}
+                                  totalReviews={review.length}
+                                />
+                                {index < review.length - 1 && (
+                                  <div className="h-[0.5px] bg-black rounded-xl mt-[2px]"></div>
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     </div>
@@ -957,7 +1345,9 @@ const ProductDetails = () => {
                 >
                   <button
                     onClick={openModal}
-                    className="w-[126px] h-[34px]  md:w-[136px] md:h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border-2 border-black outline-none px-1 lg:px-2 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold"
+                    className={`${
+                      review.length <= 2 ? "hidden" : "flex"
+                    } w-[126px] h-[34px]  md:w-[136px] md:h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border-2 border-black outline-none px-1 lg:px-2 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold`}
                   >
                     {Strings.MORE_REVIEWS}
                   </button>
@@ -969,7 +1359,7 @@ const ProductDetails = () => {
                           <p className=" text-lg md:text-xl lg:text-2xl font-bold">
                             {Strings.WRITE_A_REVIEW}
                           </p>
-                          <div className="fixed ml-[240px] md:ml-[440px] lg:ml-[440px] ">
+                          <div className="fixed ml-[240px] md:ml-[440px] lg:ml-[440px] lg:mt-[-20px]">
                             {" "}
                             <button
                               onClick={closeWriteReviewModal}
@@ -1030,7 +1420,7 @@ const ProductDetails = () => {
                                 handleReviewSubmit();
                               }
                             }}
-                            className={`  mt-5 hover:text-PictonBlue hover:border-PictonBlue rounded-full  border-2 bg-gradient-to-t px-5 py-2 text-md md:text-lg font-semibold  border-black border:red-600 dark:text-white`}
+                            className="text-black  mt-5 hover:text-PictonBlue hover:border-PictonBlue rounded-full  border-2 bg-gradient-to-t px-5 py-2 text-md md:text-lg font-semibold  border-black border:red-600 "
                           >
                             {Strings.SUBMIT}
                           </button>
@@ -1064,11 +1454,23 @@ const ProductDetails = () => {
                     </div>
                   )}
                   <button
-                    onClick={openWriteReviewModal}
+                    onClick={() => {
+                      if (!isLoggedIn) {
+                        setShowLoginModal(true);
+                      } else {
+                        setIsOpenWriteReview(true);
+                      }
+                    }}
                     className="ml-2 lg:ml-4 w-[126px] h-[34px]  md:w-[136px] md:h-38 rounded-md text-sm text-white bg-black flex items-center justify-center border-none px-1 lg:px-2 py-2 hover:bg-PictonBlue"
                   >
                     {Strings.WRITE_A_REVIEW}
                   </button>
+                  <LoginModal
+                    showLoginModal={showLoginModal}
+                    setShowLoginModal={setShowLoginModal}
+                    isLoggedIn={isLoggedIn}
+                    setIsLoggedIn={setIsLoggedIn}
+                  />
                 </div>
               )}
               {selectedSubProduct?.ProductData?.boxImage?.length > 0 && (

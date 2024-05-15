@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
 import "../app/globals.css";
+
 import { Images, Strings } from "@/constant";
-import axios from "axios";
-import { useRouter } from "next/router";
+import React, { useEffect, useId, useState } from "react";
+
 import CartEmpty from "./cartEmpty";
 import HeaderHeadline from "./header-headline";
+import axios from "axios";
+import { useRouter } from "next/router";
 
 interface CardData {
   id: any;
@@ -45,17 +47,18 @@ const ProductADD = () => {
   const [handleDel, setHandleDel] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [isCartEmpty, setIsCartEmpty] = useState(false);
+  const [userId, setUserId] = useState<string | null>();
 
   // Cart Data Api
-  const gettingData = () => {
+  const gettingData = (userId: any) => {
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000002`
+        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=${userId}`
       )
       .then((response) => {
         const cartData = response?.data?.cartData;
         setCardDetails(cartData);
-        setIsCartEmpty(cartData.length === 0);
+        // setIsCartEmpty(cartData.length === 0);
       })
       .catch((error) => {
         console.log("Error fetching data", error);
@@ -63,32 +66,32 @@ const ProductADD = () => {
   };
 
   // Calculate total original price
-  const toOrPr = cardDetails.reduce(
+  let toOrPr = cardDetails.reduce(
     (total, ele) => total + ele.originalPrice * ele.quantity,
     0
   );
 
   // Calculate total discounted price
-  const toDiPr = cardDetails.reduce(
+  let toDiPr = cardDetails.reduce(
     (total, ele) => total + ele.salePrice * ele.quantity,
     0
   );
 
   // Calculate total discount
-  const toDi = toOrPr - toDiPr;
+  let toDi = toOrPr - toDiPr;
 
   // Calculate total price after discount
-  const toDiAfPr = toOrPr - toDi;
+  let toDiAfPr = toOrPr - toDi;
 
   const tQty = cardDetails.reduce((total, ele) => total + ele.quantity, 0);
 
   const router = useRouter();
 
   // API of Address
-  const fetchAddressData = () => {
+  const fetchAddressData = (userId: any) => {
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_URL}user/getAddressDataById?userId=IK0000001`
+        `${process.env.NEXT_PUBLIC_API_URL}user/getAddressDataById?userId=${userId}`
       )
       .then((response) => {
         setAddGet(response?.data?.addressList);
@@ -97,11 +100,6 @@ const ProductADD = () => {
         console.log("Error fetching address data", error);
       });
   };
-
-  useEffect(() => {
-    fetchAddressData();
-    gettingData();
-  }, []);
 
   const handleProceedToCheckout = () => {
     if (addGet.length > 0) {
@@ -114,19 +112,19 @@ const ProductADD = () => {
       });
     }
   };
-
+  console.log(userId, "usserid");
   const handleIncrementButtonClick = (productId: any, quantity: number) => {
     axios
       .post(
         `${
           process.env.NEXT_PUBLIC_API_URL
-        }product/updateCartProduct?userId=IK0000003&cartProductid=${productId}&quantity=${
+        }product/updateCartProduct?userId=${userId}&cartProductid=${productId}&quantity=${
           quantity + 1
         }`
       )
       .then((response) => {
         setQuantity(quantity + 1);
-        gettingData();
+        gettingData(userId);
       })
       .catch((error) => {
         console.log("Error updating product quantity:", error);
@@ -139,13 +137,13 @@ const ProductADD = () => {
         .post(
           `${
             process.env.NEXT_PUBLIC_API_URL
-          }product/updateCartProduct?userId=IK0000003&cartProductid=${productId}&quantity=${
+          }product/updateCartProduct?userId=${userId}&cartProductid=${productId}&quantity=${
             quantity - 1
           }`
         )
         .then((response) => {
           setQuantity(quantity - 1);
-          gettingData();
+          gettingData(userId);
         })
         .catch((error) => {
           console.log("Error updating product quantity:", error);
@@ -159,12 +157,12 @@ const ProductADD = () => {
     // Make a delete request to the backend API to delete the address
     axios
       .post(
-        `${process.env.NEXT_PUBLIC_API_URL}product/removeCartData?userId=IK0000003&cartId=${selectedAddressId}`
+        `${process.env.NEXT_PUBLIC_API_URL}product/removeCartData?userId=${userId}&cartId=${selectedAddressId}`
       )
       .then((response) => {
         // After successful deletion, fetch the updated address data
-        fetchAddressData();
-        gettingData();
+        fetchAddressData(userId);
+        gettingData(userId);
         setHandleDel(false);
       })
       .catch((error) => {
@@ -189,6 +187,19 @@ const ProductADD = () => {
         console.log("Error fetching data", error);
       });
   }, []);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    setUserId(userId);
+    gettingData(userId);
+    fetchAddressData(userId);
+  }, []);
+
+  // useEffect(() => {
+  // }, []);
+
+  // useEffect(() => {
+  // }, []);
 
   return (
     <>

@@ -1,8 +1,9 @@
+import { useCallback, useEffect, useState } from "react";
+import useRazorpay, { RazorpayOptions } from "react-razorpay";
+
 import { Images } from "@/constant";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
-import useRazorpay, { RazorpayOptions } from "react-razorpay";
 
 export default function RazorPage({
   onCancel,
@@ -16,6 +17,7 @@ export default function RazorPage({
   const RAZORPAY_KEY = "rzp_test_WG0saZcap7ShMM";
   const [orderId, setOrderId] = useState("");
   const [isPaymentModalOpened, setIsPaymentModalOpened] = useState(false);
+  const [userId, setUserId] = useState<string | null>();
 
   const handlePaymentSuccess = (orderId: string) => {
     router.replace({
@@ -31,7 +33,7 @@ export default function RazorPage({
     setIsPaymentModalOpened(false);
   };
 
-  const createOrder = async () => {
+  const createOrder = async (userId: any) => {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}payment/create`,
@@ -42,7 +44,7 @@ export default function RazorPage({
             Authorization: "Bearer dsLCHSAfKF6s371z8QJFKSGj",
           },
           body: JSON.stringify({
-            userId: "IK0000002",
+            userId: userId,
             productId: "P0000001",
             quantity: 1,
             totalPrice: toDiAfPr,
@@ -110,12 +112,14 @@ export default function RazorPage({
 
   const startPaymentProcess = () => {
     resetPaymentModal(); // Reset the isPaymentModalOpened state
-    createOrder(); // Create a new order
+    createOrder(userId); // Create a new order
     handlePayment(); // Trigger the payment process
   };
 
   useEffect(() => {
-    createOrder();
+    const userId = localStorage.getItem("userId");
+    setUserId(userId);
+    createOrder(userId);
   }, []);
 
   useEffect(() => {

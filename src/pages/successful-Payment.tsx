@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
 import "../app/globals.css";
+
 import { Faqs, Images, Strings } from "@/constant";
-import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+
 import axios from "axios";
+import { useRouter } from "next/router";
 
 const SuccessPayment = () => {
   interface CardData {
@@ -30,11 +32,12 @@ const SuccessPayment = () => {
 
   const [cardDetails, setCardDetails] = useState<CardData[]>([]);
   const [addGet, setAddGet] = useState<AddressData | null>(null);
+  const [userId, setUserId] = useState<string | null>();
 
-  const fetchAddressData = () => {
+  const fetchAddressData = (userId: any) => {
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_URL}user/getAddressDataById?userId=IK0000001`
+        `${process.env.NEXT_PUBLIC_API_URL}user/getAddressDataById?userId=${userId}`
       )
       .then((response) => {
         const defaultAddresses = response?.data?.addressList.filter(
@@ -47,14 +50,10 @@ const SuccessPayment = () => {
       });
   };
 
-  useEffect(() => {
-    fetchAddressData();
-  }, []);
-
-  const gettingData = () => {
+  const gettingData = (userId: any) => {
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000002`
+        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=${userId}`
       )
       .then((response) => {
         setCardDetails(response?.data?.cartData);
@@ -65,7 +64,11 @@ const SuccessPayment = () => {
   };
 
   useEffect(() => {
-    gettingData();
+    const userId = localStorage.getItem("userId");
+    setUserId(userId);
+    fetchAddressData(userId);
+
+    gettingData(userId);
   }, []);
   const router = useRouter();
   const { orderId, toDiAfPr } = router.query;

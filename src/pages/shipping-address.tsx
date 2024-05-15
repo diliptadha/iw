@@ -1,9 +1,11 @@
-import React, { useEffect } from "react";
 import "../app/globals.css";
+
 import { Images, Strings } from "@/constant";
-import { useState } from "react";
+import React, { useEffect } from "react";
+
 import axios from "axios";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 interface FormData {
   userId: any;
@@ -32,9 +34,10 @@ interface CardData {
 
 const ShippingAddress = () => {
   const router = useRouter();
+  const [userId, setUserId] = useState<string | null>();
 
   const [formData, setFormData] = useState<FormData>({
-    userId: "IK0000001",
+    userId: "",
     fullName: "",
     mobileNo: "",
     pinCode: "",
@@ -52,10 +55,10 @@ const ShippingAddress = () => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [cardDetails, setCardDetails] = useState<CardData[]>([]);
 
-  const gettingData = () => {
+  const gettingData = (userId: any) => {
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000002`
+        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=${userId}`
       )
       .then((response) => {
         const cartData = response?.data?.cartData;
@@ -67,7 +70,9 @@ const ShippingAddress = () => {
   };
 
   useEffect(() => {
-    gettingData();
+    const userId = localStorage.getItem("userId");
+    setUserId(userId);
+    gettingData(userId);
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,13 +131,13 @@ const ShippingAddress = () => {
       try {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}user/addAddressData`,
-          formData
+          { ...formData, userId }
         );
         response;
         setIsFormSubmitted(true);
 
         setFormData({
-          userId: "IK0000001",
+          userId: userId,
           fullName: "",
           mobileNo: "",
           pinCode: "",

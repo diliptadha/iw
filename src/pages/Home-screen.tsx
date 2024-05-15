@@ -17,16 +17,15 @@ import Frameforunisex from "@/Component/Frameforunisex";
 import Header from "@/Component/header";
 import Image from "next/image";
 import ImageCarousel from "@/Component/Carosel";
-import ProductDetails from "./product_details";
+import Link from "next/link";
 import StarRating from "@/Component/StarRating";
 import { Tab } from "@headlessui/react";
 import Under500 from "@/Component/Under500";
 import axios from "axios";
-import { it } from "node:test";
-import { useEffect } from "react";
-import Link from "next/link";
-import { useCart } from "../Context/CartContext";
 import getCartQuantity from "@/utils/getCartQty";
+import { it } from "node:test";
+import { useCart } from "@/Context/CartContext";
+import { useEffect } from "react";
 
 interface CustomerssayProps {
   comment: any;
@@ -151,10 +150,16 @@ const Homescreen: React.FC = () => {
     }, 5000);
   };
 
-  const addToCart = async (product: any) => {
+  const addToCart = async (product: any, userId: string | null) => {
     try {
+      if (!userId) {
+        setShowLoginModal(true);
+        return;
+      }
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=${userId}`;
+      console.log("handleBuyNow API URL:", apiUrl);
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=IK0000002`,
+        apiUrl,
         {
           cartProducts: [
             {
@@ -174,24 +179,31 @@ const Homescreen: React.FC = () => {
           },
         }
       );
-      setCart(await getCartQuantity());
+      setCart(await getCartQuantity(userId));
+      window.location.reload();
       showCartMessage("Product added to cart successfully!");
     } catch (error) {
       console.error("Error adding item to cart:", error);
     }
   };
 
-  const handleBuyNow = async () => {
+  const handleBuyNow = async (userId: string | null) => {
     try {
+      if (!userId) {
+        setShowLoginModal(true);
+        return;
+      }
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=${userId}`;
+      console.log("handleBuyNow API URL:", apiUrl);
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=IK0000002`,
+        apiUrl,
         {
           cartProducts: [
             {
               productId: newArrival[currIndex].productId,
               subProductId: newArrival[currIndex].subProductId,
-              size: newArrival[currIndex].frameSize, // Example size, you should get this from the product data if applicable
-              quantity: 1, // Example quantity, adjust as needed
+              size: newArrival[currIndex].frameSize,
+              quantity: 1,
               salePrice: newArrival[currIndex].salePrice,
               originalPrice: newArrival[currIndex].originalPrice,
               productImage: newArrival[currIndex].productImage,
@@ -205,6 +217,7 @@ const Homescreen: React.FC = () => {
           },
         }
       );
+      window.location.href = "/cart";
     } catch (error) {
       console.error("Error adding item to cart:", error);
     }
@@ -274,114 +287,6 @@ const Homescreen: React.FC = () => {
     Images.iksanabanner2,
     Images.iksanabanner2,
   ];
-  const framesforwomen = [
-    {
-      image: Images.frame1,
-      buttonText: "EYEGLASSES",
-      buttonUrl: "https://www.iksanaopticals.in/eyeglasses/women",
-    },
-    {
-      image: Images.frame2,
-      buttonText: "SUNGLASSES",
-      buttonUrl: "https://www.iksanaopticals.in/sunglasses/women",
-    },
-    {
-      image: Images.frame3,
-      buttonText: "CONTACT LENS",
-      buttonUrl: "https://www.iksanaopticals.in/contact-lens/women",
-    },
-    {
-      image: Images.frame4,
-      buttonText: "READING GLASSES",
-      buttonUrl: "https://www.iksanaopticals.in/reading-glasses/women",
-    },
-    {
-      image: Images.frame5,
-      buttonText: "COMPUTER GLASSES",
-      buttonUrl: "https://www.iksanaopticals.in/computer-glasses/women",
-    },
-  ];
-  const framesformen = [
-    {
-      image: Images.menframe,
-      buttonText: "EYEGLASSES",
-      buttonUrl: "https://www.iksanaopticals.in/eyeglasses/men",
-    },
-    {
-      image: Images.menframe,
-      buttonText: "SUNGLASSES",
-      buttonUrl: "https://www.iksanaopticals.in/sunglasses/men",
-    },
-    {
-      image: Images.menframe,
-      buttonText: "CONTACT LENS",
-      buttonUrl: "https://www.iksanaopticals.in/contact-lens/men",
-    },
-    {
-      image: Images.menframe,
-      buttonText: "READING GLASSES",
-      buttonUrl: "https://www.iksanaopticals.in/reading-glasses/men",
-    },
-    {
-      image: Images.menframe,
-      buttonText: "COMPUTER GLASSES",
-      buttonUrl: "https://www.iksanaopticals.in/computer-glasses/men",
-    },
-  ];
-  const framesforunisex = [
-    {
-      image: Images.kidsframe1,
-      buttonText: "EYEGLASSES",
-      buttonUrl: "https://www.iksanaopticals.in/eyeglasses/unisex",
-    },
-    {
-      image: Images.Unisexframe2,
-      buttonText: "SUNGLASSES",
-      buttonUrl: "https://www.iksanaopticals.in/sunglasses/unisex",
-    },
-    {
-      image: Images.Unisexframe1,
-      buttonText: "CONTACT LENS",
-      buttonUrl: "https://www.iksanaopticals.in/contact-lens/unisex",
-    },
-    {
-      image: Images.Unisexframe2,
-      buttonText: "READING GLASSES",
-      buttonUrl: "https://www.iksanaopticals.in/reading-glasses/unisex",
-    },
-    {
-      image: Images.kidsframe1,
-      buttonText: "COMPUTER GLASSES",
-      buttonUrl: "https://www.iksanaopticals.in/computer-glasses/unisex",
-    },
-  ];
-  const framesforkids = [
-    {
-      image: Images.kidsframe2,
-      buttonText: "EYEGLASSES",
-      buttonUrl: "https://www.iksanaopticals.in/eyeglasses/kids",
-    },
-    {
-      image: Images.kidsframe2,
-      buttonText: "SUNGLASSES",
-      buttonUrl: "https://www.iksanaopticals.in/sunglasses/kids",
-    },
-    {
-      image: Images.kidsframe2,
-      buttonText: "CONTACT LENS",
-      buttonUrl: "https://www.iksanaopticals.in/contact-lens/kids",
-    },
-    {
-      image: Images.kidsframe2,
-      buttonText: "READING GLASSES",
-      buttonUrl: "https://www.iksanaopticals.in/reading-glasses/kids",
-    },
-    {
-      image: Images.kidsframe2,
-      buttonText: "COMPUTER GLASSES",
-      buttonUrl: "https://www.iksanaopticals.in/computer-glasses/kids",
-    },
-  ];
 
   const handleScrollRight1 = () => {
     if (containerRef1.current) {
@@ -447,43 +352,12 @@ const Homescreen: React.FC = () => {
     }
   };
 
-  const [slider, setSlider] = useState<SliderItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  // const fetchSliderData = async () => {
-  //   try {
-  //     let config = {
-  //       method: "get",
-  //       maxBodyLength: Infinity,
-  //       url: "http://localhost:4000/home/slider",
-  //       headers: {},
-  //     };
-
-  //     const response = await axios.request(config);
-  //     console.log("Slider", JSON.stringify(response.data));
-  //     const formattedSliderData = response.data.sliderData.map((item: any) => ({
-  //       id: item.id,
-  //       title: item.title,
-  //       image: item.image,
-  //       isVisible: item.isVisible,
-  //       createdAt: item.createdAt,
-  //       height: 358,
-  //       width: 1289,
-  //     }));
-  //     setSlider(formattedSliderData);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchSliderData();
-  // }, []);
 
   const handlePrev = (carousel: number) => {
     if (carousel === 1) {
       setCurrentIndex((prevIndex) =>
-        prevIndex === 0 ? slider.length - 1 : prevIndex - 1
+        prevIndex === 0 ? images.length - 1 : prevIndex - 1
       );
     } else {
       setCurrentIndex2((prevIndex) =>
@@ -495,7 +369,7 @@ const Homescreen: React.FC = () => {
   const handleNext = (carousel: number) => {
     if (carousel === 1) {
       setCurrentIndex((prevIndex) =>
-        prevIndex === slider.length - 1 ? 0 : prevIndex + 1
+        prevIndex === images.length - 1 ? 0 : prevIndex + 1
       );
     } else {
       setCurrentIndex2((prevIndex) =>
@@ -803,16 +677,31 @@ const Homescreen: React.FC = () => {
                         <StarRating rating={currentItem.rating} />
                         <div className="flex space-x-4 mt-4 items-center">
                           <button
-                            onClick={addToCart}
+                            onClick={() =>
+                              addToCart(
+                                isLoggedIn,
+                                localStorage.getItem("userId")
+                              )
+                            }
                             className="w-[136px] h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border border-black outline-none px-2 lg:px-4 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold"
                           >
                             {Strings.ADD_TO_CART}
                           </button>
-                          <Link onClick={handleBuyNow} href="/cart">
-                            <button className="ml-2 lg:ml-4 w-[136px] h-38 rounded-md text-sm text-white bg-black flex items-center justify-center border-none px-2 lg:px-4 py-2 hover:bg-PictonBlue">
-                              {Strings.BUY_NOW}
-                            </button>
-                          </Link>
+                          <LoginModal
+                            showLoginModal={showLoginModal}
+                            setShowLoginModal={setShowLoginModal}
+                            isLoggedIn={isLoggedIn}
+                            setIsLoggedIn={setIsLoggedIn}
+                          />
+
+                          <button
+                            onClick={() =>
+                              handleBuyNow(localStorage.getItem("userId"))
+                            }
+                            className="ml-2 lg:ml-4 w-[136px] h-38 rounded-md text-sm text-white bg-black flex items-center justify-center border-none px-2 lg:px-4 py-2 hover:bg-PictonBlue"
+                          >
+                            {Strings.BUY_NOW}
+                          </button>
                         </div>
                         {cartMessage && (
                           <div className="mt-4 text-sm text-green-600">
@@ -1023,8 +912,8 @@ const Homescreen: React.FC = () => {
                   title={product.brands}
                   Brand={product.brands}
                   SKU={product.SKU}
-                  salePrice={product.salePrice}
-                  originalPrice={product.originalPrice}
+                  salePrice={`₹${product.salePrice}`}
+                  originalPrice={`₹${product.originalPrice}`}
                   rating={product.rating}
                   isBestseller={product.isBestSeller}
                   color={product.frameColor}

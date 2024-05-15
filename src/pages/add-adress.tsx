@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
 import "../app/globals.css";
+
 import { Images, Strings } from "@/constant";
-import axios from "axios";
-import { useRouter } from "next/router";
-import RazorPage from "@/Razorpay/razorpage";
+import React, { useEffect, useState } from "react";
+
 import HeaderHeadline from "./header-headline";
 import Link from "next/link";
+import RazorPage from "@/Razorpay/razorpage";
+import axios from "axios";
 import { formatDate } from "date-fns";
+import { useRouter } from "next/router";
 
 interface AddressData {
   city: any;
@@ -69,6 +71,7 @@ const AddAdress = () => {
   const [couponAmount, setCouponAmount] = useState(null);
   const [couponSlide, setCouponSlide] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
+  const [userId, setUserId] = useState<string | null>();
 
   const applyCoupon = (couponId: string) => {
     if (appliedDiscount > 0) {
@@ -168,16 +171,11 @@ const AddAdress = () => {
     });
   };
 
-  useEffect(() => {
-    // Fetch address data when the component mounts
-    fetchAddressData();
-  }, []);
-
-  const fetchAddressData = () => {
+  const fetchAddressData = (userId: any) => {
     // Fetch address data from the API
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_URL}user/getAddressDataById?userId=IK0000001`
+        `${process.env.NEXT_PUBLIC_API_URL}user/getAddressDataById?userId=${userId}`
       )
       .then((response) => {
         setAddGet(response?.data?.addressList);
@@ -201,9 +199,12 @@ const AddAdress = () => {
   };
 
   useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    setUserId(userId);
+    fetchAddressData(userId);
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=IK0000002`
+        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=${userId}`
       )
       .then((response) => {
         setCardDetails(response?.data?.cartData);
@@ -231,7 +232,7 @@ const AddAdress = () => {
 
     axios
       .post(
-        `${process.env.NEXT_PUBLIC_API_URL}user/updateAddressData?userId=IK0000001&addressId=${addressId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}user/updateAddressData?userId=${userId}&addressId=${addressId}`,
         {
           isDefault: true, // Set the selected address as default
         }
@@ -252,7 +253,7 @@ const AddAdress = () => {
 
     axios
       .post(
-        `${process.env.NEXT_PUBLIC_API_URL}user/updateAddressData?userId=IK0000001&addressId=${updateId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}user/updateAddressData?userId=${userId}&addressId=${updateId}`,
         updatedData
       )
       .then((response) => {
@@ -270,7 +271,7 @@ const AddAdress = () => {
           isDefault: "",
         });
         setToggle(false);
-        fetchAddressData();
+        fetchAddressData(userId);
       })
       .catch((error) => {
         console.error("Error updating address data", error);
@@ -285,7 +286,7 @@ const AddAdress = () => {
       )
       .then((response) => {
         // After successful deletion, fetch the updated address data
-        fetchAddressData();
+        fetchAddressData(userId);
       })
       .catch((error) => {
         console.error("Error deleting address:", error);
