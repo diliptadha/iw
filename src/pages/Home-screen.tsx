@@ -968,36 +968,14 @@ const Homescreen: React.FC = () => {
                 />
                 <div className="absolute xs:bottom-2 xs:left-7 sm:bottom-4 sm:left-16 md:bottom-8 md:left-16 lg:bottom-10 lg:left-20 xl:bottom-20 xl:left-32">
                   <h1 className="font-normal xs:text-[10px] sm:text-xl xl:text-2xl text-black">
-                    {content.title
-                      .split("\n")
-                      .map(
-                        (
-                          part:
-                            | string
-                            | number
-                            | bigint
-                            | boolean
-                            | React.ReactElement<
-                                any,
-                                string | React.JSXElementConstructor<any>
-                              >
-                            | Iterable<React.ReactNode>
-                            | React.ReactPortal
-                            | Promise<React.AwaitedReactNode>
-                            | null
-                            | undefined,
-                          index: React.Key | null | undefined
-                        ) => (
-                          <React.Fragment key={index}>
-                            {index === 1 ? <br /> : null}
-                            <span
-                              className={index === 1 ? "font-extrabold" : ""}
-                            >
-                              {part}
-                            </span>
-                          </React.Fragment>
-                        )
-                      )}
+                    {content.title.split("\n").map((part, index) => (
+                      <React.Fragment key={index}>
+                        {index === 1 ? <br /> : null}
+                        <span className={index === 1 ? "font-extrabold" : ""}>
+                          {part}
+                        </span>
+                      </React.Fragment>
+                    ))}
                   </h1>
                   <button
                     onClick={handleButtonClick}
