@@ -1,0 +1,33 @@
+name: build and push image to GAR and deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.4
+
+      - id: "auth"
+        uses: "google-github-actions/auth@v2.1.2"
+        with:
+          credentials_json: "${{ secrets.SERVICE_ACCOUNT_KEY }}"
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v2.1.0"
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker asia-south1-docker.pkg.dev --quiet
+
+      - name: Build image
+        run: docker build . --tag asia-south1-docker.pkg.dev/eremote-hire-website-405811/iksana-frontend/iksana-frontend
+
+      - name: Push image
+        run: docker push asia-south1-docker.pkg.dev/eremote-hire-website-405811/iksana-frontend/iksana-frontend
+
+      - name: Deploy to Cloud Run
+        run: gcloud run deploy ikkana-frontend --image asia-south1-docker.pkg.dev/eremote-hire-website-405811/iksana-frontend/iksana-frontend --region asia-south1 --platform managed --allow-unauthenticated

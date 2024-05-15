@@ -6,7 +6,7 @@
 .pnp.js
 /old-dev-portal
 node_modules
-yarn.lock
+
 # testing
 /coverage
 
