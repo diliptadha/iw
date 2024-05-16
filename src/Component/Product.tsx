@@ -4,6 +4,7 @@ import { Images } from "@/constant";
 import Link from "next/link";
 import StarRating from "./StarRating";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 interface ProductData {
   FilteredSubProductData: any;
@@ -28,6 +29,7 @@ interface ProductData {
   fullDesc: string;
   productId: string;
   subProductId: string;
+  gender: string;
 }
 interface SubProduct {
   subProductId: string;
@@ -45,12 +47,13 @@ interface ProductProps {
   rating?: number;
   colors?: string[];
   otherColors?: string[];
-  productId?: string;
+  productId: string;
   variantImages?: string[];
   showLoginModal: boolean;
   isAuthenticated: boolean;
   handleToggleFavorite: () => void;
   isFavorite: boolean;
+  subProductId: string;
 }
 
 const Product: React.FC<ProductProps> = ({
@@ -63,7 +66,7 @@ const Product: React.FC<ProductProps> = ({
   otherColors = [],
   colors = [],
   productId,
-
+  subProductId,
   variantImages = [],
   showLoginModal,
   isAuthenticated,
@@ -79,7 +82,7 @@ const Product: React.FC<ProductProps> = ({
 
   const [displayColors, setDisplayColors] = useState<string[]>([]);
   const [remainingCount, setRemainingCount] = useState<number>(0);
-
+  const router = useRouter()
   useEffect(() => {
     if (otherColors.length > 2) {
       setDisplayColors(otherColors.slice(0, 2));
@@ -98,7 +101,7 @@ const Product: React.FC<ProductProps> = ({
       let config = {
         method: "get",
         maxBodyLength: Infinity,
-        url: `${process.env.NEXT_PUBLIC_API_URL}product/getProductData?productId=SC5355&subProductId=PS0000001`,
+        url: `${process.env.NEXT_PUBLIC_API_URL}product/getProductData?productId=${productId}&subProductId=${subProductId}`,
         headers: {},
         data: data,
       };
@@ -135,131 +138,32 @@ const Product: React.FC<ProductProps> = ({
     console.log("dghrhtyhtthtyhrthrt", productData);
   };
 
-  // const handleSendOtp = () => {
-  //   setIsShow(true);
-  // };
+  const handleProductClick = () => {
+    const lowercaseBrand = productData?.brands.toLowerCase().replace(/\s+/g, "-");
+    const lowercaseColor = productData?.frameColor.toLowerCase().replace(/\s+/g, "-");
+    const lowercaseShape = productData?.frameShape.toLowerCase().replace(/\s+/g, "-");
+    const lowercaseCategory = productData?.category.toLowerCase().replace(/\s+/g, "-");
+    const lowercaseGender = productData?.gender.toLowerCase().replace(/\s+/g, "-");
+    const lowercaseSKU = productData?.SKU.toLowerCase().replace(/\s+/g, "-");
 
-  // const [isValidEmail, setIsValidEmail] = useState(true);
-  // const [email, setEmail] = useState("");
-  // const [otp, setOtp] = useState("");
-  // const [otpValid, setOtpValid] = useState(false);
-  // const [isShow, setIsShow] = useState(false);
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+    // Construct the actual route with all lowercase words
+    const actualRoute = `/eyewear/${lowercaseCategory}/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseGender}-${lowercaseSKU}`;
 
-  // const handleEmailChange = (e: { target: { value: any } }) => {
-  //   const emailValue = e.target.value;
-  //   setEmail(emailValue);
 
-  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  //   const isValidEmail = emailRegex.test(emailValue);
-  //   setIsValidEmail(isValidEmail);
-  // };
+    localStorage.setItem("productId", productId);
+    localStorage.setItem("subProductId", subProductId);
+    router.push(actualRoute);
 
-  // const handleOtpChange = (e: { target: { value: any } }) => {
-  //   const otpValue = e.target.value;
-
-  //   if (!isNaN(otpValue)) {
-  //     setOtp(otpValue);
-  //   }
-  // };
-
-  // const handleSendOtp = async () => {
-  //   try {
-  //     let data = JSON.stringify({
-  //       emailId: email,
-  //     });
-
-  //     let config = {
-  //       method: "post",
-  //       maxBodyLength: Infinity,
-  //       url: `http://localhost:4000/user/sendOTP?emailId=${email}`,
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       data: data,
-  //     };
-  //     const response = await axios.request(config);
-  //     console.log(JSON.stringify(response.data));
-  //     setIsShow(true);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // const verifyOTP = async () => {
-  //   try {
-  //     let data = JSON.stringify({
-  //       Otp: otp,
-  //     });
-  //     let config = {
-  //       method: "post",
-  //       maxBodyLength: Infinity,
-  //       url: "http://localhost:4000/user/verifyOTP",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       data: data,
-  //     };
-  //     const response = await axios.request(config);
-  //     console.log(JSON.stringify(response.data));
-  //     setOtpValid(true);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // const loginUser = async () => {
-  //   try {
-  //     let data = JSON.stringify({
-  //       emailId: email,
-  //     });
-  //     let config = {
-  //       method: "post",
-  //       maxBodyLength: Infinity,
-  //       url: "http://localhost:4000/user/login",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       data: data,
-  //     };
-  //     const response = await axios.request(config);
-  //     console.log(JSON.stringify(response.data));
-  //     setShowLoginModal(false);
-  //     setIsFavorite(true);
-  //     setIsAuthenticated(true);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // const [isFavorite, setIsFavorite] = useState(false);
-  // const [showLoginModal, setShowLoginModal] = useState(false);
-
-  // const handleToggleFavorite = () => {
-  //   if (!isAuthenticated) {
-  //     setShowLoginModal(true);
-  //     return;
-  //   }
-  //   setIsFavorite((prevState) => !prevState);
-  // };
-
-  // useEffect(() => {
-  //   if (showLoginModal) {
-  //     document.body.style.overflow = "hidden";
-  //   } else {
-  //     document.body.style.overflow = "";
-  //   }
-  // }, [showLoginModal]);
-  // const [isFavorite, setIsFavorite] = useState(false);
-  // const handleToggleFavorite = () => {
-  //   setIsFavorite((prevState) => !prevState);
-  // };
+    // if (productId && subProductId) {
+    //   window.location.href = `/eyewear/brand-sku-color?productId=${productId}&subProductId=${subProductId}`;
+    // }
+  };
 
   return (
     <div>
       <div className="relative h-[315px] w-[280px] rounded-[10px] bg-white p-6 my-3 hover:shadow-lg">
         {/*  iksana.in/eyeglasses/brand-sku-color */}
-        <Link href={`/eye-glasses/${productId}`}>
+        <button onClick={handleProductClick}>
           <Image
             src={currentImage}
             height={140}
@@ -268,21 +172,9 @@ const Product: React.FC<ProductProps> = ({
             alt="/"
           // className="h-[144px] w-[243px]"
           />
-        </Link>
+        </button>
         <div className="absolute- bottom-0- ">
           <p className="border-[.5px] border-black mt-[24px] mb-[10px]"></p>
-          {/* <h1 className="font-extrabold text-[16px]">
-            {title?.split("-").map((part, index) => (
-              <React.Fragment key={index}>
-                <span
-                  className={index === 0 ? "font-extrabold" : "font-normal"}
-                >
-                  {part}
-                </span>
-                {index !== title.split("-").length - 1 && <br />}
-              </React.Fragment>
-            ))}
-          </h1> */}
           <h1 className="font-normal text-[16px]">{title}</h1>
           <p>{description}</p>
           <p className="mt-[10px] font-extrabold text-[22px]">{price}</p>
@@ -327,82 +219,6 @@ const Product: React.FC<ProductProps> = ({
           )}
         </button>
       </div>
-
-      {/* {showLoginModal && !isAuthenticated && (
-        <div className="fixed left-0 top-0 z-50 flex h-full w-full items-start  justify-center  bg-gray-500 bg-opacity-[20%] backdrop-blur-sm ">
-          <div className=" mt-10 items-center- justify-center- flex- rounded-md bg-white p-5 xs:h-[270px]- xs:w-[310px] md:h-[270px]- md:w-[460px] ">
-            <div>
-              <div className="flex justify-between">
-                <h1 className="text-base font-medium text-black">Sign in</h1>
-                <button
-                  className="outline-none"
-                  onClick={() => setShowLoginModal(false)}
-                >
-                  <Image src={Images.Close} alt="" height={20} width={20} />
-                </button>
-              </div>
-              <p className="border my-4"></p>
-              <h1 className="text-base font-normal text-black">Email*</h1>
-              <input
-                id="emailInput"
-                className="outline-none w-full"
-                type="email"
-                value={email}
-                onChange={handleEmailChange}
-                disabled={isShow}
-              />
-              {!isValidEmail && (
-                <p className="text-red-500 text-xs">
-                  Please enter a valid email address.
-                </p>
-              )}
-              <p className="border border-black my-2"></p>
-
-              {isShow && (
-                <div className="mt-4">
-                  <h1 className="text-base font-normal text-black">OTP*</h1>
-                  <input
-                    className="outline-none w-full"
-                    value={otp}
-                    onChange={handleOtpChange}
-                  />
-                  <p className="border border-black mt-2"></p>
-                </div>
-              )}
-
-              <div>
-                {isShow ? (
-                  otpValid ? (
-                    <button
-                      onClick={loginUser}
-                      disabled={!isValidEmail || email.trim() === ""}
-                      className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
-                    >
-                      Login
-                    </button>
-                  ) : (
-                    <button
-                      onClick={verifyOTP}
-                      disabled={!isValidEmail || email.trim() === ""}
-                      className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
-                    >
-                      Verify OTP
-                    </button>
-                  )
-                ) : (
-                  <button
-                    onClick={handleSendOtp}
-                    disabled={!isValidEmail || email.trim() === ""}
-                    className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
-                  >
-                    Send OTP
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 };

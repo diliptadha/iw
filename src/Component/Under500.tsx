@@ -5,6 +5,7 @@ import Image from "next/image";
 import StarRating from "./StarRating";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import LoginModal from "./LoginModal";
 
 interface Under500Props {
   image: string;
@@ -22,6 +23,7 @@ interface Under500Props {
   category: any;
   useCart: any;
   size: any;
+  onclick?: () => void;
 }
 
 const Under500: React.FC<Under500Props> = ({
@@ -40,10 +42,17 @@ const Under500: React.FC<Under500Props> = ({
   category,
   useCart,
   size,
+  onclick
 }) => {
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState<string | null>();
-
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !!localStorage.getItem("userId");
+    }
+    return false;
+  });
   const openModal = () => {
     setOpen(!open);
   };
@@ -66,7 +75,7 @@ const Under500: React.FC<Under500Props> = ({
     const lowercaseSKU = SKU.toLowerCase().replace(/\s+/g, "-");
 
     // Construct the actual route with all lowercase words
-    const actualRoute = `/eye-glasses/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseCategory}-${lowercaseGender}-${lowercaseSKU}`;
+    const actualRoute = `/eyewear/${lowercaseCategory}/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseGender}-${lowercaseSKU}`;
 
     localStorage.setItem("productId", productId);
     localStorage.setItem("subProductId", subProductId);
@@ -75,6 +84,10 @@ const Under500: React.FC<Under500Props> = ({
   };
 
   const addToCart = async (userId: any) => {
+    if (!userId) {
+      setShowLoginModal(true);
+      return;
+    }
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=${userId}`,
@@ -155,6 +168,12 @@ const Under500: React.FC<Under500Props> = ({
           </div>
         </div>
       </div>
+      <LoginModal
+        showLoginModal={showLoginModal}
+        setShowLoginModal={setShowLoginModal}
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+      />
       {open && (
         <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center  bg-gray-500 bg-opacity-[20%] backdrop-blur-sm ">
           <div className="relative p-8 rounded-md bg-white xs:h-[420px] xs:w-[310px] md:h-[420px] md:w-[460px] xl:h-[430px] xl:w-[400px] ">

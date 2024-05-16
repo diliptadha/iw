@@ -77,9 +77,8 @@ const Profile = () => {
       <div className="mb-28 bg-[#f2f2f2] border-[1.5px] border-slate-300 xs:mx-[20px] xl:mx-[70px] rounded-b-lg xs:p-3 xl:p-7 flex  xs:flex-col md:flex-row  md:justify-between">
         <div className="flex text-black bg-red-300- xs:mb-6 md:mb-0 xs:flex-row md:flex-col xs:justify-between md:justify-normal md:space-y-6">
           <button
-            className={`flex items-center hover:text-PictonBlue  ${
-              activeButton === "General" ? "text-PictonBlue" : ""
-            }`}
+            className={`flex items-center hover:text-PictonBlue  ${activeButton === "General" ? "text-PictonBlue" : ""
+              }`}
             onClick={() => handleButtonClick("General")}
           >
             <svg
@@ -101,9 +100,8 @@ const Profile = () => {
             </p>
           </button>
           <button
-            className={`flex items-center hover:text-PictonBlue ${
-              activeButton === "EditProfile" ? "text-PictonBlue" : ""
-            }`}
+            className={`flex items-center hover:text-PictonBlue ${activeButton === "EditProfile" ? "text-PictonBlue" : ""
+              }`}
             onClick={() => handleButtonClick("EditProfile")}
           >
             <svg
@@ -126,9 +124,8 @@ const Profile = () => {
             </p>
           </button>
           <button
-            className={`flex items-center hover:text-PictonBlue ${
-              activeButton === "My favorites" ? "text-PictonBlue" : ""
-            }`}
+            className={`flex items-center hover:text-PictonBlue ${activeButton === "My favorites" ? "text-PictonBlue" : ""
+              }`}
             onClick={() => handleButtonClick("My favorites")}
           >
             <svg
@@ -240,6 +237,8 @@ const Profile = () => {
                   throw new Error("Function not implemented.");
                 }}
                 isFavorite={false}
+                subProductId={""}
+                productId={""}
               />
             </div>
           )}

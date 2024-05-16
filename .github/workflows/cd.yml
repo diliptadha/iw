@@ -30,4 +30,4 @@ jobs:
         run: docker push asia-south1-docker.pkg.dev/eremote-hire-website-405811/iksana-frontend/iksana-frontend
 
       - name: Deploy to Cloud Run
-        run: gcloud run deploy ikkana-frontend --image asia-south1-docker.pkg.dev/eremote-hire-website-405811/iksana-frontend/iksana-frontend --region asia-south1 --platform managed --allow-unauthenticated
+        run: gcloud run deploy iksana-frontend --image asia-south1-docker.pkg.dev/eremote-hire-website-405811/iksana-frontend/iksana-frontend --region asia-south1 --platform managed --allow-unauthenticated

@@ -317,21 +317,6 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
 
   const [productList, setProductList] = useState<ProductData[]>([]);
 
-  const fetchData = async () => {
-    try {
-      let config = {
-        method: "get",
-        maxBodyLength: Infinity,
-        url: `${process.env.NEXT_PUBLIC_API_URL}product/getProductList?page=1&limit=2`,
-        headers: {},
-      };
-      const response = await axios.request(config);
-      console.log("Product List Data :", JSON.stringify(response.data));
-      setProductList(response.data.productList.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const [prevFilters, setPrevFilters] = useState<any>(null);
   const [filterData, setFilterData] = useState<filterData[]>([]);
@@ -714,6 +699,22 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
     }
   };
 
+  const fetchData = async () => {
+    try {
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}product/getProductList?page=1&limit=2`,
+        headers: {},
+      };
+      const response = await axios.request(config);
+      console.log("Product List Data :", JSON.stringify(response.data));
+      setProductList(response.data.productList.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (search.trim() === "") {
       fetchData();
@@ -1071,6 +1072,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                         : []
                     }
                     productId={product.productId}
+                    subProductId={product.data.subProductId}
                     variantImages={product.data.variantImage}
                     showLoginModal={showLoginModal}
                     isAuthenticated={isAuthenticated}
@@ -1107,6 +1109,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                       : []
                   }
                   productId={product.productId}
+                  subProductId={product.data?.subProductId}
                   variantImages={product.data?.variantImage}
                   showLoginModal={showLoginModal}
                   isAuthenticated={isAuthenticated}

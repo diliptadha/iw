@@ -1,6 +1,6 @@
 "use client";
 
-import "../../../src/app/globals.css";
+import "../../../../src/app/globals.css";
 
 import { Images, Strings } from "@/constant";
 import React, { useEffect, useRef, useState } from "react";
@@ -12,7 +12,7 @@ import Link from "next/link";
 import LoginModal from "@/Component/LoginModal";
 import Review from "@/Component/reviews";
 import ShareOptions from "@/Component/share";
-import SimilarProductPage from "../similar_products";
+import SimilarProductPage from "../../similar_products";
 import axios from "axios";
 import { useRouter } from "next/router";
 interface ProductData {
@@ -745,11 +745,10 @@ const ProductDetails = () => {
                               key={index}
                               src={image}
                               alt="variant"
-                              className={`image2 ${
-                                index === 0
-                                  ? "md:mb-1 md:mr-1 lg:mb-2"
-                                  : "md:mr-1 md:mb-1 lg:mb-0 lg:mr-2"
-                              } border border-black rounded`}
+                              className={`image2 ${index === 0
+                                ? "md:mb-1 md:mr-1 lg:mb-2"
+                                : "md:mr-1 md:mb-1 lg:mb-0 lg:mr-2"
+                                } border border-black rounded`}
                               loading="lazy"
                             />
                           )
@@ -793,8 +792,8 @@ const ProductDetails = () => {
                         {favoriteStatus[
                           selectedSubProduct.ProductData?.productId
                             ? Array.isArray(
-                                selectedSubProduct.ProductData?.productId
-                              )
+                              selectedSubProduct.ProductData?.productId
+                            )
                               ? selectedSubProduct.ProductData?.productId[0]
                               : selectedSubProduct.ProductData?.productId
                             : ""
@@ -1039,9 +1038,8 @@ const ProductDetails = () => {
                     </p>
                     <div className="">
                       <button
-                        className={`focus:outline-none transition-transform duration-400 ease-in-out ${
-                          isOpen ? "rotate-180" : ""
-                        }`}
+                        className={`focus:outline-none transition-transform duration-400 ease-in-out ${isOpen ? "rotate-180" : ""
+                          }`}
                         onClick={toggleDropdown}
                       >
                         <Image
@@ -1219,9 +1217,9 @@ const ProductDetails = () => {
                   {expanded
                     ? selectedSubProduct.ProductData?.fullDesc
                     : selectedSubProduct?.ProductData?.fullDesc?.substring(
-                        0,
-                        260
-                      )}
+                      0,
+                      260
+                    )}
                 </p>
                 {!expanded && (
                   <button
@@ -1239,9 +1237,8 @@ const ProductDetails = () => {
                 </div>
                 <div className="">
                   <button
-                    className={`focus:outline-none h-4 w-4 flex items-center transition-transform duration-400 ease-in-out ${
-                      isOpenReview ? "rotate-180" : ""
-                    }`}
+                    className={`focus:outline-none h-4 w-4 flex items-center transition-transform duration-400 ease-in-out ${isOpenReview ? "rotate-180" : ""
+                      }`}
                     onClick={toggleDropdownReview}
                   >
                     <Image
@@ -1345,9 +1342,8 @@ const ProductDetails = () => {
                 >
                   <button
                     onClick={openModal}
-                    className={`${
-                      review.length <= 2 ? "hidden" : "flex"
-                    } w-[126px] h-[34px]  md:w-[136px] md:h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border-2 border-black outline-none px-1 lg:px-2 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold`}
+                    className={`${review.length <= 2 ? "hidden" : "flex"
+                      } w-[126px] h-[34px]  md:w-[136px] md:h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border-2 border-black outline-none px-1 lg:px-2 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold`}
                   >
                     {Strings.MORE_REVIEWS}
                   </button>
@@ -1500,13 +1496,13 @@ const ProductDetails = () => {
                         </div>
                         {index <
                           selectedSubProduct.ProductData.boxImage.length -
-                            1 && (
-                          <span
-                            className={index === 0 ? "mx-4 md:mx-6" : "mr-2"}
-                          >
-                            +
-                          </span>
-                        )}
+                          1 && (
+                            <span
+                              className={index === 0 ? "mx-4 md:mx-6" : "mr-2"}
+                            >
+                              +
+                            </span>
+                          )}
                       </React.Fragment>
                     )
                   )}

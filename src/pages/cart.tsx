@@ -58,7 +58,7 @@ const ProductADD = () => {
       .then((response) => {
         const cartData = response?.data?.cartData;
         setCardDetails(cartData);
-        // setIsCartEmpty(cartData.length === 0);
+        setIsCartEmpty(cartData.length === 0);
       })
       .catch((error) => {
         console.log("Error fetching data", error);
@@ -116,10 +116,8 @@ const ProductADD = () => {
   const handleIncrementButtonClick = (productId: any, quantity: number) => {
     axios
       .post(
-        `${
-          process.env.NEXT_PUBLIC_API_URL
-        }product/updateCartProduct?userId=${userId}&cartProductid=${productId}&quantity=${
-          quantity + 1
+        `${process.env.NEXT_PUBLIC_API_URL
+        }product/updateCartProduct?userId=${userId}&cartProductid=${productId}&quantity=${quantity + 1
         }`
       )
       .then((response) => {
@@ -135,10 +133,8 @@ const ProductADD = () => {
     if (quantity > 1) {
       axios
         .post(
-          `${
-            process.env.NEXT_PUBLIC_API_URL
-          }product/updateCartProduct?userId=${userId}&cartProductid=${productId}&quantity=${
-            quantity - 1
+          `${process.env.NEXT_PUBLIC_API_URL
+          }product/updateCartProduct?userId=${userId}&cartProductid=${productId}&quantity=${quantity - 1
           }`
         )
         .then((response) => {
@@ -239,7 +235,7 @@ const ProductADD = () => {
                         <div className="flex gap-2 items-center">
                           <div>
                             {ele.salePrice !== 0 &&
-                            ele.salePrice !== undefined ? (
+                              ele.salePrice !== undefined ? (
                               <div className="relative">
                                 <h4 className="text-[7px] md:text-[9px] rounded pr-4 text-white bg-green-600 p-1">
                                   Save{" "}
@@ -303,11 +299,10 @@ const ProductADD = () => {
                               onClick={() =>
                                 handleDecrementButtonClick(ele.id, ele.quantity)
                               }
-                              className={`px-2 py-1 bg-gray-200 text-gray-700 text-[20px] focus:outline-none${
-                                ele.quantity == 1
-                                  ? "cursor-not-allowed opacity-50"
-                                  : "cursor-pointer"
-                              }`}
+                              className={`px-2 py-1 bg-gray-200 text-gray-700 text-[20px] focus:outline-none${ele.quantity == 1
+                                ? "cursor-not-allowed opacity-50"
+                                : "cursor-pointer"
+                                }`}
                               disabled={ele.quantity == 1}
                             >
                               -

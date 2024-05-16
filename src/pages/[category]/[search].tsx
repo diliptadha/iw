@@ -1104,6 +1104,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                       : []
                   }
                   productId={product.productId}
+                  subProductId={product.data.subProductId}
                   variantImages={product.data.variantImage}
                   showLoginModal={showLoginModal}
                   isAuthenticated={isAuthenticated}

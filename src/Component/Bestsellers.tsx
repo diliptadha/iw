@@ -67,7 +67,7 @@ const Bestsellers: React.FC<BestsellersProps> = ({
     const lowercaseSKU = SKU.toLowerCase().replace(/\s+/g, "-");
 
     // Construct the actual route with all lowercase words
-    const actualRoute = `/eye-glasses/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseCategory}-${lowercaseGender}-${lowercaseSKU}`;
+    const actualRoute = `/eyewear/${lowercaseCategory}/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseGender}-${lowercaseSKU}`;
 
     localStorage.setItem("productId", productId);
     localStorage.setItem("subProductId", subProductId);
