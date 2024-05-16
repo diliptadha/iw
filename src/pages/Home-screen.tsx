@@ -482,9 +482,8 @@ const Homescreen: React.FC = () => {
                   <div className="absolute flex justify-between xs:w-[340px] sm:w-[410px] md:w-[580px] xl:w-[580px]">
                     <button
                       onClick={() => handlePrev(2)}
-                      className={`ml-2 ${
-                        currentIndex2 === 0 ? "opacity-50" : ""
-                      }`}
+                      className={`ml-2 ${currentIndex2 === 0 ? "opacity-50" : ""
+                        }`}
                       disabled={currentIndex2 === 0}
                     >
                       <Image
@@ -497,9 +496,8 @@ const Homescreen: React.FC = () => {
                     </button>
                     <button
                       onClick={() => handleNext(2)}
-                      className={`mr-2 ${
-                        currentIndex2 === images.length - 1 ? "opacity-50 " : ""
-                      }`}
+                      className={`mr-2 ${currentIndex2 === images.length - 1 ? "opacity-50 " : ""
+                        }`}
                       disabled={currentIndex2 === images.length - 1}
                     >
                       <Image
@@ -530,11 +528,10 @@ const Homescreen: React.FC = () => {
                   <Tab as={Fragment} key={index}>
                     {({ selected }) => (
                       <button
-                        className={`text-[15px] text-black ${
-                          selected
+                        className={`text-[15px] text-black ${selected
                             ? "border-b-[5px] border-black p-2 outline-none font-extrabold relative top-[3px]"
                             : "font-normal"
-                        } xs:px-2 md:px-4 py-3`}
+                          } xs:px-2 md:px-4 py-3`}
                       >
                         {gender.toUpperCase()}
                       </button>
@@ -625,13 +622,11 @@ const Homescreen: React.FC = () => {
                 alt="/"
                 height={16}
                 width={16}
-                className={`ml-0 xl:mb-0 transform:translateX(-${
-                  currIndex * 100
-                }%) ${
-                  currIndex === 0
+                className={`ml-0 xl:mb-0 transform:translateX(-${currIndex * 100
+                  }%) ${currIndex === 0
                     ? "opacity-60 cursor-not-allowed"
                     : "cursor-pointer"
-                }`}
+                  }`}
                 style={{ pointerEvents: currIndex === 0 ? "none" : "auto" }}
               />
 
@@ -731,13 +726,11 @@ const Homescreen: React.FC = () => {
                 alt="/"
                 height={16}
                 width={16}
-                className={`mr-0 xl:mb-0 transform:translateX(-${
-                  currIndex * 100
-                }%) ${
-                  currIndex === newArrival.length - 1
+                className={`mr-0 xl:mb-0 transform:translateX(-${currIndex * 100
+                  }%) ${currIndex === newArrival.length - 1
                     ? "opacity-60 cursor-not-allowed"
                     : "cursor-pointer"
-                }`}
+                  }`}
                 style={{
                   pointerEvents:
                     currIndex === newArrival.length - 1 ? "none" : "auto",
@@ -830,7 +823,7 @@ const Homescreen: React.FC = () => {
                     </div>
 
                     <Image
-                      src={Images.iksanabanner4}
+                      src={content.image}
                       alt="/"
                       height={285}
                       width={617}
@@ -968,8 +961,8 @@ const Homescreen: React.FC = () => {
                         ? index === visibleIndex
                           ? 1
                           : Math.abs(index - visibleIndex) < 3
-                          ? 0.5
-                          : 0
+                            ? 0.5
+                            : 0
                         : 1,
                   }}
                 />

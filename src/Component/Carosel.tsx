@@ -50,7 +50,7 @@ const Carosel = () => {
               className="relative rounded-[10px] xs:h-[160px] md:h-[258px] lg:h-[358px] xs:w-full- xl:w-[1289px]- min-w-full- max-w-[1289px]- "
             />
             <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
-              <p className="text-white absolute lg:top-32 font-extrabold xs:text-xl lg:text-[64px] ">
+              <p className="text-white absolute xs:top-14 md:top-[98px] lg:top-32 font-extrabold xs:text-xl md:text-3xl lg:text-[64px] ">
                 <span className="">
                   {item.title.split(" ").slice(0, 4).join(" ")}
                 </span>

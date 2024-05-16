@@ -28,6 +28,7 @@ COPY . .
 # ENV NEXT_TELEMETRY_DISABLED 1
 
 ENV NEXT_PUBLIC_API_URL=https://ikkana-backend-sqivzfs3fq-el.a.run.app/
+ENV NEXT_PUBLIC_BASE_URL=https://iksana-frontend-sqivzfs3fq-el.a.run.app/
 
 RUN \
     if [ -f yarn.lock ]; then yarn run build; \

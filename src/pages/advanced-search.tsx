@@ -152,13 +152,13 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   const BASEURL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const updateUrl = (params: string[], paramName: string) => {
-    let baseUrl = "http://localhost:3000/advanced-search/#";
+    let baseUrl = `${BASEURL}advanced-search/#`;
     // const baseUrl = `http://localhost:3000/advanced-search?q=${encodeURIComponent(
     //   searchTerm.replace(/\s+/g, "-")
     // )}#`;
 
     if (searchTerm) {
-      baseUrl = `http://localhost:3000/advanced-search?q=${encodeURIComponent(
+      baseUrl = `${BASEURL}advanced-search?q=${encodeURIComponent(
         searchTerm.toLowerCase().replace(/\s+/g, "-")
       )}#`;
     }
@@ -754,9 +754,8 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       <Header setSearch={setSearch} />
       <div className="mt-[36px] xs:mx-[20px] xl:mx-[72px]- mx flex">
         <div
-          className={`drawer xs:w-[333px] ${isDrawerOpen && "md:hidden"} ${
-            isDrawerOpen && "hidden"
-          }`}
+          className={`drawer xs:w-[333px] ${isDrawerOpen && "md:hidden"} ${isDrawerOpen && "hidden"
+            }`}
         >
           <div className="space-y-4 p-6 border border-black xs:overflow-y-scroll lg:overflow-auto xs:rounded-r-[10px] md:rounded-[10px] xs:h-full md:h-auto w-[333px]">
             <div className="flex justify-end">
@@ -952,11 +951,9 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
             <p className="xs:order-1">Eyewear / Reading Glasses</p>
             <p className="xs:order-3 lg:order-2">
               {search === ""
-                ? `Showing product data ${
-                    getFilteredDataForCurrentPage()?.length
-                  } of ${
-                    (filterApplied ? filterData : productList)?.length
-                  } results`
+                ? `Showing product data ${getFilteredDataForCurrentPage()?.length
+                } of ${(filterApplied ? filterData : productList)?.length
+                } results`
                 : `Showing trending search data ${trendingSearchData.length} of ${trendingSearchData.length} results`}
             </p>
             <div className="flex items-center xs:order-2 lg:order-3">
@@ -965,11 +962,10 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
               </p>
               <div className="relative" ref={dropdownRef}>
                 <button
-                  className={`${
-                    isOpen
-                      ? "rounded-t-[5px] border-t border-x border-black"
-                      : "rounded-[5px] border border-black  "
-                  } ml-[15px] text-xs relative w-[146px] h-[34px] flex pl-4 justify-start items-center`}
+                  className={`${isOpen
+                    ? "rounded-t-[5px] border-t border-x border-black"
+                    : "rounded-[5px] border border-black  "
+                    } ml-[15px] text-xs relative w-[146px] h-[34px] flex pl-4 justify-start items-center`}
                   onClick={toggleDropdown}
                 >
                   {selectedSortText}
@@ -978,9 +974,8 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                     alt=""
                     height={9}
                     width={9}
-                    className={`absolute right-4 transform ${
-                      isOpen ? "rotate-180 duration-300 " : ""
-                    }`}
+                    className={`absolute right-4 transform ${isOpen ? "rotate-180 duration-300 " : ""
+                      }`}
                   />
                 </button>
                 {isOpen && (
@@ -1071,8 +1066,8 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                     otherColors={
                       product.data.otherColors
                         ? product.data.otherColors.map((color: string) =>
-                            color.trim()
-                          )
+                          color.trim()
+                        )
                         : []
                     }
                     productId={product.productId}
@@ -1107,8 +1102,8 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                   otherColors={
                     product.data?.otherColors
                       ? product.data.otherColors.map((color: string) =>
-                          color.trim()
-                        )
+                        color.trim()
+                      )
                       : []
                   }
                   productId={product.productId}
@@ -1379,9 +1374,8 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       </div>
       <button
         onClick={toggleDrawer}
-        className={`absolute md:hidden bg-white h-7 w-7 top-[80px] left-4 flex justify-center items-center rounded-full ${
-          !isDrawerOpen ? "hidden" : ""
-        }`}
+        className={`absolute md:hidden bg-white h-7 w-7 top-[80px] left-4 flex justify-center items-center rounded-full ${!isDrawerOpen ? "hidden" : ""
+          }`}
       >
         <Image src={Images.Righticon} alt="" height={18} width={18} />
       </button>

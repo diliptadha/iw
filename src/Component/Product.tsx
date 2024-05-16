@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import Image from "next/image";
 import { Images } from "@/constant";
 import Link from "next/link";
@@ -260,14 +259,14 @@ const Product: React.FC<ProductProps> = ({
     <div>
       <div className="relative h-[315px] w-[280px] rounded-[10px] bg-white p-6 my-3 hover:shadow-lg">
         {/*  iksana.in/eyeglasses/brand-sku-color */}
-        <Link href={`/product_details/${productId}`}>
+        <Link href={`/eye-glasses/${productId}`}>
           <Image
             src={currentImage}
             height={140}
             width={220}
             className="h-32 object-cover"
             alt="/"
-            // className="h-[144px] w-[243px]"
+          // className="h-[144px] w-[243px]"
           />
         </Link>
         <div className="absolute- bottom-0- ">
