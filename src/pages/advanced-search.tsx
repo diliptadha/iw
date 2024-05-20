@@ -13,6 +13,8 @@ import ReactPaginate from "react-paginate";
 import Shape from "@/Component/Shape";
 import axios from "axios";
 import { space } from "postcss/lib/list";
+import WhatsAppButton from "@/Component/WhatsAppButton";
+import Loader from "@/Component/Loader";
 
 const genders = ["Men", "Women", "Kids", "Unisex"];
 const frameStyles = ["Full Rim", "Rimless", "Half Rim"];
@@ -98,6 +100,36 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   );
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedShape, setSelectedShape] = useState<string[]>([]);
+  const [isValidEmail, setIsValidEmail] = useState(true);
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpErr, setOtpErr] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [otpValid, setOtpValid] = useState(false);
+  const [isShow, setIsShow] = useState(false);
+  const [lastInteractedProductId, setLastInteractedProductId] = useState<
+    string | null
+  >(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const [favoriteStatus, setFavoriteStatus] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const storedUserId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+
+  const [userId, setUserId] = useState<string | null>(storedUserId);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!userId);
+  const [timer, setTimer] = useState(60);
+  const [isResendEnabled, setIsResendEnabled] = useState(false);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (timer === 0) {
+      if (intervalId) clearInterval(intervalId);
+      setIsResendEnabled(true);
+    }
+  }, [timer, intervalId]);
 
   const handleCheckboxGender = (gender: string) => {
     const updatedGender = selectedGender.includes(gender)
@@ -316,8 +348,6 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   ];
 
   const [productList, setProductList] = useState<ProductData[]>([]);
-
-
   const [prevFilters, setPrevFilters] = useState<any>(null);
   const [filterData, setFilterData] = useState<filterData[]>([]);
   const [filterApplied, setFilterApplied] = useState<boolean>(false);
@@ -395,17 +425,9 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
 
       url += `&sortBy=${sortBy}&page=1&limit=9`;
 
-      // console.log("Selected Gender:", selectedGender);
-      // console.log("Selected Style:", selectedFrameStyle);
-      // console.log("Selected Shape:", selectedShape);
-      // console.log("Selected Material:", selectedFrameMaterial);
-      // console.log("Selected Brands:", selectedBrands);
-      // console.log("Selected sortBy:", sortBy);
-
       let config = {
         method: "get",
         maxBodyLength: Infinity,
-        // url: `${process.env.NEXT_PUBLIC_API_URL}product/getFilterProductData?gender=${urlSelectedGender}&frameStyle=${urlSelectedStyle}&frameShape=${urlSelectedShape}&frameMaterial=${urlSelectedMaterial}&sortBy=${sortBy}&page=1&limit=9`,
         url: url,
         headers: {
           "Content-Type": "text/plain",
@@ -469,25 +491,6 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
     setCurrentPageFilter(selected.selected);
   };
 
-  const [isValidEmail, setIsValidEmail] = useState(true);
-  const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState("");
-  const [otpValid, setOtpValid] = useState(false);
-  const [isShow, setIsShow] = useState(false);
-  const [lastInteractedProductId, setLastInteractedProductId] = useState<
-    string | null
-  >(null);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-
-  const [favoriteStatus, setFavoriteStatus] = useState<{
-    [key: string]: boolean;
-  }>({});
-  const storedUserId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
-
-  const [userId, setUserId] = useState<string | null>(storedUserId);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!userId);
-
   useEffect(() => {
     if (userId !== null) {
       localStorage.setItem("userId", userId);
@@ -514,6 +517,13 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   };
 
   const handleSendOtp = async () => {
+    setIsLoading(true);
+    setIsResendEnabled(false);
+    setTimer(60);
+    const newIntervalId = setInterval(() => {
+      setTimer((prevTimer) => prevTimer - 1);
+    }, 1000);
+    setIntervalId(newIntervalId);
     try {
       let data = JSON.stringify({
         emailId: email,
@@ -533,10 +543,13 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       setIsShow(true);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const verifyOTP = async () => {
+    setIsLoading(true);
     try {
       let data = JSON.stringify({
         Otp: otp,
@@ -553,8 +566,12 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       const response = await axios.request(config);
       console.log(JSON.stringify(response.data));
       setOtpValid(true);
+      setOtpErr("");
     } catch (error) {
       console.log(error);
+      setOtpErr("OTP does not match. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -565,6 +582,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   }, [userId, lastInteractedProductId]);
 
   const loginUser = async () => {
+    setIsLoading(true);
     try {
       let data = JSON.stringify({
         emailId: email,
@@ -591,6 +609,8 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       setUserId(response.data.signInData.userData.userId);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -755,8 +775,9 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       <Header setSearch={setSearch} />
       <div className="mt-[36px] xs:mx-[20px] xl:mx-[72px]- mx flex">
         <div
-          className={`drawer xs:w-[333px] ${isDrawerOpen && "md:hidden"} ${isDrawerOpen && "hidden"
-            }`}
+          className={`drawer xs:w-[333px] ${isDrawerOpen && "md:hidden"} ${
+            isDrawerOpen && "hidden"
+          }`}
         >
           <div className="space-y-4 p-6 border border-black xs:overflow-y-scroll lg:overflow-auto xs:rounded-r-[10px] md:rounded-[10px] xs:h-full md:h-auto w-[333px]">
             <div className="flex justify-end">
@@ -952,9 +973,11 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
             <p className="xs:order-1">Eyewear / Reading Glasses</p>
             <p className="xs:order-3 lg:order-2">
               {search === ""
-                ? `Showing product data ${getFilteredDataForCurrentPage()?.length
-                } of ${(filterApplied ? filterData : productList)?.length
-                } results`
+                ? `Showing product data ${
+                    getFilteredDataForCurrentPage()?.length
+                  } of ${
+                    (filterApplied ? filterData : productList)?.length
+                  } results`
                 : `Showing trending search data ${trendingSearchData.length} of ${trendingSearchData.length} results`}
             </p>
             <div className="flex items-center xs:order-2 lg:order-3">
@@ -963,10 +986,11 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
               </p>
               <div className="relative" ref={dropdownRef}>
                 <button
-                  className={`${isOpen
-                    ? "rounded-t-[5px] border-t border-x border-black"
-                    : "rounded-[5px] border border-black  "
-                    } ml-[15px] text-xs relative w-[146px] h-[34px] flex pl-4 justify-start items-center`}
+                  className={`${
+                    isOpen
+                      ? "rounded-t-[5px] border-t border-x border-black"
+                      : "rounded-[5px] border border-black  "
+                  } ml-[15px] text-xs relative w-[146px] h-[34px] flex pl-4 justify-start items-center`}
                   onClick={toggleDropdown}
                 >
                   {selectedSortText}
@@ -975,8 +999,9 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                     alt=""
                     height={9}
                     width={9}
-                    className={`absolute right-4 transform ${isOpen ? "rotate-180 duration-300 " : ""
-                      }`}
+                    className={`absolute right-4 transform ${
+                      isOpen ? "rotate-180 duration-300 " : ""
+                    }`}
                   />
                 </button>
                 {isOpen && (
@@ -1067,8 +1092,8 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                     otherColors={
                       product.data.otherColors
                         ? product.data.otherColors.map((color: string) =>
-                          color.trim()
-                        )
+                            color.trim()
+                          )
                         : []
                     }
                     productId={product.productId}
@@ -1104,8 +1129,8 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                   otherColors={
                     product.data?.otherColors
                       ? product.data.otherColors.map((color: string) =>
-                        color.trim()
-                      )
+                          color.trim()
+                        )
                       : []
                   }
                   productId={product.productId}
@@ -1212,6 +1237,9 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                           value={otp}
                           onChange={handleOtpChange}
                         />
+                        {otpErr && (
+                          <p className="text-red-500 text-xs">{otpErr}</p>
+                        )}
                         <p className="border border-black mt-2"></p>
                       </div>
                     )}
@@ -1221,26 +1249,41 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                           <button
                             onClick={loginUser}
                             disabled={!isValidEmail || email.trim() === ""}
-                            className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                            className="mt-5 flex items-center justify-center w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
                           >
-                            {Strings.Login}
+                            {isLoading ? <Loader /> : Strings.Login}
                           </button>
                         ) : (
-                          <button
-                            onClick={verifyOTP}
-                            disabled={!isValidEmail || email.trim() === ""}
-                            className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
-                          >
-                            {Strings.Verify_OTP}
-                          </button>
+                          <>
+                            <button
+                              onClick={verifyOTP}
+                              disabled={!isValidEmail || email.trim() === ""}
+                              className="mt-5 flex items-center justify-center w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                            >
+                              {isLoading ? <Loader /> : Strings.Verify_OTP}
+                            </button>
+                            {timer > 0 ? (
+                              <p className="flex justify-center mt-2">
+                                {Strings.Resend_Otp} {timer} {Strings.seconds}
+                              </p>
+                            ) : (
+                              <button
+                                onClick={handleSendOtp}
+                                disabled={!isValidEmail || email.trim() === ""}
+                                className="mt-4 flex items-center justify-center w-full  hover:text-PictonBlue text-black text-base font-semibold underline"
+                              >
+                                {isLoading ? <Loader /> : Strings.Resend_OTP}
+                              </button>
+                            )}
+                          </>
                         )
                       ) : (
                         <button
                           onClick={handleSendOtp}
                           disabled={!isValidEmail || email.trim() === ""}
-                          className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                          className="mt-5 flex items-center justify-center w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
                         >
-                          {Strings.Send_OTP}
+                          {isLoading ? <Loader /> : Strings.Send_OTP}
                         </button>
                       )}
                     </div>
@@ -1251,7 +1294,8 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
           </div>
 
           <div>
-            {search === "" ? (
+            {search === "" &&
+            (filterApplied ? filterData : productList)?.length > 0 ? (
               <ReactPaginate
                 previousLabel={
                   <svg
@@ -1377,8 +1421,9 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       </div>
       <button
         onClick={toggleDrawer}
-        className={`absolute md:hidden bg-white h-7 w-7 top-[80px] left-4 flex justify-center items-center rounded-full ${!isDrawerOpen ? "hidden" : ""
-          }`}
+        className={`absolute md:hidden bg-white h-7 w-7 top-[80px] left-4 flex justify-center items-center rounded-full ${
+          !isDrawerOpen ? "hidden" : ""
+        }`}
       >
         <Image src={Images.Righticon} alt="" height={18} width={18} />
       </button>
@@ -1390,7 +1435,10 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
           >
             <Image src={Images.Upicon} alt="/" height={16} width={16} />
           </button>
-          <Image src={Images.Whatsapp} alt="/" height={55} width={55} />
+          <WhatsAppButton
+            phoneNumber="7977994474"
+            message="Hello, I would like to know more about your services."
+          />
         </div>
       </div>
       <Footer />

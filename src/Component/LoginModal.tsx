@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
 import axios from "axios";
+import Loader from "./Loader";
 
 export const toggleModal = (
   showLoginModal: boolean,
@@ -19,7 +20,6 @@ const LoginModal = ({
   setShowLoginModal,
   isLoggedIn,
   setIsLoggedIn,
-  
 }: {
   showLoginModal: boolean;
   setShowLoginModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,6 +30,9 @@ const LoginModal = ({
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [otpValid, setOtpValid] = useState(false);
+  const [otpErr, setOtpErr] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const [isShow, setIsShow] = useState(false);
   const [lastInteractedProductId, setLastInteractedProductId] = useState<
     string | null
@@ -43,6 +46,16 @@ const LoginModal = ({
 
   const [userId, setUserId] = useState<string | null>(storedUserId);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!userId);
+  const [timer, setTimer] = useState(60);
+  const [isResendEnabled, setIsResendEnabled] = useState(false);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (timer === 0) {
+      if (intervalId) clearInterval(intervalId);
+      setIsResendEnabled(true);
+    }
+  }, [timer, intervalId]);
 
   useEffect(() => {
     if (userId !== null) {
@@ -71,6 +84,14 @@ const LoginModal = ({
   };
 
   const handleSendOtp = async () => {
+    setIsLoading(true);
+    setIsResendEnabled(false);
+    setTimer(60);
+    const newIntervalId = setInterval(() => {
+      setTimer((prevTimer) => prevTimer - 1);
+    }, 1000);
+    setIntervalId(newIntervalId);
+
     try {
       let data = JSON.stringify({
         emailId: email,
@@ -90,10 +111,13 @@ const LoginModal = ({
       setIsShow(true);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const verifyOTP = async () => {
+    setIsLoading(true);
     try {
       let data = JSON.stringify({
         Otp: otp,
@@ -110,18 +134,17 @@ const LoginModal = ({
       const response = await axios.request(config);
       console.log(JSON.stringify(response.data));
       setOtpValid(true);
+      setOtpErr("");
     } catch (error) {
       console.log(error);
+      setOtpErr("OTP does not match. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  //   useEffect(() => {
-  //     if (userId && lastInteractedProductId) {
-  //       addToFavorite(lastInteractedProductId, userId);
-  //     }
-  //   }, [userId, lastInteractedProductId]);
-
   const loginUser = async () => {
+    setIsLoading(true);
     try {
       let data = JSON.stringify({
         emailId: email,
@@ -148,6 +171,8 @@ const LoginModal = ({
       setIsLoggedIn(true);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -286,7 +311,7 @@ const LoginModal = ({
                     value={otp}
                     onChange={handleOtpChange}
                   />
-
+                  {otpErr && <p className="text-red-500 text-xs">{otpErr}</p>}
                   <p className="border border-black mt-2"></p>
                 </div>
               )}
@@ -296,26 +321,41 @@ const LoginModal = ({
                     <button
                       onClick={loginUser}
                       disabled={!isValidEmail || email.trim() === ""}
-                      className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                      className="mt-5 flex items-center justify-center w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
                     >
-                      {Strings.Login}
+                      {isLoading ? <Loader /> : Strings.Login}
                     </button>
                   ) : (
-                    <button
-                      onClick={verifyOTP}
-                      disabled={!isValidEmail || email.trim() === ""}
-                      className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
-                    >
-                      {Strings.Verify_OTP}
-                    </button>
+                    <>
+                      <button
+                        onClick={verifyOTP}
+                        disabled={!isValidEmail || email.trim() === ""}
+                        className="mt-5 flex items-center justify-center w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                      >
+                        {isLoading ? <Loader /> : Strings.Verify_OTP}
+                      </button>
+                      {timer > 0 ? (
+                        <p className="flex justify-center mt-2">
+                          {Strings.Resend_Otp} {timer} {Strings.seconds}
+                        </p>
+                      ) : (
+                        <button
+                          onClick={handleSendOtp}
+                          disabled={!isValidEmail || email.trim() === ""}
+                          className="mt-4 flex items-center justify-center w-full  hover:text-PictonBlue text-black text-base font-semibold underline"
+                        >
+                          {isLoading ? <Loader /> : Strings.Resend_OTP}
+                        </button>
+                      )}
+                    </>
                   )
                 ) : (
                   <button
                     onClick={handleSendOtp}
                     disabled={!isValidEmail || email.trim() === ""}
-                    className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                    className="mt-5 flex items-center justify-center w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
                   >
-                    {Strings.Send_OTP}
+                    {isLoading ? <Loader /> : Strings.Send_OTP}
                   </button>
                 )}
               </div>

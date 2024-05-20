@@ -5,6 +5,8 @@ const nextConfig = {
   images: {
     domains: ["cdn.shopify.com", "imagedelivery.net"],
   },
+
+
 };
 
 export default nextConfig;

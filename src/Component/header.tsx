@@ -1,11 +1,12 @@
+import Image from "next/image";
 import { Images, Strings } from "@/constant";
 import LoginModal, { toggleModal } from "@/Component/LoginModal";
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+
 import Link from "next/link";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { useCart } from "@/Context/CartContext";
+import { useRouter } from "next/navigation";
 
 interface MenuItem {
   category: string;
@@ -74,6 +75,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
   const handleButtonClick = () => {
     setShowLoginModal(true);
   };
+
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -281,20 +283,22 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
           <div className="flex items-center space-x-4">
             <div className="flex bg-[#F2F2F2] h-7 w-[150px] rounded-[5px] items-center text-black">
               <button
-                className={` h-7 w-[90px] rounded-[5px] flex items-center justify-center ${selectedLanguage === "English"
+                className={` h-7 w-[90px] rounded-[5px] flex items-center justify-center ${
+                  selectedLanguage === "English"
                     ? "bg-[#1A82A4] text-white font-extrabold text-xs"
                     : "font-normal text-xs"
-                  }`}
+                }`}
                 onClick={() => handleLanguageClick("English")}
                 disabled={selectedLanguage === "English"}
               >
                 {Strings.ENGLISH}
               </button>
               <button
-                className={`h-7 w-[90px] rounded-[5px]  flex items-center justify-center ${selectedLanguage === "Hindi"
+                className={`h-7 w-[90px] rounded-[5px]  flex items-center justify-center ${
+                  selectedLanguage === "Hindi"
                     ? "bg-[#1A82A4] text-white font-extrabold text-xs"
                     : "font-normal text-xs"
-                  }`}
+                }`}
                 onClick={() => handleLanguageClick("Hindi")}
                 disabled={selectedLanguage === "Hindi"}
               >
@@ -382,11 +386,11 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                             href={`/${item.category
                                               .toLowerCase()
                                               .replace(/\s+/g, "-")}/${usage
-                                                .toLowerCase()
-                                                .replace(
-                                                  /\s+/g,
-                                                  "-"
-                                                )}-contact-lenses`}
+                                              .toLowerCase()
+                                              .replace(
+                                                /\s+/g,
+                                                "-"
+                                              )}-contact-lenses`}
                                           >
                                             {usage.toUpperCase()}
                                           </Link>
@@ -407,9 +411,12 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                           <Link
                                             href={`/${item.category
                                               .toLowerCase()
-                                              .replace(/\s+/g, "-")}/${gender
-                                                .toLowerCase()
-                                                .replace(/\s+/g, "-")}`}
+                                              .replace(
+                                                /\s+/g,
+                                                "-"
+                                              )}/${`glasses-for-${gender
+                                              .toLowerCase()
+                                              .replace(/\s+/g, "-")}`}`}
                                           >
                                             {gender.toUpperCase()}
                                           </Link>
@@ -440,15 +447,16 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                           href={`/${item.category
                                             .toLowerCase()
                                             .replace(/\s+/g, "-")}/${brand
-                                              .toLowerCase()
-                                              .replace(/\s+/g, "-")
-                                              .replace(/&/g, "and")}${item.category.toLowerCase() ===
+                                            .toLowerCase()
+                                            .replace(/\s+/g, "-")
+                                            .replace(/&/g, "and")}${
+                                            item.category.toLowerCase() ===
                                               "contact lenses" ||
-                                              item.category.toLowerCase() ===
+                                            item.category.toLowerCase() ===
                                               "myopia control glasses"
                                               ? "-lens"
                                               : "-frames"
-                                            }`}
+                                          }`}
                                         >
                                           {brand.toUpperCase()}
                                         </Link>
@@ -473,14 +481,15 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                           href={`/${item.category
                                             .toLowerCase()
                                             .replace(/\s+/g, "-")}/${color
-                                              .toLowerCase()
-                                              .replace(/\s+/g, "-")}${item.category.toLowerCase() ===
+                                            .toLowerCase()
+                                            .replace(/\s+/g, "-")}${
+                                            item.category.toLowerCase() ===
                                               "contact lenses" ||
-                                              item.category.toLowerCase() ===
+                                            item.category.toLowerCase() ===
                                               "myopia control glasses"
                                               ? "-lens"
                                               : "-frames"
-                                            }`}
+                                          }`}
                                         >
                                           {color.toUpperCase()}
                                         </Link>
@@ -504,8 +513,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                           href={`/${item.category
                                             .toLowerCase()
                                             .replace(/\s+/g, "-")}/${style
-                                              .toLowerCase()
-                                              .replace(/\s+/g, "-")}-frames`}
+                                            .toLowerCase()
+                                            .replace(/\s+/g, "-")}-frames`}
                                         >
                                           {style.toUpperCase()}
                                         </Link>
@@ -529,8 +538,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                           href={`/${item.category
                                             .toLowerCase()
                                             .replace(/\s+/g, "-")}/${shape
-                                              .toLowerCase()
-                                              .replace(/\s+/g, "-")}-frames`}
+                                            .toLowerCase()
+                                            .replace(/\s+/g, "-")}-frames`}
                                         >
                                           {shape.toUpperCase()}
                                         </Link>
@@ -583,7 +592,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                   </div>
                   <p className="border"></p>
                   <div className="flex items-center">
-                    <Link href={"/profile"}>
+                    <Link href={isLoggedIn ? "/profile" : "/"}>
                       <Image
                         src={Images.Userwhite}
                         alt="/"
@@ -597,7 +606,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       className="text-white font-normal text-xs ml-2"
                       disabled={isLoggedIn}
                     >
-                      {Strings.SIGN_IN}
+                      {isLoggedIn ? "User" : Strings.SIGN_IN}
                     </button>
                     <LoginModal
                       showLoginModal={showLoginModal}
@@ -625,7 +634,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
               </p>
             </div>
             <div className="flex items-center ">
-              <Link href={"/profile"}>
+              <Link href={isLoggedIn ? "/profile" : "/"}>
                 <Image
                   src={Images.User}
                   alt="/"
@@ -636,11 +645,12 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
               </Link>
               <button
                 onClick={handleButtonClick}
-                className={`text-black font-bold text-xs ml-2 ${isLoggedIn ? "cursor-default" : "cursor-pointer"
-                  } `}
+                className={`text-black font-bold text-xs ml-2 ${
+                  isLoggedIn ? "cursor-default" : "cursor-pointer"
+                } `}
                 disabled={isLoggedIn}
               >
-                {Strings.SIGN_IN}
+                {isLoggedIn ? "User" : Strings.SIGN_IN}
               </button>
               <LoginModal
                 showLoginModal={showLoginModal}
@@ -722,10 +732,11 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
               <div key={index}>
                 <div
                   onClick={() => toggleMegaMenu(index)}
-                  className={`flex items-center font-normal lg:text-[11.5px] xl:text-xs  cursor-pointer ${item.megaMenuOpen
+                  className={`flex items-center font-normal lg:text-[11.5px] xl:text-xs  cursor-pointer ${
+                    item.megaMenuOpen
                       ? "text-PictonBlue font-semibold"
                       : "text-black"
-                    }`}
+                  }`}
                 >
                   {item.category.toUpperCase()}
                   <button>
@@ -736,10 +747,11 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                         height={12}
                         width={12}
                         className={`lg:ml-1 xl:ml-2 
-                      ${item.megaMenuOpen
-                            ? "rotate-180 duration-300 transform"
-                            : ""
-                          }`}
+                      ${
+                        item.megaMenuOpen
+                          ? "rotate-180 duration-300 transform"
+                          : ""
+                      }`}
                       />
                     ) : (
                       <Image
@@ -779,8 +791,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                       href={`/${item.category
                                         .toLowerCase()
                                         .replace(/\s+/g, "-")}/${usage
-                                          .toLowerCase()
-                                          .replace(/\s+/g, "-")}-contact-lenses`}
+                                        .toLowerCase()
+                                        .replace(/\s+/g, "-")}-contact-lenses`}
                                     >
                                       {usage.toUpperCase()}
                                     </Link>
@@ -803,9 +815,12 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     <Link
                                       href={`/${item.category
                                         .toLowerCase()
-                                        .replace(/\s+/g, "-")}/${gender
-                                          .toLowerCase()
-                                          .replace(/\s+/g, "-")}`}
+                                        .replace(
+                                          /\s+/g,
+                                          "-"
+                                        )}/${`glasses-for-${gender
+                                        .toLowerCase()
+                                        .replace(/\s+/g, "-")}`}`}
                                     >
                                       {gender.toUpperCase()}
                                     </Link>
@@ -830,15 +845,16 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     href={`/${item.category
                                       .toLowerCase()
                                       .replace(/\s+/g, "-")}/${brand
-                                        .toLowerCase()
-                                        .replace(/\s+/g, "-")
-                                        .replace(/&/g, "and")}${item.category.toLowerCase() ===
+                                      .toLowerCase()
+                                      .replace(/\s+/g, "-")
+                                      .replace(/&/g, "and")}${
+                                      item.category.toLowerCase() ===
                                         "contact lenses" ||
-                                        item.category.toLowerCase() ===
+                                      item.category.toLowerCase() ===
                                         "myopia control glasses"
                                         ? "-lens"
                                         : "-frames"
-                                      }`}
+                                    }`}
                                   >
                                     {brand.toUpperCase()}
                                   </Link>
@@ -863,14 +879,15 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     href={`/${item.category
                                       .toLowerCase()
                                       .replace(/\s+/g, "-")}/${color
-                                        .toLowerCase()
-                                        .replace(/\s+/g, "-")}${item.category.toLowerCase() ===
+                                      .toLowerCase()
+                                      .replace(/\s+/g, "-")}${
+                                      item.category.toLowerCase() ===
                                         "contact lenses" ||
-                                        item.category.toLowerCase() ===
+                                      item.category.toLowerCase() ===
                                         "myopia control glasses"
                                         ? "-lens"
                                         : "-frames"
-                                      }`}
+                                    }`}
                                   >
                                     {color.toUpperCase()}
                                   </Link>
@@ -894,8 +911,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     href={`/${item.category
                                       .toLowerCase()
                                       .replace(/\s+/g, "-")}/${style
-                                        .toLowerCase()
-                                        .replace(/\s+/g, "-")}-frames`}
+                                      .toLowerCase()
+                                      .replace(/\s+/g, "-")}-frames`}
                                   >
                                     {style.toUpperCase()}
                                   </Link>
@@ -919,8 +936,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     href={`/${item.category
                                       .toLowerCase()
                                       .replace(/\s+/g, "-")}/${shape
-                                        .toLowerCase()
-                                        .replace(/\s+/g, "-")}-frames`}
+                                      .toLowerCase()
+                                      .replace(/\s+/g, "-")}-frames`}
                                   >
                                     {shape.toUpperCase()}
                                   </Link>

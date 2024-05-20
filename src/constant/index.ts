@@ -120,7 +120,7 @@ export const Images = {
   ShopCart: "/Images/shop-cart.png",
   SuccessIcon: "/Images/right-tick.png",
   profile: "/Images/profile.png",
-  Iksana_Eye_Logo: "/Images/iksana_eye_logo.png"
+  Iksana_Eye_Logo: "/Images/iksana_eye_logo.png",
 };
 
 export const Strings = {
@@ -833,6 +833,8 @@ export const Strings = {
   Tom_cook: "Tom cook",
   example_email: "tom.cook@example.com",
   Phone_No: "02667-77777",
+  Resend_Otp: "Resend OTP in:",
+  seconds: "seconds",
 };
 
 export const Faqs = {

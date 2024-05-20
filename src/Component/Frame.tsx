@@ -28,9 +28,7 @@ const Frame: React.FC<FrameProps> = ({
           className="border border-black rounded-xl"
         />
         <Link
-          href={`/${buttonText
-            .toLowerCase()
-            .replace(/\s+/g, "-")}/${gender.toLowerCase()}`}
+          href={`/${buttonText.toLowerCase().replace(/\s+/g, "-")}/${gender}`}
           className="absolute bottom-4"
         >
           <button

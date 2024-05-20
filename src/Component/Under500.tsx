@@ -2,10 +2,10 @@ import { Images, Strings } from "@/constant";
 import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
+import LoginModal from "./LoginModal";
 import StarRating from "./StarRating";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import LoginModal from "./LoginModal";
 
 interface Under500Props {
   image: string;
@@ -42,7 +42,7 @@ const Under500: React.FC<Under500Props> = ({
   category,
   useCart,
   size,
-  onclick
+  onclick,
 }) => {
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState<string | null>();
@@ -74,8 +74,8 @@ const Under500: React.FC<Under500Props> = ({
     const lowercaseGender = gender.toLowerCase().replace(/\s+/g, "-");
     const lowercaseSKU = SKU.toLowerCase().replace(/\s+/g, "-");
 
-    // Construct the actual route with all lowercase words
     const actualRoute = `/eyewear/${lowercaseCategory}/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseGender}-${lowercaseSKU}`;
+    const url = `/${lowercaseCategory}/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseGender}-${lowercaseSKU}`;
 
     localStorage.setItem("productId", productId);
     localStorage.setItem("subProductId", subProductId);

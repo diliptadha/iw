@@ -21,6 +21,7 @@ import Link from "next/link";
 import StarRating from "@/Component/StarRating";
 import { Tab } from "@headlessui/react";
 import Under500 from "@/Component/Under500";
+import WhatsAppButton from "@/Component/WhatsAppButton";
 import axios from "axios";
 import getCartQuantity from "@/utils/getCartQty";
 import { it } from "node:test";
@@ -81,6 +82,7 @@ interface GetContent {
   tagLine: string;
   desc: string;
 }
+type Gender = "Men" | "Women" | "Unisex" | "Kids";
 
 const Homescreen: React.FC = () => {
   const [currentIndex2, setCurrentIndex2] = useState(0);
@@ -130,7 +132,7 @@ const Homescreen: React.FC = () => {
       .get(`${process.env.NEXT_PUBLIC_API_URL}home/products`)
       .then((response) => {
         const data = response.data.productsDataByCriteria;
-        // console.log(response.data.productsDataByCriteria);
+
         setNewArrival(data.newArrivals);
         setBestSeller(data.isBestSeller);
         setUnderFive(data.under500);
@@ -437,6 +439,13 @@ const Homescreen: React.FC = () => {
     fetchGetContent();
   }, []);
 
+  const genderImageMap: { [key in Gender]: string } = {
+    Men: Images.menframe,
+    Women: Images.frame1,
+    Unisex: Images.Unisexframe2,
+    Kids: Images.kidsframe2,
+  };
+
   return (
     <>
       <div className="max-w-screen-2xl m-auto">
@@ -447,12 +456,14 @@ const Homescreen: React.FC = () => {
         {getContent.map((content, index) => {
           if (index === 2) {
             return (
-              <div className="flex xs:flex-col xl:flex-row md:justify-between mt-10 xs:mx-[20px] xl:mx-[72px] xlg:mx-[129px] items-center">
-                <div className="xl:w-[680px]">
-                  <h1 className="font-extrabold xs:text-xl lg:text-[24px] text-PictonBlue">
-                    {content.tagLine}
-                  </h1>
-                  <p className="border border-black my-3 xs:w-full xl:w-[530px] xlg:w-full "></p>
+              <div className="flex xs:flex-col xl:flex-row md:justify-between mt-10 xs:mx-[20px] xl:mx-[72px]  items-center">
+                <div className=" xl:w-[640px]">
+                  <p className="bg-black-">
+                    <h1 className="font-extrabold xs:text-xl lg:text-[24px] text-PictonBlue">
+                      {content.tagLine}
+                    </h1>
+                    <p className="border border-black my-3 xs:w-full xl:w-[610px]"></p>
+                  </p>
                   <h1 className="font-medium text-black  xs:text-lg md:text-2xl xs:block- md:flex- xl:block-">
                     <span className="">
                       {content.title.split(" ").slice(0, 3).join(" ")}
@@ -482,8 +493,9 @@ const Homescreen: React.FC = () => {
                   <div className="absolute flex justify-between xs:w-[340px] sm:w-[410px] md:w-[580px] xl:w-[580px]">
                     <button
                       onClick={() => handlePrev(2)}
-                      className={`ml-2 ${currentIndex2 === 0 ? "opacity-50" : ""
-                        }`}
+                      className={`ml-2 ${
+                        currentIndex2 === 0 ? "opacity-50" : ""
+                      }`}
                       disabled={currentIndex2 === 0}
                     >
                       <Image
@@ -496,8 +508,9 @@ const Homescreen: React.FC = () => {
                     </button>
                     <button
                       onClick={() => handleNext(2)}
-                      className={`mr-2 ${currentIndex2 === images.length - 1 ? "opacity-50 " : ""
-                        }`}
+                      className={`mr-2 ${
+                        currentIndex2 === images.length - 1 ? "opacity-50 " : ""
+                      }`}
                       disabled={currentIndex2 === images.length - 1}
                     >
                       <Image
@@ -528,10 +541,11 @@ const Homescreen: React.FC = () => {
                   <Tab as={Fragment} key={index}>
                     {({ selected }) => (
                       <button
-                        className={`text-[15px] text-black ${selected
+                        className={`text-[15px] text-black ${
+                          selected
                             ? "border-b-[5px] border-black p-2 outline-none font-extrabold relative top-[3px]"
                             : "font-normal"
-                          } xs:px-2 md:px-4 py-3`}
+                        } xs:px-2 md:px-4 py-3`}
                       >
                         {gender.toUpperCase()}
                       </button>
@@ -560,7 +574,7 @@ const Homescreen: React.FC = () => {
                         (category, categoryIndex) => (
                           <Frame
                             key={categoryIndex}
-                            image={Images.menframe}
+                            image={genderImageMap[selectedGender as Gender]}
                             buttonText={category}
                             buttonUrl={""}
                             gender={selectedGender}
@@ -622,11 +636,13 @@ const Homescreen: React.FC = () => {
                 alt="/"
                 height={16}
                 width={16}
-                className={`ml-0 xl:mb-0 transform:translateX(-${currIndex * 100
-                  }%) ${currIndex === 0
+                className={`ml-0 xl:mb-0 transform:translateX(-${
+                  currIndex * 100
+                }%) ${
+                  currIndex === 0
                     ? "opacity-60 cursor-not-allowed"
                     : "cursor-pointer"
-                  }`}
+                }`}
                 style={{ pointerEvents: currIndex === 0 ? "none" : "auto" }}
               />
 
@@ -709,9 +725,9 @@ const Homescreen: React.FC = () => {
                           src={currentItem.productImage}
                           alt="/"
                           className="relative transition-transform duration-700 ease-in-out"
-                          style={{
-                            transform: `translateX(-${currIndex * 100}%)`,
-                          }}
+                          // style={{
+                          //   transform: `translateX(-${currIndex * 100}%)`,
+                          // }}
                         />
                       </div>
                     </div>
@@ -726,11 +742,13 @@ const Homescreen: React.FC = () => {
                 alt="/"
                 height={16}
                 width={16}
-                className={`mr-0 xl:mb-0 transform:translateX(-${currIndex * 100
-                  }%) ${currIndex === newArrival.length - 1
+                className={`mr-0 xl:mb-0 transform:translateX(-${
+                  currIndex * 100
+                }%) ${
+                  currIndex === newArrival.length - 1
                     ? "opacity-60 cursor-not-allowed"
                     : "cursor-pointer"
-                  }`}
+                }`}
                 style={{
                   pointerEvents:
                     currIndex === newArrival.length - 1 ? "none" : "auto",
@@ -961,8 +979,8 @@ const Homescreen: React.FC = () => {
                         ? index === visibleIndex
                           ? 1
                           : Math.abs(index - visibleIndex) < 3
-                            ? 0.5
-                            : 0
+                          ? 0.5
+                          : 0
                         : 1,
                   }}
                 />
@@ -983,7 +1001,10 @@ const Homescreen: React.FC = () => {
               >
                 <Image src={Images.Upicon} alt="/" height={16} width={16} />
               </button>
-              <Image src={Images.Whatsapp} alt="/" height={55} width={55} />
+              <WhatsAppButton
+                phoneNumber="7977994474"
+                message="Hello, I would like to know more about your services."
+              />
             </div>
           </div>
         </div>

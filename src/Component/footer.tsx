@@ -50,7 +50,7 @@ export const Footer = () => {
         `${process.env.NEXT_PUBLIC_API_URL}home/sendSubscriptionMail?emailId=${Email}`
       )
       .then((response) => {
-        setIsSubmitted(true); 
+        setIsSubmitted(true);
       })
       .catch((error) => {
         console.error("Error subscribing:", error);
@@ -205,7 +205,7 @@ export const Footer = () => {
               placeholder="Enter your email ID"
               value={Email}
               onChange={handleEmailChange}
-              className="border-Cod_Gray rounded-lg border-[1px] border-[#000] font-lato text-black placeholder-black bg-white px-4 py-2 outline-none dark:border-white dark:bg-[#000] w-full xs:text-base lg:text-md md:w-[280px] lg:w-[260px] xl:w-[380px]"
+              className="rounded-lg font-lato text-black placeholder-black bg-white px-4 py-2 outline-none w-full xs:text-base lg:text-md md:w-[280px] lg:w-[260px] xl:w-[380px]"
             />
             <button
               onClick={handleSubmit}

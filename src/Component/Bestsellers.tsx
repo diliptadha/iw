@@ -68,6 +68,7 @@ const Bestsellers: React.FC<BestsellersProps> = ({
 
     // Construct the actual route with all lowercase words
     const actualRoute = `/eyewear/${lowercaseCategory}/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseGender}-${lowercaseSKU}`;
+    const url = `/${lowercaseCategory}/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseGender}-${lowercaseSKU}`;
 
     localStorage.setItem("productId", productId);
     localStorage.setItem("subProductId", subProductId);

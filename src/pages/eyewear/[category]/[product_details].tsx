@@ -5,6 +5,7 @@ import "../../../../src/app/globals.css";
 import { Images, Strings } from "@/constant";
 import React, { useEffect, useRef, useState } from "react";
 
+import { Footer } from "@/Component/footer";
 import GiveRatings from "@/Component/GiveRatings";
 import Header from "@/Component/header";
 import Image from "next/image";
@@ -13,8 +14,11 @@ import LoginModal from "@/Component/LoginModal";
 import Review from "@/Component/reviews";
 import ShareOptions from "@/Component/share";
 import SimilarProductPage from "../../similar_products";
+import WhatsAppButton from "@/Component/WhatsAppButton";
 import axios from "axios";
 import { useRouter } from "next/router";
+import Loader from "@/Component/Loader";
+
 interface ProductData {
   ProductData: any;
   FilteredSubProductData: any;
@@ -110,6 +114,36 @@ const ProductDetails = () => {
     }
     return false;
   });
+  const [isValidEmail, setIsValidEmail] = useState(true);
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpValid, setOtpValid] = useState(false);
+  const [isShow, setIsShow] = useState(false);
+  const [lastInteractedProductId, setLastInteractedProductId] = useState<
+    string | null
+  >(null);
+  const [showLoginModal1, setShowLoginModal1] = useState(false);
+
+  const [favoriteStatus, setFavoriteStatus] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const storedUserId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+
+  const [userId, setUserId] = useState<string | null>(storedUserId);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!userId);
+  const [otpErr, setOtpErr] = useState("");
+  const [timer, setTimer] = useState(60);
+  const [isResendEnabled, setIsResendEnabled] = useState(false);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (timer === 0) {
+      if (intervalId) clearInterval(intervalId);
+      setIsResendEnabled(true);
+    }
+  }, [timer, intervalId]);
 
   useEffect(() => {
     productId = localStorage.getItem("productId");
@@ -483,25 +517,6 @@ const ProductDetails = () => {
     fetchReviews();
   }, []);
 
-  const [isValidEmail, setIsValidEmail] = useState(true);
-  const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState("");
-  const [otpValid, setOtpValid] = useState(false);
-  const [isShow, setIsShow] = useState(false);
-  const [lastInteractedProductId, setLastInteractedProductId] = useState<
-    string | null
-  >(null);
-  const [showLoginModal1, setShowLoginModal1] = useState(false);
-
-  const [favoriteStatus, setFavoriteStatus] = useState<{
-    [key: string]: boolean;
-  }>({});
-  const storedUserId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
-
-  const [userId, setUserId] = useState<string | null>(storedUserId);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!userId);
-
   useEffect(() => {
     if (userId !== null) {
       localStorage.setItem("userId", userId);
@@ -528,6 +543,13 @@ const ProductDetails = () => {
   };
 
   const handleSendOtp = async () => {
+    setIsLoading(true);
+    setIsResendEnabled(false);
+    setTimer(60);
+    const newIntervalId = setInterval(() => {
+      setTimer((prevTimer) => prevTimer - 1);
+    }, 1000);
+    setIntervalId(newIntervalId);
     try {
       let data = JSON.stringify({
         emailId: email,
@@ -547,10 +569,13 @@ const ProductDetails = () => {
       setIsShow(true);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const verifyOTP = async () => {
+    setIsLoading(true);
     try {
       let data = JSON.stringify({
         Otp: otp,
@@ -567,8 +592,12 @@ const ProductDetails = () => {
       const response = await axios.request(config);
       console.log(JSON.stringify(response.data));
       setOtpValid(true);
+      setOtpErr("");
     } catch (error) {
       console.log(error);
+      setOtpErr("OTP does not match. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -579,6 +608,7 @@ const ProductDetails = () => {
   }, [userId, lastInteractedProductId]);
 
   const loginUser = async () => {
+    setIsLoading(true);
     try {
       let data = JSON.stringify({
         emailId: email,
@@ -605,6 +635,8 @@ const ProductDetails = () => {
       setUserId(response.data.signInData.userData.userId);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -691,6 +723,13 @@ const ProductDetails = () => {
     }
   }, [showLoginModal1]);
 
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <>
       <div>
@@ -745,10 +784,11 @@ const ProductDetails = () => {
                               key={index}
                               src={image}
                               alt="variant"
-                              className={`image2 ${index === 0
-                                ? "md:mb-1 md:mr-1 lg:mb-2"
-                                : "md:mr-1 md:mb-1 lg:mb-0 lg:mr-2"
-                                } border border-black rounded`}
+                              className={`image2 ${
+                                index === 0
+                                  ? "md:mb-1 md:mr-1 lg:mb-2"
+                                  : "md:mr-1 md:mb-1 lg:mb-0 lg:mr-2"
+                              } border border-black rounded`}
                               loading="lazy"
                             />
                           )
@@ -792,8 +832,8 @@ const ProductDetails = () => {
                         {favoriteStatus[
                           selectedSubProduct.ProductData?.productId
                             ? Array.isArray(
-                              selectedSubProduct.ProductData?.productId
-                            )
+                                selectedSubProduct.ProductData?.productId
+                              )
                               ? selectedSubProduct.ProductData?.productId[0]
                               : selectedSubProduct.ProductData?.productId
                             : ""
@@ -861,6 +901,11 @@ const ProductDetails = () => {
                                     value={otp}
                                     onChange={handleOtpChange}
                                   />
+                                  {otpErr && (
+                                    <p className="text-red-500 text-xs">
+                                      {otpErr}
+                                    </p>
+                                  )}
                                   <p className="border border-black mt-2"></p>
                                 </div>
                               )}
@@ -872,20 +917,46 @@ const ProductDetails = () => {
                                       disabled={
                                         !isValidEmail || email.trim() === ""
                                       }
-                                      className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                                      className="mt-5 flex items-center justify-center w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
                                     >
-                                      {Strings.Login}
+                                      {isLoading ? <Loader /> : Strings.Login}
                                     </button>
                                   ) : (
-                                    <button
-                                      onClick={verifyOTP}
-                                      disabled={
-                                        !isValidEmail || email.trim() === ""
-                                      }
-                                      className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
-                                    >
-                                      {Strings.Verify_OTP}
-                                    </button>
+                                    <>
+                                      <button
+                                        onClick={verifyOTP}
+                                        disabled={
+                                          !isValidEmail || email.trim() === ""
+                                        }
+                                        className="mt-5 flex items-center justify-center w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                                      >
+                                        {isLoading ? (
+                                          <Loader />
+                                        ) : (
+                                          Strings.Verify_OTP
+                                        )}
+                                      </button>
+                                      {timer > 0 ? (
+                                        <p className="flex justify-center mt-2">
+                                          {Strings.Resend_Otp} {timer}{" "}
+                                          {Strings.seconds}
+                                        </p>
+                                      ) : (
+                                        <button
+                                          onClick={handleSendOtp}
+                                          disabled={
+                                            !isValidEmail || email.trim() === ""
+                                          }
+                                          className="mt-4 flex items-center justify-center w-full  hover:text-PictonBlue text-black text-base font-semibold underline"
+                                        >
+                                          {isLoading ? (
+                                            <Loader />
+                                          ) : (
+                                            Strings.Resend_OTP
+                                          )}
+                                        </button>
+                                      )}
+                                    </>
                                   )
                                 ) : (
                                   <button
@@ -893,9 +964,9 @@ const ProductDetails = () => {
                                     disabled={
                                       !isValidEmail || email.trim() === ""
                                     }
-                                    className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                                    className="mt-5 flex items-center justify-center w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
                                   >
-                                    {Strings.Send_OTP}
+                                    {isLoading ? <Loader /> : Strings.Send_OTP}
                                   </button>
                                 )}
                               </div>
@@ -1038,8 +1109,9 @@ const ProductDetails = () => {
                     </p>
                     <div className="">
                       <button
-                        className={`focus:outline-none transition-transform duration-400 ease-in-out ${isOpen ? "rotate-180" : ""
-                          }`}
+                        className={`focus:outline-none transition-transform duration-400 ease-in-out ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
                         onClick={toggleDropdown}
                       >
                         <Image
@@ -1217,9 +1289,9 @@ const ProductDetails = () => {
                   {expanded
                     ? selectedSubProduct.ProductData?.fullDesc
                     : selectedSubProduct?.ProductData?.fullDesc?.substring(
-                      0,
-                      260
-                    )}
+                        0,
+                        260
+                      )}
                 </p>
                 {!expanded && (
                   <button
@@ -1237,8 +1309,9 @@ const ProductDetails = () => {
                 </div>
                 <div className="">
                   <button
-                    className={`focus:outline-none h-4 w-4 flex items-center transition-transform duration-400 ease-in-out ${isOpenReview ? "rotate-180" : ""
-                      }`}
+                    className={`focus:outline-none h-4 w-4 flex items-center transition-transform duration-400 ease-in-out ${
+                      isOpenReview ? "rotate-180" : ""
+                    }`}
                     onClick={toggleDropdownReview}
                   >
                     <Image
@@ -1342,8 +1415,9 @@ const ProductDetails = () => {
                 >
                   <button
                     onClick={openModal}
-                    className={`${review.length <= 2 ? "hidden" : "flex"
-                      } w-[126px] h-[34px]  md:w-[136px] md:h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border-2 border-black outline-none px-1 lg:px-2 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold`}
+                    className={`${
+                      review.length <= 2 ? "hidden" : "flex"
+                    } w-[126px] h-[34px]  md:w-[136px] md:h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border-2 border-black outline-none px-1 lg:px-2 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold`}
                   >
                     {Strings.MORE_REVIEWS}
                   </button>
@@ -1496,13 +1570,13 @@ const ProductDetails = () => {
                         </div>
                         {index <
                           selectedSubProduct.ProductData.boxImage.length -
-                          1 && (
-                            <span
-                              className={index === 0 ? "mx-4 md:mx-6" : "mr-2"}
-                            >
-                              +
-                            </span>
-                          )}
+                            1 && (
+                          <span
+                            className={index === 0 ? "mx-4 md:mx-6" : "mr-2"}
+                          >
+                            +
+                          </span>
+                        )}
                       </React.Fragment>
                     )
                   )}
@@ -1513,6 +1587,21 @@ const ProductDetails = () => {
         <div style={{ marginTop: isOpenReview ? nextDivMarginTop : "40px" }}>
           <SimilarProductPage />
         </div>
+        <div className="my-10 flex justify-end xs:mx-[20px] lg:*:mx-[72px]">
+          <div className="space-y-2 ">
+            <button
+              onClick={handleScrollToTop}
+              className="bg-PictonBlue h-12 w-12 rounded-full flex justify-center items-center"
+            >
+              <Image src={Images.Upicon} alt="/" height={16} width={16} />
+            </button>
+            <WhatsAppButton
+              phoneNumber="7977994474"
+              message="Hello, I would like to know more about your services."
+            />
+          </div>
+        </div>
+        <Footer />
       </div>
     </>
   );

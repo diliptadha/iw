@@ -14,8 +14,10 @@ import Pagination from "react-paginate";
 import Product from "@/Component/Product";
 import ReactPaginate from "react-paginate";
 import Shape from "@/Component/Shape";
+import WhatsAppButton from "@/Component/WhatsAppButton";
 import axios from "axios";
 import { space } from "postcss/lib/list";
+import Loader from "@/Component/Loader";
 
 const genders = ["Men", "Women", "Kids", "Unisex"];
 const frameStyles = ["Full Rim", "Rimless", "Half Rim"];
@@ -102,6 +104,36 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedShape, setSelectedShape] = useState<string[]>([]);
   const [fillterurl, setFillterurl] = useState("");
+  const [isValidEmail, setIsValidEmail] = useState(true);
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpErr, setOtpErr] = useState("");
+  const [otpValid, setOtpValid] = useState(false);
+  const [isShow, setIsShow] = useState(false);
+  const [lastInteractedProductId, setLastInteractedProductId] = useState<
+    string | null
+  >(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const [favoriteStatus, setFavoriteStatus] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const storedUserId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+  const [isLoading, setIsLoading] = useState(false);
+  const [userId, setUserId] = useState<string | null>(storedUserId);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!userId);
+  const [timer, setTimer] = useState(60);
+  const [isResendEnabled, setIsResendEnabled] = useState(false);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (timer === 0) {
+      if (intervalId) clearInterval(intervalId);
+      setIsResendEnabled(true);
+    }
+  }, [timer, intervalId]);
+
   const router = useParams();
 
   const handleCheckboxGender = (gender: string) => {
@@ -365,30 +397,29 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       );
 
       const categoryArray = Array.isArray(category) ? category : [category];
-      // const searchArray = Array.isArray(gender) ? gender : [gender];
 
       const urlSelectedCategory = encodeURIComponent(
         JSON.stringify(categoryArray)
       );
       console.log(urlSelectedCategory);
-      // const toCamelCase = (str: string) => {
-      //   return str.replace(/([-_][a-z])/gi, ($1) => {
-      //     return $1.toUpperCase().replace("-", "").replace("_", "");
-      //   });
-      // };
 
-      // const genderArray = [gender.charAt(0).toUpperCase() + gender.slice(1)];
-
-      const urlSelectedSearch = encodeURIComponent(JSON.stringify(gender));
-
-      // console.log("men", urlSelectedSearch);
-      // console.log("CATEGORY Array:", categoryArray);
-      // console.log("SEARCH Array:", searchArray);
-      let url = `${process.env.NEXT_PUBLIC_API_URL
-        }product/getFilterProductData?page=1&limit=9&sortBy=${sortBy}&category=${urlSelectedCategory.replace(
-          /-/g,
-          " "
-        )}&gender=${urlSelectedSearch.replace(/-lens|lenses|frames|-/g, "")}`;
+      const urlSelectedSearch = encodeURIComponent(
+        JSON.stringify(
+          gender.map((g: string) => {
+            const cleanedGender = g.replace(/glasses-for-/, "").toLowerCase();
+            return (
+              cleanedGender.charAt(0).toUpperCase() + cleanedGender.slice(1)
+            );
+          })
+        )
+      );
+      console.log("ssssss", urlSelectedSearch);
+      let url = `${
+        process.env.NEXT_PUBLIC_API_URL
+      }product/getFilterProductData?page=1&limit=9&sortBy=${sortBy}&category=${urlSelectedCategory.replace(
+        /-/g,
+        " "
+      )}&gender=${urlSelectedSearch.replace(/-lens|lenses|frames|-/g, "")}`;
 
       if (selectedFrameMaterial.length > 0) {
         const materialFilter = `&frameMaterial=${urlSelectedMaterial.replace(
@@ -397,8 +428,6 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
         )}`;
         url += materialFilter;
       }
-
-      // Check if selectedShape is present and add to URL
       if (selectedShape.length > 0) {
         const shapeFilter = `&frameShape=${urlSelectedShape.replace(
           /frames|-/g,
@@ -406,19 +435,17 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
         )}`;
         url += shapeFilter;
       }
-
       let config = {
         method: "get",
         maxBodyLength: Infinity,
         url,
-        // url: `${process.env.NEXT_PUBLIC_API_URL}product/getFilterProductData?category=${urlSelectedCategory}&frameMaterial=${urlSelectedMaterial}&sortBy=${sortBy}&page=1&limit=9`,
         headers: {
           "Content-Type": "text/plain",
         },
       };
       console.log(config.url, "url");
       const response = await axios.request(config);
-      // console.log("FILTER DATAAAAAAAAA", JSON.stringify(response.data));
+
       setFilterData(response.data.productList.data);
       setFilterApplied(true);
     } catch (error) {
@@ -437,9 +464,29 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       if (selectedGender.length > 0) {
         fetchFilterData(selectedGender);
       }
-      const genderArray = [
-        router?.search[0].charAt(0).toUpperCase() + router?.search.slice(1),
-      ];
+      const genderArray =
+        typeof router?.search === "string"
+          ? [
+              router?.search
+                .replace(/glasses-for-/, "")
+                .charAt(0)
+                .toUpperCase() +
+                router?.search
+                  .replace(/glasses-for-/, "")
+                  .slice(1)
+                  .toLowerCase(),
+            ]
+          : router?.search.map(
+              (g) =>
+                g
+                  .replace(/glasses-for-/, "")
+                  .charAt(0)
+                  .toUpperCase() +
+                g
+                  .replace(/glasses-for-/, "")
+                  .slice(1)
+                  .toLowerCase()
+            );
 
       fetchFilterData(genderArray);
     }
@@ -486,25 +533,6 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
     setCurrentPageFilter(selected.selected);
   };
 
-  const [isValidEmail, setIsValidEmail] = useState(true);
-  const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState("");
-  const [otpValid, setOtpValid] = useState(false);
-  const [isShow, setIsShow] = useState(false);
-  const [lastInteractedProductId, setLastInteractedProductId] = useState<
-    string | null
-  >(null);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-
-  const [favoriteStatus, setFavoriteStatus] = useState<{
-    [key: string]: boolean;
-  }>({});
-  const storedUserId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
-
-  const [userId, setUserId] = useState<string | null>(storedUserId);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!userId);
-
   useEffect(() => {
     if (userId !== null) {
       localStorage.setItem("userId", userId);
@@ -531,6 +559,13 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   };
 
   const handleSendOtp = async () => {
+    setIsLoading(true);
+    setIsResendEnabled(false);
+    setTimer(60);
+    const newIntervalId = setInterval(() => {
+      setTimer((prevTimer) => prevTimer - 1);
+    }, 1000);
+    setIntervalId(newIntervalId);
     try {
       let data = JSON.stringify({
         emailId: email,
@@ -550,10 +585,13 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       setIsShow(true);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const verifyOTP = async () => {
+    setIsLoading(true);
     try {
       let data = JSON.stringify({
         Otp: otp,
@@ -570,8 +608,12 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       const response = await axios.request(config);
       console.log(JSON.stringify(response.data));
       setOtpValid(true);
+      setOtpErr("");
     } catch (error) {
       console.log(error);
+      setOtpErr("OTP does not match. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -582,6 +624,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   }, [userId, lastInteractedProductId]);
 
   const loginUser = async () => {
+    setIsLoading(true);
     try {
       let data = JSON.stringify({
         emailId: email,
@@ -608,6 +651,8 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       setUserId(response.data.signInData.userData.userId);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -717,8 +762,9 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       <Header setSearch={setSearch} />
       <div className="mt-[36px] xs:mx-[20px] xl:mx-[72px]- mx flex">
         <div
-          className={`drawer xs:w-[333px] ${isDrawerOpen && "md:hidden"} ${isDrawerOpen && "hidden"
-            }`}
+          className={`drawer xs:w-[333px] ${isDrawerOpen && "md:hidden"} ${
+            isDrawerOpen && "hidden"
+          }`}
         >
           <div className="space-y-4 p-6 border border-black xs:overflow-y-scroll lg:overflow-auto xs:rounded-r-[10px] md:rounded-[10px] xs:h-full md:h-auto w-[333px]">
             <div className="flex justify-end">
@@ -922,10 +968,11 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
               </p>
               <div className="relative" ref={dropdownRef}>
                 <button
-                  className={`${isOpen
-                    ? "rounded-t-[5px] border-t border-x border-black"
-                    : "rounded-[5px] border border-black  "
-                    } ml-[15px] text-xs relative w-[146px] h-[34px] flex pl-4 justify-start items-center`}
+                  className={`${
+                    isOpen
+                      ? "rounded-t-[5px] border-t border-x border-black"
+                      : "rounded-[5px] border border-black  "
+                  } ml-[15px] text-xs relative w-[146px] h-[34px] flex pl-4 justify-start items-center`}
                   onClick={toggleDropdown}
                 >
                   {selectedSortText}
@@ -934,8 +981,9 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                     alt=""
                     height={9}
                     width={9}
-                    className={`absolute right-4 transform ${isOpen ? "rotate-180 duration-300 " : ""
-                      }`}
+                    className={`absolute right-4 transform ${
+                      isOpen ? "rotate-180 duration-300 " : ""
+                    }`}
                   />
                 </button>
                 {isOpen && (
@@ -1008,80 +1056,6 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
           <div
             className={`mt-7 md:mx-5 xl:mx-0 flex flex-wrap xs:justify-center lg:justify-start lg:gap-x-3 xl:gap-x-9`}
           >
-            {/* {search.trim() === "" ? (
-              (filterApplied ? filterData : productList).length > 0 ? (
-                getFilteredDataForCurrentPage().map((product, index) => (
-                  <Product
-                    key={product.productId}
-                    image={product.data.productImage}
-                    title={product.data.title}
-                    description={product.data.description ?? ""}
-                    price={`₹${product.data.price.toLocaleString("en-IN")}`}
-                    rating={product.data.rating}
-                    color={product.data.color}
-                    colors={product.data.color
-                      .replace(/[\[\]"\\]/g, "")
-                      .split(",")
-                      .map((otherColors: string) => otherColors.trim())}
-                    otherColors={
-                      product.data.otherColors
-                        ? product.data.otherColors.map((color: string) =>
-                            color.trim()
-                          )
-                        : []
-                    }
-                    productId={product.productId}
-                    variantImages={product.data.variantImage}
-                    showLoginModal={showLoginModal}
-                    isAuthenticated={isAuthenticated}
-                    handleToggleFavorite={() =>
-                      handleToggleFavorite(product.productId)
-                    }
-                    isFavorite={favoriteStatus[product.productId] || false}
-                  />
-                ))
-              ) : (
-                <p className="w-full flex justify-center font-semibold xs:text-sm md:text-base">
-                  {Strings.NO_PRODUCTS_AVAILABLE}
-                </p>
-              )
-            ) : trendingSearchData.length > 0 ? (
-              getTrendingDataForCurrentPage().map((product, index) => (
-                <Product
-                  key={product.productId}
-                  image={product.data?.productImage}
-                  title={product.data?.title}
-                  description={product.data?.description ?? ""}
-                  price={`₹${product.data?.price.toLocaleString("en-IN")}`}
-                  rating={product.data?.rating}
-                  color={product.data?.color}
-                  colors={product.data?.color
-                    .replace(/[\[\]"\\]/g, "")
-                    .split(",")
-                    .map((otherColors: string) => otherColors.trim())}
-                  otherColors={
-                    product.data?.otherColors
-                      ? product.data.otherColors.map((color: string) =>
-                          color.trim()
-                        )
-                      : []
-                  }
-                  productId={product.productId}
-                  variantImages={product.data?.variantImage}
-                  showLoginModal={showLoginModal}
-                  isAuthenticated={isAuthenticated}
-                  handleToggleFavorite={() =>
-                    handleToggleFavorite(product.productId)
-                  }
-                  isFavorite={favoriteStatus[product.productId] || false}
-                />
-              ))
-            ) : (
-              <p className="w-full flex justify-center items-center text-black font-semibold xs:text-sm md:text-base">
-                {Strings.SORRY_NO_PRODUCTS_FOUND}
-              </p>
-            )} */}
-
             {(filterApplied ? filterData : productList)?.length > 0 ? (
               getFilteredDataForCurrentPage().map((product, index) => (
                 <Product
@@ -1099,8 +1073,8 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                   otherColors={
                     product.data.otherColors
                       ? product.data.otherColors.map((color: string) =>
-                        color.trim()
-                      )
+                          color.trim()
+                        )
                       : []
                   }
                   productId={product.productId}
@@ -1168,6 +1142,9 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                           value={otp}
                           onChange={handleOtpChange}
                         />
+                        {otpErr && (
+                          <p className="text-red-500 text-xs">{otpErr}</p>
+                        )}
                         <p className="border border-black mt-2"></p>
                       </div>
                     )}
@@ -1177,26 +1154,41 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                           <button
                             onClick={loginUser}
                             disabled={!isValidEmail || email.trim() === ""}
-                            className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                            className="mt-5 flex items-center justify-center w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
                           >
-                            {Strings.Login}
+                            {isLoading ? <Loader /> : Strings.Login}
                           </button>
                         ) : (
-                          <button
-                            onClick={verifyOTP}
-                            disabled={!isValidEmail || email.trim() === ""}
-                            className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
-                          >
-                            {Strings.Verify_OTP}
-                          </button>
+                          <>
+                            <button
+                              onClick={verifyOTP}
+                              disabled={!isValidEmail || email.trim() === ""}
+                              className="mt-5 flex items-center justify-center w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                            >
+                              {isLoading ? <Loader /> : Strings.Verify_OTP}
+                            </button>
+                            {timer > 0 ? (
+                              <p className="flex justify-center mt-2">
+                                {Strings.Resend_Otp} {timer} {Strings.seconds}
+                              </p>
+                            ) : (
+                              <button
+                                onClick={handleSendOtp}
+                                disabled={!isValidEmail || email.trim() === ""}
+                                className="mt-4 flex items-center justify-center w-full  hover:text-PictonBlue text-black text-base font-semibold underline"
+                              >
+                                {isLoading ? <Loader /> : Strings.Resend_OTP}
+                              </button>
+                            )}
+                          </>
                         )
                       ) : (
                         <button
                           onClick={handleSendOtp}
                           disabled={!isValidEmail || email.trim() === ""}
-                          className="mt-5 w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
+                          className="mt-5 flex items-center justify-center w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
                         >
-                          {Strings.Send_OTP}
+                          {isLoading ? <Loader /> : Strings.Send_OTP}
                         </button>
                       )}
                     </div>
@@ -1205,73 +1197,78 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
               </div>
             )}
           </div>
-          <div>
-            <ReactPaginate
-              previousLabel={
-                <svg
-                  className="w-2.5 h-2.5 hover:text-PictonBlue"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 6 10"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 1 1 5l4 4"
-                  />
-                </svg>
-              }
-              nextLabel={
-                <svg
-                  className="w-2.5 h-2.5 hover:text-PictonBlue "
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 6 10"
-                >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="m1 9 4-4-4-4"
-                  />
-                </svg>
-              }
-              breakLabel={"..."}
-              pageCount={pageCountFilter}
-              onPageChange={handlePageChangeFilter}
-              containerClassName={
-                " bg-gray-200 rounded-md h-10 pagination flex items-center text-sm justify-center"
-              }
-              pageClassName={
-                " h-7 w-7 rounded-full flex items-center justify-center font-bold hover:font-extrabold"
-              }
-              activeClassName={"bg-PictonBlue text-white rounded-full"}
-              previousClassName={" px-[15px] text-lg"}
-              nextClassName={" px-[15px]"}
-              previousLinkClassName={
-                currentPageFilter === 0
-                  ? "pointer-events-none opacity-50 bg-PictonBlue text-black hover:text-PictonBlue"
-                  : "bg-PictonBlue text-black hover:text-white"
-              }
-              nextLinkClassName={
-                currentPageFilter === pageCountFilter - 1
-                  ? "pointer-events-none opacity-50 bg-PictonBlue text-black hover:text-PictonBlue"
-                  : "bg-PictonBlue text-black hover:text-white"
-              }
-              breakClassName={"border p-2 hover:bg-PictonBlue"}
-            />
-          </div>
+          {(filterApplied ? filterData : productList)?.length > 0 ? (
+            <div>
+              <ReactPaginate
+                previousLabel={
+                  <svg
+                    className="w-2.5 h-2.5 hover:text-PictonBlue"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 6 10"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M5 1 1 5l4 4"
+                    />
+                  </svg>
+                }
+                nextLabel={
+                  <svg
+                    className="w-2.5 h-2.5 hover:text-PictonBlue "
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 6 10"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="m1 9 4-4-4-4"
+                    />
+                  </svg>
+                }
+                breakLabel={"..."}
+                pageCount={pageCountFilter}
+                onPageChange={handlePageChangeFilter}
+                containerClassName={
+                  " bg-gray-200 rounded-md h-10 pagination flex items-center text-sm justify-center"
+                }
+                pageClassName={
+                  " h-7 w-7 rounded-full flex items-center justify-center font-bold hover:font-extrabold"
+                }
+                activeClassName={"bg-PictonBlue text-white rounded-full"}
+                previousClassName={" px-[15px] text-lg"}
+                nextClassName={" px-[15px]"}
+                previousLinkClassName={
+                  currentPageFilter === 0
+                    ? "pointer-events-none opacity-50 bg-PictonBlue text-black hover:text-PictonBlue"
+                    : "bg-PictonBlue text-black hover:text-white"
+                }
+                nextLinkClassName={
+                  currentPageFilter === pageCountFilter - 1
+                    ? "pointer-events-none opacity-50 bg-PictonBlue text-black hover:text-PictonBlue"
+                    : "bg-PictonBlue text-black hover:text-white"
+                }
+                breakClassName={"border p-2 hover:bg-PictonBlue"}
+              />
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       </div>
       <button
         onClick={toggleDrawer}
-        className={`absolute md:hidden bg-white h-7 w-7 top-[80px] left-4 flex justify-center items-center rounded-full ${!isDrawerOpen ? "hidden" : ""
-          }`}
+        className={`absolute md:hidden bg-white h-7 w-7 top-[80px] left-4 flex justify-center items-center rounded-full ${
+          !isDrawerOpen ? "hidden" : ""
+        }`}
       >
         <Image src={Images.Righticon} alt="" height={18} width={18} />
       </button>
@@ -1283,7 +1280,10 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
           >
             <Image src={Images.Upicon} alt="/" height={16} width={16} />
           </button>
-          <Image src={Images.Whatsapp} alt="/" height={55} width={55} />
+          <WhatsAppButton
+            phoneNumber="7977994474"
+            message="Hello, I would like to know more about your services."
+          />
         </div>
       </div>
       <Footer />
