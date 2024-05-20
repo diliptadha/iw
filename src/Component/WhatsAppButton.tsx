@@ -14,7 +14,7 @@ const WhatsAppButton = ({ phoneNumber, message }: any) => {
       className="cursor-pointer"
     >
       <Image
-        src={Images.Whatsapp}
+        src={Images.WHATSAPP}
         alt="/"
         height={55}
         width={55}

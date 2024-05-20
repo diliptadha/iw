@@ -194,9 +194,9 @@ const SuccessPayment = () => {
           >
             {Strings.CONTINUE_SHOP}
           </button>
-          <button className="w-[170px] py-[10px] px-[15px] hover:text-PictonBlue border border-PictonBlue text-white hover:bg-white bg-PictonBlue hover:bg-opacity-80 duration-200 rounded ">
+          {/* <button className="w-[170px] py-[10px] px-[15px] hover:text-PictonBlue border border-PictonBlue text-white hover:bg-white bg-PictonBlue hover:bg-opacity-80 duration-200 rounded ">
             {Strings.MY_ORDERS}
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

@@ -54,7 +54,7 @@ export const Images = {
   MAIL: "/Images/email.png",
   FACEBOOK: "/Images/facebook.png",
   X: "/Images/twitter.png",
-  WHATSAPP: "/Images/whatsapp.png",
+  WHATSAPP: "/Images/whatsapp_copy.png",
   SMS: "/Images/sms.png",
   EXPLORE: "/Images/explore.svg",
   RUPEE: "/Images/rupee-indian.png",
