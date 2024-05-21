@@ -27,6 +27,7 @@ import getCartQuantity from "@/utils/getCartQty";
 import { it } from "node:test";
 import { useCart } from "@/Context/CartContext";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface CustomerssayProps {
   comment: any;
@@ -73,7 +74,31 @@ interface CategoryData {
     };
   };
 }
-
+interface ProductData {
+  FilteredSubProductData: any;
+  SKU: string;
+  boxImage: string[];
+  brands: string;
+  category: string;
+  color: string;
+  frameStyle: string;
+  frameMaterial: string;
+  frameShape: string;
+  frameColor: string;
+  frameSize: string;
+  width: number;
+  height: number;
+  length: number;
+  frameWeight: string;
+  modelNumber: string;
+  title: string;
+  productImage: string;
+  variantImage: string[];
+  fullDesc: string;
+  productId: string;
+  subProductId: string;
+  gender: string;
+}
 interface GetContent {
   title: string;
   id: Key | null | undefined;
@@ -122,6 +147,7 @@ const Homescreen: React.FC = () => {
     }
     return false;
   });
+  const router = useRouter();
 
   const handleButtonClick = () => {
     setShowLoginModal(true);
@@ -132,7 +158,6 @@ const Homescreen: React.FC = () => {
       .get(`${process.env.NEXT_PUBLIC_API_URL}home/products`)
       .then((response) => {
         const data = response.data.productsDataByCriteria;
-
         setNewArrival(data.newArrivals);
         setBestSeller(data.isBestSeller);
         setUnderFive(data.under500);
@@ -189,6 +214,32 @@ const Homescreen: React.FC = () => {
     }
   };
 
+  const handleProductPage = (newArrival: any) => {
+    const lowercaseBrand = newArrival?.brands
+      .toLowerCase()
+      .replace(/\s+/g, "-");
+    const lowercaseColor = newArrival?.frameColor
+      .toLowerCase()
+      .replace(/\s+/g, "-");
+    const lowercaseShape = newArrival?.frameShape
+      .toLowerCase()
+      .replace(/\s+/g, "-");
+    const lowercaseCategory = newArrival?.category
+      .toLowerCase()
+      .replace(/\s+/g, "-");
+    const lowercaseGender = newArrival?.gender
+      .toLowerCase()
+      .replace(/\s+/g, "-");
+    const lowercaseSKU = newArrival?.SKU.toLowerCase().replace(/\s+/g, "-");
+
+    const actualRoute = `/eyewear/${lowercaseCategory}/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseGender}-${lowercaseSKU}`;
+    const url = `/${lowercaseCategory}/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseGender}-${lowercaseSKU}`;
+
+    localStorage.setItem("productId", newArrival.productId);
+    localStorage.setItem("subProductId", newArrival.subProductId);
+
+    router.push(actualRoute);
+  };
   const handleBuyNow = async (userId: string | null) => {
     try {
       if (!userId) {
@@ -706,12 +757,7 @@ const Homescreen: React.FC = () => {
                             setIsLoggedIn={setIsLoggedIn}
                           />
                           <button
-                            onClick={() =>
-                              addToCart(
-                                isLoggedIn,
-                                localStorage.getItem("userId")
-                              )
-                            }
+                            onClick={() => handleProductPage(currentItem)}
                             className="w-[136px] h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border border-black outline-none px-2 lg:px-4 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold"
                           >
                             {Strings.KNOW_MORE}
