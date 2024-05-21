@@ -477,8 +477,9 @@ const Homescreen: React.FC = () => {
                 </div>
                 <div className="flex justify-center mt-[40px]  items-center ">
                   <div className="xs:w-[340px] sm:w-[410px] md:w-[580px] xl:w-[580px] overflow-hidden flex rounded-[10px]">
-                    {images2.map(() => (
+                    {images2.map((i) => (
                       <Image
+                        key={i}
                         src={images2[currentIndex2]}
                         alt="/"
                         height={285}
@@ -704,15 +705,26 @@ const Homescreen: React.FC = () => {
                             isLoggedIn={isLoggedIn}
                             setIsLoggedIn={setIsLoggedIn}
                           />
-
                           <button
+                            onClick={() =>
+                              addToCart(
+                                isLoggedIn,
+                                localStorage.getItem("userId")
+                              )
+                            }
+                            className="w-[136px] h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border border-black outline-none px-2 lg:px-4 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold"
+                          >
+                            {Strings.KNOW_MORE}
+                          </button>
+
+                          {/* <button
                             onClick={() =>
                               handleBuyNow(localStorage.getItem("userId"))
                             }
                             className="ml-2 lg:ml-4 w-[136px] h-38 rounded-md text-sm text-white bg-black flex items-center justify-center border-none px-2 lg:px-4 py-2 hover:bg-PictonBlue"
                           >
                             {Strings.BUY_NOW}
-                          </button>
+                          </button> */}
                         </div>
                         {cartMessage && (
                           <div className="mt-4 text-sm text-green-600">
@@ -1002,7 +1014,7 @@ const Homescreen: React.FC = () => {
                 <Image src={Images.Upicon} alt="/" height={16} width={16} />
               </button>
               <WhatsAppButton
-                phoneNumber="7977994474"
+                phoneNumber={Strings.Whatsapp_No}
                 message="Hello, I would like to know more about your services."
               />
             </div>

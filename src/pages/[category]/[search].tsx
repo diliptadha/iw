@@ -10,6 +10,7 @@ import { Footer } from "@/Component/footer";
 import Header from "@/Component/header";
 import Image from "next/image";
 import Link from "next/link";
+import Loader from "@/Component/Loader";
 import Pagination from "react-paginate";
 import Product from "@/Component/Product";
 import ReactPaginate from "react-paginate";
@@ -17,7 +18,6 @@ import Shape from "@/Component/Shape";
 import WhatsAppButton from "@/Component/WhatsAppButton";
 import axios from "axios";
 import { space } from "postcss/lib/list";
-import Loader from "@/Component/Loader";
 
 const genders = ["Men", "Women", "Kids", "Unisex"];
 const frameStyles = ["Full Rim", "Rimless", "Half Rim"];
@@ -785,7 +785,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                 {Strings.GENDER}
               </p>
               <Image
-                src={Images.Downicon}
+                src={Images.DOWN_ARROW}
                 alt=""
                 height={9}
                 width={9}
@@ -818,7 +818,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                 {Strings.Frame_Style}
               </p>
               <Image
-                src={Images.Downicon}
+                src={Images.DOWN_ARROW}
                 alt=""
                 height={9}
                 width={9}
@@ -855,7 +855,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                 {Strings.Frame_Shape}
               </p>
               <Image
-                src={Images.Downicon}
+                src={Images.DOWN_ARROW}
                 alt=""
                 height={9}
                 width={9}
@@ -886,7 +886,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                 {Strings.Frame_Material}
               </p>
               <Image
-                src={Images.Downicon}
+                src={Images.DOWN_ARROW}
                 alt=""
                 height={9}
                 width={9}
@@ -925,7 +925,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                 {Strings.BRANDS}
               </p>
               <Image
-                src={Images.Downicon}
+                src={Images.DOWN_ARROW}
                 alt=""
                 height={9}
                 width={9}
@@ -1281,7 +1281,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
             <Image src={Images.Upicon} alt="/" height={16} width={16} />
           </button>
           <WhatsAppButton
-            phoneNumber="7977994474"
+            phoneNumber={Strings.Whatsapp_No}
             message="Hello, I would like to know more about your services."
           />
         </div>

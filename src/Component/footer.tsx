@@ -1,8 +1,10 @@
-import { Images, Strings } from "@/constant";
 import "../app/globals.css";
-import Link from "next/link";
+
+import { Images, Strings } from "@/constant";
 import React, { useState } from "react";
+
 import Image from "next/image";
+import Link from "next/link";
 import axios from "axios";
 
 export const Footer = () => {
@@ -111,14 +113,14 @@ export const Footer = () => {
               {Strings.PROFILE}
             </Link>
           </div>
-          <div>
+          {/* <div>
             <Link
               href="/appoinments"
               className="font-lato text-base  text-12 font-light hover:opacity-[0.6]"
             >
               {Strings.APPOINTMENTS}
             </Link>
-          </div>
+          </div> */}
           <div>
             <Link
               href="/orders"
@@ -157,14 +159,14 @@ export const Footer = () => {
               {Strings.OUR_HISTORY}
             </Link>
           </div>
-          <div>
+          {/* <div>
             <Link
               href="/blog"
               className="font-lato text-base  text-12 font-light hover:opacity-[0.6]"
             >
               {Strings.BLOG}
             </Link>
-          </div>
+          </div> */}
           <div>
             <Link
               href="/contact-us"
@@ -248,14 +250,14 @@ export const Footer = () => {
               />
             </div>
             <div className="pl-2">
-              <text className="font-lato text-base  text-12 font-light">
+              <div className="font-lato text-base  text-12 font-light">
                 {Strings.NEED_HELP}
-              </text>
+              </div>
 
               <div className="flex lg:flex-col xl:flex-row gap-[7px] ">
-                <text className="font-lato text-base  text-12 font-light">
+                <div className="font-lato text-base  text-12 font-light">
                   {Strings.CALL_US}
-                </text>
+                </div>
                 <Link
                   href="tel: +91 8291251241"
                   className={

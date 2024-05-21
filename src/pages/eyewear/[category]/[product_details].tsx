@@ -10,6 +10,7 @@ import GiveRatings from "@/Component/GiveRatings";
 import Header from "@/Component/header";
 import Image from "next/image";
 import Link from "next/link";
+import Loader from "@/Component/Loader";
 import LoginModal from "@/Component/LoginModal";
 import Review from "@/Component/reviews";
 import ShareOptions from "@/Component/share";
@@ -17,7 +18,6 @@ import SimilarProductPage from "../../similar_products";
 import WhatsAppButton from "@/Component/WhatsAppButton";
 import axios from "axios";
 import { useRouter } from "next/router";
-import Loader from "@/Component/Loader";
 
 interface ProductData {
   ProductData: any;
@@ -63,7 +63,7 @@ interface Recent {
 
 const ProductDetails = () => {
   const [open, setOpen] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [pincode, setPincode] = useState("");
   const [pincodeError, setPincodeError] = useState("");
   const [isPincodeValid, setIsPincodeValid] = useState(true);
@@ -357,6 +357,7 @@ const ProductDetails = () => {
   }, [isOpenWriteReview, open]);
 
   const handleReviewSubmit = async () => {
+    setIsLoading(true);
     if (message.trim().length === 0 || rating === 0) {
       setShowWarning(message.trim().length === 0);
       setShowRatingWarning(rating === 0);
@@ -378,6 +379,8 @@ const ProductDetails = () => {
         setShowThankYouMessage(true);
       } catch (error) {
         console.error("Error submitting review:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -1103,7 +1106,7 @@ const ProductDetails = () => {
                     </div>
                   </div>
 
-                  <div className="relative mt-4 lg:mt-6 flex justify-between mb-4 lg:mb-6 w-full lg:w-[410px] xl:w-[520px]">
+                  <div className="relative mt-4 lg:mt-6 flex justify-between xs:mb-10 md:mb-4 w-full lg:w-[410px] xl:w-[520px]">
                     <p className="text-[14px] font-bold">
                       {Strings.PRODUCT_INFORMATION}
                     </p>
@@ -1217,7 +1220,7 @@ const ProductDetails = () => {
                         placeholder="Enter your pincode"
                         value={pincode}
                         onChange={handlePincodeChange}
-                        className="border-Cod_Gray rounded-lg text-[14px]  text-black placeholder-black bg-[#E5E5E4] px-4 py-2 outline-none dark:border-white dark:bg-[#000] w-full xs:text-base lg:text-md md:w-[280px] lg:w-[260px]"
+                        className="border-Cod_Gray rounded-lg text-[14px]  text-black placeholder-black bg-[#E5E5E4] px-4 py-2 outline-none w-full xs:text-base lg:text-md md:w-[280px] lg:w-[260px]"
                       />
                       <button
                         onClick={handleSubmit}
@@ -1303,6 +1306,7 @@ const ProductDetails = () => {
                   </button>
                 )}
               </div>
+
               <div className="relative mt-4 lg:mt-6 flex justify-between items">
                 <div className="font-bold text-[12px] lg:text-[14px]">
                   {Strings.REVIEWS}
@@ -1326,56 +1330,56 @@ const ProductDetails = () => {
                       className="absolute right-0 w-full lg:w-[600px] xl:w-[775px]"
                       ref={reviewContainerRef}
                     >
-                      {review?.slice(0, 2)?.map((review: any, index: any) => {
-                        const createdAtDate = new Date(review?.createdAt);
+                      {review?.length === 0 ? (
+                        <div className="flex justify-center my-2 font-semibold text-base">
+                          {Strings.No_Reviews_Yet}
+                        </div>
+                      ) : (
+                        review?.slice(0, 2)?.map((review: any, index: any) => {
+                          const createdAtDate = new Date(review?.createdAt);
 
-                        const formattedDate = createdAtDate
-                          .toISOString()
-                          .split("T")[0];
-                        return (
-                          <div key={index}>
-                            <Review
-                              userImage={review?.userImage}
-                              fName={review?.fName}
-                              lName={review?.lName}
-                              createdAt={formattedDate}
-                              rating={review?.rating}
-                              comment={review?.comment}
-                              index={index}
-                              totalReviews={review.length}
-                            />
-                            {index !== 1 && (
-                              <div className="h-[0.5px] bg-black rounded-xl mt-[2px]"></div>
-                            )}
-                          </div>
-                        );
-                      })}
+                          const formattedDate = createdAtDate
+                            .toISOString()
+                            .split("T")[0];
+                          return (
+                            <div key={index}>
+                              <Review
+                                userImage={review?.userImage}
+                                fName={review?.fName}
+                                lName={review?.lName}
+                                createdAt={formattedDate}
+                                rating={review?.rating}
+                                comment={review?.comment}
+                                index={index}
+                                totalReviews={review.length}
+                              />
+                              {index !== 1 && (
+                                <div className="h-[0.5px] bg-black rounded-xl mt-[2px]"></div>
+                              )}
+                            </div>
+                          );
+                        })
+                      )}
                     </div>
                   )}
                   {open && (
                     <div className="fixed top-0 left-0 z-50 flex justify-center items-center h-full w-full bg-gray-500 bg-opacity-80">
-                      <div className="relative bg-white h-[500px] w-[300px] md:w-[600px] lg:w-[700px] lg:h- overflow-y-auto py-4  md:py-5  rounded">
-                        <div className="flex flex-row justify-between px-4 md:px-16">
-                          <p className=" text-lg w-full md:text-xl lg:text-2xl font-bold">
+                      <div className=" bg-white h-[500px] w-[300px] md:w-[600px] lg:w-[700px] lg:h- overflow-y-auto py-4  md:py-5  rounded">
+                        <div className="flex justify-between px-4 items-center">
+                          <div className=" text-xl font-bold">
                             {Strings.REVIEWS}
-                          </p>
-                          <div className="fixed ml-[240px] md:ml-[540px] lg:ml-[640px] ">
-                            <button
-                              onClick={openModal}
-                              className=" flex h-8 w-8 items-center justify-center rounded-full border-transparent bg-white text-black opacity-[80%]"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 50 50"
-                                width="20px"
-                                height="20px"
-                              >
-                                <path d="M 7.71875 6.28125 L 6.28125 7.71875 L 23.5625 25 L 6.28125 42.28125 L 7.71875 43.71875 L 25 26.4375 L 42.28125 43.71875 L 43.71875 42.28125 L 26.4375 25 L 43.71875 7.71875 L 42.28125 6.28125 L 25 23.5625 Z" />
-                              </svg>
-                            </button>
                           </div>
+
+                          <button onClick={openModal}>
+                            <Image
+                              src={Images.Closeblack}
+                              alt=""
+                              height={20}
+                              width={20}
+                            />
+                          </button>
                         </div>
-                        <div className="bg-[#f2f2f2] shadow-md rounded-md mt-2 px-4 py-[1px] mb-1">
+                        <div className="bg-[#f2f2f2] shadow-md rounded-md my-4 px-4 py-[1px]">
                           {review?.slice(2)?.map((review, index) => {
                             const createdAtDate = new Date(review?.createdAt);
 
@@ -1416,41 +1420,33 @@ const ProductDetails = () => {
                   <button
                     onClick={openModal}
                     className={`${
-                      review.length <= 2 ? "hidden" : "flex"
-                    } w-[126px] h-[34px]  md:w-[136px] md:h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border-2 border-black outline-none px-1 lg:px-2 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold`}
+                      review.length <= 2 ? "hidden" : "flex xs:mr-2 md:mr-4"
+                    } w-[126px] h-[34px]  md:w-[136px] md:h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border border-black outline-none px-1 lg:px-2 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold`}
                   >
                     {Strings.MORE_REVIEWS}
                   </button>
 
                   {isOpenWriteReview && !showThankYouMessage && (
                     <div className="fixed top-0 left-0 z-50 h-full w-full flex justify-center items-center bg-gray-500 bg-opacity-[80%]">
-                      <div className="relative bg-white h-[320px] md:h-[340px] lg:h-[360px] w-[300px] md:w-[500px] overflow-y-auto py-4 px-4 md:py-8 md:px-16 rounded">
-                        <div className="flex flex-row justify-between">
-                          <p className=" text-lg md:text-xl lg:text-2xl font-bold">
+                      <div className=" bg-white  w-[300px] md:w-[500px] max-h-[360px] overflow-y-auto p-5 rounded">
+                        <div className="flex  justify-between items-center">
+                          <div className=" text-lg md:text-xl font-bold">
                             {Strings.WRITE_A_REVIEW}
-                          </p>
-                          <div className="fixed ml-[240px] md:ml-[440px] lg:ml-[440px] lg:mt-[-20px]">
-                            {" "}
-                            <button
-                              onClick={closeWriteReviewModal}
-                              className=" flex h-8 w-8 items-center justify-center rounded-full border-transparent bg-white text-black opacity-[80%]"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 50 50"
-                                width="20px"
-                                height="20px"
-                              >
-                                <path d="M 7.71875 6.28125 L 6.28125 7.71875 L 23.5625 25 L 6.28125 42.28125 L 7.71875 43.71875 L 25 26.4375 L 42.28125 43.71875 L 43.71875 42.28125 L 26.4375 25 L 43.71875 7.71875 L 42.28125 6.28125 L 25 23.5625 Z" />
-                              </svg>
-                            </button>
                           </div>
+
+                          <button onClick={closeWriteReviewModal}>
+                            <Image
+                              src={Images.Closeblack}
+                              alt=""
+                              height={20}
+                              width={20}
+                            />
+                          </button>
                         </div>
                         <div className="mt-2 flex flex-row items-center">
-                          {" "}
-                          <p className="text-lg">
+                          <p className="text-base ">
                             {Strings.RATE_THIS_PRODUCT}
-                          </p>{" "}
+                          </p>
                           <div className="ml-2">
                             <GiveRatings
                               giverating={rating}
@@ -1462,7 +1458,7 @@ const ProductDetails = () => {
                           id="message"
                           rows={4}
                           ref={textareaRef}
-                          className="mt-2 w-full border-Cod_Gray focus:ring-Cod_Gray focus:border-Cod_Gray dark:focus:ring-Cod_Gray dark:focus:border-Cod_Gray block rounded-lg border-[1px] border-[#000] bg-white p-2.5 outline-none dark:border-white dark:bg-[#000] dark:text-white dark:placeholder-gray-400 xs:text-base lg:text-lg"
+                          className="mt-2 w-full block rounded-lg bg-[#F2F2F2] p-2.5 outline-none text-black text-base "
                           placeholder="What did you like about this product write here...."
                           name="Massage"
                           value={message}
@@ -1490,9 +1486,9 @@ const ProductDetails = () => {
                                 handleReviewSubmit();
                               }
                             }}
-                            className="text-black  mt-5 hover:text-PictonBlue hover:border-PictonBlue rounded-full  border-2 bg-gradient-to-t px-5 py-2 text-md md:text-lg font-semibold  border-black border:red-600 "
+                            className="mt-2 flex items-center justify-center w-full rounded-md bg-black hover:bg-PictonBlue h-8 text-white text-base font-normal"
                           >
-                            {Strings.SUBMIT}
+                            {isLoading ? <Loader /> : Strings.SUBMIT}
                           </button>
                         </div>
                       </div>
@@ -1500,21 +1496,15 @@ const ProductDetails = () => {
                   )}
                   {showThankYouMessage && (
                     <div className="fixed top-0 left-0 z-50 h-full w-full flex justify-center items-center bg-gray-500 bg-opacity-[80%]">
-                      <div className="relative bg-white h-[320px] md:h-[340px] lg:h-[360px] w-[300px] md:w-[500px] overflow-y-auto py-4 px-4 md:py-8 md:px-16 rounded">
-                        <div className="fixed ml-[240px] md:ml-[440px] lg:ml-[440px] ">
-                          {" "}
-                          <button
-                            onClick={closeWriteReviewModal}
-                            className=" flex h-8 w-8 items-center justify-center rounded-full border-transparent bg-white text-black opacity-[80%]"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 50 50"
-                              width="20px"
-                              height="20px"
-                            >
-                              <path d="M 7.71875 6.28125 L 6.28125 7.71875 L 23.5625 25 L 6.28125 42.28125 L 7.71875 43.71875 L 25 26.4375 L 42.28125 43.71875 L 43.71875 42.28125 L 26.4375 25 L 43.71875 7.71875 L 42.28125 6.28125 L 25 23.5625 Z" />
-                            </svg>
+                      <div className="relative bg-white h-[320px] flex justify-center items-center md:h-[340px] lg:h-[360px] w-[300px] md:w-[500px] p-5 rounded">
+                        <div className="absolute top-5 right-5 ">
+                          <button onClick={closeWriteReviewModal} className=" ">
+                            <Image
+                              src={Images.Closeblack}
+                              alt=""
+                              height={20}
+                              width={20}
+                            />
                           </button>
                         </div>
                         <p className="flex items-center justify-center text-lg text-green-600  font-semibold">
@@ -1523,6 +1513,7 @@ const ProductDetails = () => {
                       </div>
                     </div>
                   )}
+
                   <button
                     onClick={() => {
                       if (!isLoggedIn) {
@@ -1531,7 +1522,7 @@ const ProductDetails = () => {
                         setIsOpenWriteReview(true);
                       }
                     }}
-                    className="ml-2 lg:ml-4 w-[126px] h-[34px]  md:w-[136px] md:h-38 rounded-md text-sm text-white bg-black flex items-center justify-center border-none px-1 lg:px-2 py-2 hover:bg-PictonBlue"
+                    className=" w-[126px] h-[34px]  md:w-[136px] md:h-38 rounded-md text-sm text-white bg-black flex items-center justify-center border-none px-1 lg:px-2 py-2 hover:bg-PictonBlue"
                   >
                     {Strings.WRITE_A_REVIEW}
                   </button>
@@ -1543,6 +1534,7 @@ const ProductDetails = () => {
                   />
                 </div>
               )}
+
               {selectedSubProduct?.ProductData?.boxImage?.length > 0 && (
                 <div
                   style={{
@@ -1596,7 +1588,7 @@ const ProductDetails = () => {
               <Image src={Images.Upicon} alt="/" height={16} width={16} />
             </button>
             <WhatsAppButton
-              phoneNumber="7977994474"
+              phoneNumber={Strings.Whatsapp_No}
               message="Hello, I would like to know more about your services."
             />
           </div>

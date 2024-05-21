@@ -1,15 +1,18 @@
 "use client";
 
+import { Images, Strings } from "@/constant";
+
 import Image from "next/image";
-import { Images } from "@/constant";
 import React from "react";
 import ReactWhatsapp from "react-whatsapp";
 
 const WhatsAppButton = ({ phoneNumber, message }: any) => {
   return (
     <ReactWhatsapp
-      number={phoneNumber}
-      message={message}
+      number={phoneNumber || Strings.Whatsapp_No}
+      message={
+        message || "Hello, I would like to know more about your services."
+      }
       element="div"
       className="cursor-pointer"
     >

@@ -121,6 +121,7 @@ export const Images = {
   SuccessIcon: "/Images/right-tick.png",
   profile: "/Images/profile.png",
   Iksana_Eye_Logo: "/Images/iksana_eye_logo.png",
+  vector: "/Images/Vector13.png",
 };
 
 export const Strings = {
@@ -340,7 +341,7 @@ export const Strings = {
   SIMILAR_PRODUCTS: "SIMILAR PRODUCTS",
   MORE_REVIEWS: "MORE REVIEWS",
   WRITE_A_REVIEW: "WRITE A REVIEW",
-  RATE_THIS_PRODUCT: "Rate this product :",
+  RATE_THIS_PRODUCT: "Rate This Product :",
   SUBMIT: "Submit",
   OCEAN_EXPLORE: "Ocean",
   EYEGLASSES: "EYEGLASSES",
@@ -835,6 +836,9 @@ export const Strings = {
   Phone_No: "02667-77777",
   Resend_Otp: "Resend OTP in:",
   seconds: "seconds",
+  isloggin: "User",
+  No_Reviews_Yet: "No Reviews Yet!",
+  Whatsapp_No: "7977994474",
 };
 
 export const Faqs = {
@@ -1324,8 +1328,8 @@ export const ContactUs = {
   SUPPORT_EMAIL: "support@iksanaopticals.in",
   AVAILABLE: "Available 24/7",
   PHONE_NO: "Phone No:",
-  MOBILE_NO: "Mobile No: 7977994474",
-  WHATSAPP_NO: "Whatsapp No: 8291251241",
+  MOBILE_NO: "Mobile No: 8291251241",
+  WHATSAPP_NO: "Whatsapp No: 7977994474",
   TIMING_1: "10 AM to 6 PM ( Monday to Friday )",
   TIMING_2: "9 AM to 4 PM ( Saturday )",
 };

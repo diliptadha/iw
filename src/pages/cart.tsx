@@ -46,7 +46,6 @@ const ProductADD = () => {
   const [couponData, setCouponData] = useState<CouponData[]>([]);
   const [handleDel, setHandleDel] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
-  const [isCartEmpty, setIsCartEmpty] = useState(false);
   const [userId, setUserId] = useState<string | null>();
 
   // Cart Data Api
@@ -58,7 +57,6 @@ const ProductADD = () => {
       .then((response) => {
         const cartData = response?.data?.cartData;
         setCardDetails(cartData);
-        setIsCartEmpty(cartData.length === 0);
         if (!cartData.length) {
           setCardDetails([]);
           router.push("/cartEmpty");
@@ -208,11 +206,7 @@ const ProductADD = () => {
   return (
     <>
       <HeaderHeadline />
-      {/* {isCartEmpty ? (
-        <>
-          <CartEmpty />
-        </>
-      ) : ( */}
+
       <div className=" px-[1rem] py-[1rem] md:px-[3rem] xl:px-[6rem] ">
         <div className="wrap-div flex gap-5 flex-wrap sm:flex-nowrap">
           <div className="left-card sm:min-w-[65%] w-full">
@@ -454,7 +448,6 @@ const ProductADD = () => {
           </div>
         </div>
       </div>
-      {/* )} */}
     </>
   );
 };

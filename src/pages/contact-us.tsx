@@ -1,8 +1,12 @@
-import axios from "axios";
 import "../app/globals.css";
-import React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+
 import { ContactUs, Strings } from "@/constant";
+import React, { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+import { Footer } from "@/Component/footer";
+import Header from "@/Component/header";
+import axios from "axios";
 
 interface IFormInput {
   firstname: string;
@@ -13,6 +17,8 @@ interface IFormInput {
 }
 
 const Contactus = () => {
+  const [search, setSearch] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -37,6 +43,7 @@ const Contactus = () => {
 
   return (
     <>
+      <Header setSearch={setSearch} />
       <div className="m-5 md:my-10">
         <h1 className="py-5 text-center text-3xl">{ContactUs.CONTACT_US}</h1>
       </div>
@@ -102,7 +109,7 @@ const Contactus = () => {
               )}
             </div>
             <input
-              className="w-full cursor-pointer rounded-md bg-blue-500 px-3 py-2 text-white md:text-2xl"
+              className="w-full cursor-pointer rounded-md bg-black hover:bg-PictonBlue px-3 py-2 text-white md:text-2xl"
               type="submit"
             />
           </form>
@@ -126,15 +133,14 @@ const Contactus = () => {
               className="block text-blue-400"
             >
               {ContactUs.EMAIL_ID}
-            </a>{" "}
+            </a>
             <p>{ContactUs.AVAILABLE}</p>
           </div>
           <div>
             <h3 className=" text-lg font-bold">{ContactUs.PHONE_NO}</h3>
             <p>
-              {" "}
               <a
-                href="https://wa.me/918291251241"
+                href="https://wa.me/7977994474"
                 target="_blank"
                 className="text-blue-400"
               >
@@ -142,7 +148,7 @@ const Contactus = () => {
               </a>
             </p>
             <p>
-              <a href="tel:+917977994474" className="text-blue-400">
+              <a href="tel:+918291251241" className="text-blue-400">
                 {ContactUs.MOBILE_NO}
               </a>
             </p>
@@ -150,6 +156,9 @@ const Contactus = () => {
             <p>{ContactUs.TIMING_2}</p>
           </div>
         </div>
+      </div>
+      <div className="mt-10">
+        <Footer />
       </div>
     </>
   );

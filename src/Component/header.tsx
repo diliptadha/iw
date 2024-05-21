@@ -1,8 +1,8 @@
-import Image from "next/image";
 import { Images, Strings } from "@/constant";
 import LoginModal, { toggleModal } from "@/Component/LoginModal";
 import { useEffect, useRef, useState } from "react";
 
+import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
 import { useCart } from "@/Context/CartContext";
@@ -71,7 +71,23 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
     }
     return false;
   });
+  console.log(isLoggedIn, "isLoggedIn");
 
+  const openWhatsApp = () => {
+    window.open(
+      `https://api.whatsapp.com/send?phone=${Strings.Whatsapp_No}&text=Hello, I would like to know more about your services.`,
+      "_blank"
+    );
+  };
+
+  const [signInText, setSignInText] = useState(Strings.SIGN_IN);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      setSignInText("User");
+    }
+  }, []);
   const handleButtonClick = () => {
     setShowLoginModal(true);
   };
@@ -137,8 +153,6 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
 
   if (Array.isArray(cartQuantity)) {
     tQty = cartQuantity.reduce((total, ele) => total + ele.quantity, 0);
-  } else {
-    console.error("cartQuantity is not an array."); // Log an error if cartQuantity is not an array
   }
   console.log("qty", tQty);
 
@@ -307,9 +321,11 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
             </div>
             <div className="flex items-center cursor-pointer xs:hidden lg:flex">
               <Image src={Images.Phone} alt="/" height={17} width={17} />
-              <p className="text-black font-bold text-xs ml-2">
-                {Strings.NEED_HELP1}
-              </p>
+              <a href="tel:+918291251241">
+                <p className="text-black font-bold text-xs ml-2">
+                  {Strings.NEED_HELP1}
+                </p>
+              </a>
             </div>
           </div>
           <div className="flex items-center xs:block lg:hidden">
@@ -377,7 +393,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                 item.usage.length > 0 && (
                                   <div>
                                     <h1 className="font-bold text-black">
-                                      Usage
+                                      USAGE
                                     </h1>
                                     <ul className="mt-2">
                                       {item.usage.map((usage, subIndex) => (
@@ -403,7 +419,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                 item.gender.length > 0 && (
                                   <div>
                                     <h1 className="font-bold text-black">
-                                      Gender
+                                      GENDER
                                     </h1>
                                     <ul className="mt-2">
                                       {item.gender.map((gender, subIndex) => (
@@ -432,7 +448,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                               {item.brand && item.brand.length > 0 && (
                                 <>
                                   <h1 className="font-bold text-black">
-                                    Brand
+                                    BRAND
                                   </h1>
                                   <ul
                                     className={
@@ -472,7 +488,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                               {item.color && item.color.length > 0 && (
                                 <>
                                   <h1 className="font-bold text-black">
-                                    Color
+                                    COLOR
                                   </h1>
                                   <ul className="mt-2 grid grid-cols-3">
                                     {item.color.map((color, subIndex) => (
@@ -504,7 +520,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                               {item.style && item.style.length > 0 && (
                                 <>
                                   <h1 className="font-bold text-black">
-                                    Style
+                                    STYLE
                                   </h1>
                                   <ul className="mt-2">
                                     {item.style.map((style, subIndex) => (
@@ -529,7 +545,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                               {item.shape && item.shape.length > 0 && (
                                 <>
                                   <h1 className="font-bold text-black">
-                                    Shape
+                                    SHAPE
                                   </h1>
                                   <ul className="mt-2 grid grid-cols-3">
                                     {item.shape.map((shape, subIndex) => (
@@ -562,9 +578,11 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       height={17}
                       width={17}
                     />
-                    <p className="text-white font-normal text-xs ml-2 ">
-                      {Strings.NEED_HELP}
-                    </p>
+                    <a href="tel:+918291251241">
+                      <p className="text-white font-normal text-xs ml-2 ">
+                        {Strings.NEED_HELP}
+                      </p>
+                    </a>
                   </div>
                   <p className="border"></p>
                   <div className="flex items-center cursor-pointer">
@@ -574,9 +592,11 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       height={18}
                       width={15}
                     />
-                    <p className="text-white font-normal text-xs ml-2">
-                      {Strings.FIND_THE_NEAREST_STORE}
-                    </p>
+                    <Link href={"/store-location"}>
+                      <p className="text-white font-normal text-xs ml-2">
+                        {Strings.FIND_THE_NEAREST_STORE}
+                      </p>
+                    </Link>
                   </div>
                   <p className="border"></p>
                   <div className="flex items-center cursor-pointer">
@@ -606,7 +626,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       className="text-white font-normal text-xs ml-2"
                       disabled={isLoggedIn}
                     >
-                      {isLoggedIn ? "User" : Strings.SIGN_IN}
+                      {signInText}
                     </button>
                     <LoginModal
                       showLoginModal={showLoginModal}
@@ -623,15 +643,24 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
           <div className="flex space-x-4 items-center xs:hidden lg:flex">
             <div className="flex items-center cursor-pointer">
               <Image src={Images.Location} alt="/" height={18} width={14} />
-              <p className="text-black font-bold text-xs ml-2">
-                {Strings.FIND_THE_NEAREST_STORE}
-              </p>
+              <Link href={"/store-location"}>
+                <p className="text-black font-bold text-xs ml-2">
+                  {Strings.FIND_THE_NEAREST_STORE}
+                </p>
+              </Link>
             </div>
             <div className="flex items-center cursor-pointer">
               <Image src={Images.Eye} alt="/" height={14} width={22} />
-              <p className="text-black font-bold text-xs ml-2">
+              <p className="text-black font-bold text-xs mx-2">
                 {Strings.TALK_WITH_US}
               </p>
+              <Image
+                onClick={openWhatsApp}
+                src={Images.vector}
+                alt="/"
+                height={18}
+                width={18}
+              />
             </div>
             <div className="flex items-center ">
               <Link href={isLoggedIn ? "/profile" : "/"}>
@@ -650,7 +679,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                 } `}
                 disabled={isLoggedIn}
               >
-                {isLoggedIn ? "User" : Strings.SIGN_IN}
+                {signInText}
               </button>
               <LoginModal
                 showLoginModal={showLoginModal}
@@ -780,8 +809,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                         {item.category === "Contact Lenses" &&
                           item.usage.length > 0 && (
                             <div>
-                              <h1 className="font-bold text-black">Usage</h1>
-                              <ul className="space-y-[2px]">
+                              <h1 className="font-bold text-black">USAGE</h1>
+                              <ul className="space-y-[4px]">
                                 {item.usage.map((usage, subIndex) => (
                                   <li
                                     key={subIndex}
@@ -805,12 +834,12 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                         {item.category !== "Contact Lenses" &&
                           item.gender.length > 0 && (
                             <div>
-                              <h1 className="font-bold text-black">Gender</h1>
-                              <ul className="space-y-[2px]">
+                              <h1 className="font-bold text-black">GENDER</h1>
+                              <ul className="space-y-[4px]">
                                 {item.gender.map((gender, subIndex) => (
                                   <li
                                     key={subIndex}
-                                    className="hover:text-PictonBlue cursor-pointer text-black font-medium text-sm"
+                                    className="hover:text-PictonBlue cursor-pointer text-black font-normal text-xs"
                                   >
                                     <Link
                                       href={`/${item.category
@@ -834,12 +863,12 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       <div>
                         {item.brand && item.brand.length > 0 && (
                           <>
-                            <h1 className="font-bold text-black">Brand</h1>
-                            <ul className="space-y-[2px]">
+                            <h1 className="font-bold text-black">BRAND</h1>
+                            <ul className="space-y-[4px]">
                               {item.brand.map((brand, subIndex) => (
                                 <li
                                   key={subIndex}
-                                  className="hover:text-PictonBlue cursor-pointer text-black font-medium text-sm"
+                                  className="hover:text-PictonBlue cursor-pointer text-black font-medium text-xs"
                                 >
                                   <Link
                                     href={`/${item.category
@@ -868,12 +897,12 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       <div>
                         {item.color && item.color.length > 0 && (
                           <>
-                            <h1 className="font-bold text-black">Color</h1>
-                            <ul className="space-y-[2px]">
+                            <h1 className="font-bold text-black">COLOR</h1>
+                            <ul className="space-y-[4px]">
                               {item.color.map((color, subIndex) => (
                                 <li
                                   key={subIndex}
-                                  className="hover:text-PictonBlue cursor-pointer text-black font-medium text-sm"
+                                  className="hover:text-PictonBlue cursor-pointer text-black font-medium text-xs"
                                 >
                                   <Link
                                     href={`/${item.category
@@ -900,12 +929,12 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       <div>
                         {item.style && item.style.length > 0 && (
                           <>
-                            <h1 className="font-bold text-black">Style</h1>
-                            <ul className="space-y-[2px]">
+                            <h1 className="font-bold text-black">STYLE</h1>
+                            <ul className="space-y-[4px]">
                               {item.style.map((style, subIndex) => (
                                 <li
                                   key={subIndex}
-                                  className="hover:text-PictonBlue cursor-pointer text-black font-medium text-sm"
+                                  className="hover:text-PictonBlue cursor-pointer text-black font-medium text-xs"
                                 >
                                   <Link
                                     href={`/${item.category
@@ -925,12 +954,12 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       <div>
                         {item.shape && item.shape.length > 0 && (
                           <>
-                            <h1 className="font-bold text-black">Shape</h1>
-                            <ul className="space-y-[2px]">
+                            <h1 className="font-bold text-black">SHAPE</h1>
+                            <ul className="space-y-[4px]">
                               {item.shape.map((shape, subIndex) => (
                                 <li
                                   key={subIndex}
-                                  className="hover:text-PictonBlue cursor-pointer text-black font-medium text-sm"
+                                  className="hover:text-PictonBlue cursor-pointer text-black font-medium text-xs"
                                 >
                                   <Link
                                     href={`/${item.category

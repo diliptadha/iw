@@ -46,7 +46,6 @@ const Profile = () => {
   return (
     <div className="max-w-screen-2xl m-auto">
       <div>
-        {" "}
         <Header setSearch={setSearch} />
         <div className=" mt-10 bg-[#f2f2f2] border-t-[1.5px] border-gray-300 border-x-[1.5px] xs:mx-[20px] xl:mx-[70px] rounded-t-lg p-7">
           <div className="flex items-center justify-between ">
@@ -82,7 +81,7 @@ const Profile = () => {
           </div>
         </div>
         <div className="mb-28 bg-[#f2f2f2] border-[1.5px] border-slate-300 xs:mx-[20px] xl:mx-[70px] rounded-b-lg xs:p-3 xl:p-7 flex  xs:flex-col lg:flex-row  lg:justify-between">
-          <div className="flex text-black xs:mb-6 lg:mb-0 xs:flex-row lg:flex-col xs:justify-between lg:justify-normal lg:space-y-6">
+          <div className="flex text-black xs:mb-6 lg:mb-0 xs:flex-row lg:flex-col xs:justify-between lg:justify-normal lg:space-y-6 lg:w-[140px]">
             <button
               className={`flex items-center hover:text-PictonBlue  ${
                 activeButton === "General" ? "text-PictonBlue" : ""
@@ -157,7 +156,7 @@ const Profile = () => {
               </p>
             </button>
           </div>
-          <div className="xs:w-full bg-PictonBlue- md:w-[45rem] lg:w-[50rem] xl:w-[65rem] xs:px-0 md:px-5 ">
+          <div className="w-full xs:px-0 md:px-5 ">
             {showProfile && (
               <div className="space-y-4 text-black ">
                 <div className="space-y-2">
@@ -168,18 +167,18 @@ const Profile = () => {
                 </div>
                 <p className="border-t-[1.5px] border-slate-300" />
 
-                <div className="flex  overflow-x-auto space-x-4">
-                  <h1>{Strings.Full_name}</h1>
+                <div className="flex overflow-x-auto ">
+                  <h1 className=" w-24">{Strings.Full_name}</h1>
                   <p>{Strings.Tom_cook}</p>
                 </div>
                 <p className="border-t-[1.5px] border-slate-300" />
-                <div className="flex  space-x-12 overflow-x-auto">
-                  <h1>{Strings.email}</h1>
+                <div className="flex  overflow-x-auto">
+                  <h1 className=" w-24">{Strings.email}</h1>
                   <p>{Strings.example_email}</p>
                 </div>
                 <p className="border-t-[1.5px] border-slate-300" />
-                <div className="flex space-x-10">
-                  <h1>{Strings.Phone}</h1>
+                <div className="flex">
+                  <h1 className=" w-24">{Strings.Phone}</h1>
                   <p>{Strings.Phone_No}</p>
                 </div>
               </div>
@@ -194,8 +193,8 @@ const Profile = () => {
                 </div>
                 <p className="border-t-[1.5px] border-slate-300" />
 
-                <div className="flex space-x-4">
-                  <h1>{Strings.Full_name}</h1>
+                <div className="flex ">
+                  <h1 className=" w-24">{Strings.Full_name}</h1>
                   <input
                     type="text"
                     className="flex bg-[#f2f2f2] justify-center outline-none border-b border-gray-500"
@@ -203,8 +202,8 @@ const Profile = () => {
                   />
                 </div>
                 <p className="border-t-[1.5px] border-slate-300" />
-                <div className="flex space-x-12">
-                  <h1>{Strings.email}</h1>
+                <div className="flex ">
+                  <h1 className=" w-24">{Strings.email}</h1>
                   <input
                     type="email"
                     className="flex bg-[#f2f2f2] justify-center outline-none border-b border-gray-500"
@@ -212,8 +211,8 @@ const Profile = () => {
                   />
                 </div>
                 <p className="border-t-[1.5px] border-slate-300" />
-                <div className="flex space-x-10">
-                  <h1>{Strings.Phone}</h1>
+                <div className="flex">
+                  <h1 className=" w-24">{Strings.Phone}</h1>
                   <input
                     type="tel"
                     className="flex bg-[#f2f2f2] justify-center outline-none border-b border-gray-500"

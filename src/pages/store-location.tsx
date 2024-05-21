@@ -1,15 +1,20 @@
 import "../app/globals.css";
-import React from "react";
-import Link from "next/link";
-import data from "../../public/data.json";
-import { Strings, Images } from "@/constant";
+
+import { Images, Strings } from "@/constant";
+import React, { useState } from "react";
+
 import { Footer } from "@/Component/footer";
-import StarRating from "./StarRating";
+import Header from "@/Component/header";
 import Image from "next/image";
+import Link from "next/link";
+import StarRating from "./StarRating";
+import data from "../../public/data.json";
 
 const StoreLocation = () => {
+  const [search, setSearch] = useState("");
   return (
     <>
+      <Header setSearch={setSearch} />
       <div className=" px-[2rem] py-[2rem] md:px-[3rem] xl:px-[6rem]">
         {data.store.length > 0 ? (
           data.store.map((ele, index) => (
