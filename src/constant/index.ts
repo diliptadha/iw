@@ -839,6 +839,9 @@ export const Strings = {
   isloggin: "User",
   No_Reviews_Yet: "No Reviews Yet!",
   Whatsapp_No: "7977994474",
+  COLOR: "COLOR",
+  STYLE: "STYLE",
+  SHAPE: "SHAPE",
 };
 
 export const Faqs = {
@@ -1332,4 +1335,6 @@ export const ContactUs = {
   WHATSAPP_NO: "Whatsapp No: 7977994474",
   TIMING_1: "10 AM to 6 PM ( Monday to Friday )",
   TIMING_2: "9 AM to 4 PM ( Saturday )",
+  CONTACT_MSG:
+    "Thanks for reaching out! We've received your message and our team will respond within 24-48 hour",
 };

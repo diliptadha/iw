@@ -117,7 +117,19 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
 
   const [favoriteStatus, setFavoriteStatus] = useState<{
     [key: string]: boolean;
-  }>({});
+  }>(() => {
+    if (typeof window !== "undefined") {
+      const storedFavorites = localStorage.getItem("favoriteStatus");
+      return storedFavorites ? JSON.parse(storedFavorites) : {};
+    }
+    return {};
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("favoriteStatus", JSON.stringify(favoriteStatus));
+    }
+  }, [favoriteStatus]);
   const storedUserId =
     typeof window !== "undefined" ? localStorage.getItem("userId") : null;
   const [isLoading, setIsLoading] = useState(false);

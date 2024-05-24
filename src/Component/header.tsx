@@ -71,7 +71,6 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
     }
     return false;
   });
-  console.log(isLoggedIn, "isLoggedIn");
 
   const openWhatsApp = () => {
     window.open(
@@ -88,6 +87,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
       setSignInText("User");
     }
   }, []);
+
   const handleButtonClick = () => {
     setShowLoginModal(true);
   };
@@ -154,7 +154,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
   if (Array.isArray(cartQuantity)) {
     tQty = cartQuantity.reduce((total, ele) => total + ele.quantity, 0);
   }
-  console.log("qty", tQty);
+  // console.log("qty", tQty);
 
   const router = useRouter();
 
@@ -393,7 +393,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                 item.usage.length > 0 && (
                                   <div>
                                     <h1 className="font-bold text-black">
-                                      USAGE
+                                      {Strings.USAGE.toUpperCase()}
                                     </h1>
                                     <ul className="mt-2">
                                       {item.usage.map((usage, subIndex) => (
@@ -419,7 +419,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                 item.gender.length > 0 && (
                                   <div>
                                     <h1 className="font-bold text-black">
-                                      GENDER
+                                      {Strings.GENDER}
                                     </h1>
                                     <ul className="mt-2">
                                       {item.gender.map((gender, subIndex) => (
@@ -448,7 +448,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                               {item.brand && item.brand.length > 0 && (
                                 <>
                                   <h1 className="font-bold text-black">
-                                    BRAND
+                                    {Strings.BRANDS}
                                   </h1>
                                   <ul
                                     className={
@@ -488,7 +488,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                               {item.color && item.color.length > 0 && (
                                 <>
                                   <h1 className="font-bold text-black">
-                                    COLOR
+                                    {Strings.COLOR}
                                   </h1>
                                   <ul className="mt-2 grid grid-cols-3">
                                     {item.color.map((color, subIndex) => (
@@ -520,7 +520,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                               {item.style && item.style.length > 0 && (
                                 <>
                                   <h1 className="font-bold text-black">
-                                    STYLE
+                                    {Strings.STYLE}
                                   </h1>
                                   <ul className="mt-2">
                                     {item.style.map((style, subIndex) => (
@@ -545,7 +545,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                               {item.shape && item.shape.length > 0 && (
                                 <>
                                   <h1 className="font-bold text-black">
-                                    SHAPE
+                                    {Strings.SHAPE}
                                   </h1>
                                   <ul className="mt-2 grid grid-cols-3">
                                     {item.shape.map((shape, subIndex) => (
@@ -809,7 +809,9 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                         {item.category === "Contact Lenses" &&
                           item.usage.length > 0 && (
                             <div>
-                              <h1 className="font-bold text-black">USAGE</h1>
+                              <h1 className="font-bold text-black">
+                                {Strings.USAGE.toUpperCase()}
+                              </h1>
                               <ul className="space-y-[4px]">
                                 {item.usage.map((usage, subIndex) => (
                                   <li
@@ -834,7 +836,9 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                         {item.category !== "Contact Lenses" &&
                           item.gender.length > 0 && (
                             <div>
-                              <h1 className="font-bold text-black">GENDER</h1>
+                              <h1 className="font-bold text-black">
+                                {Strings.GENDER}
+                              </h1>
                               <ul className="space-y-[4px]">
                                 {item.gender.map((gender, subIndex) => (
                                   <li
@@ -863,7 +867,9 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       <div>
                         {item.brand && item.brand.length > 0 && (
                           <>
-                            <h1 className="font-bold text-black">BRAND</h1>
+                            <h1 className="font-bold text-black">
+                              {Strings.BRANDS}
+                            </h1>
                             <ul className="space-y-[4px]">
                               {item.brand.map((brand, subIndex) => (
                                 <li
@@ -897,7 +903,9 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       <div>
                         {item.color && item.color.length > 0 && (
                           <>
-                            <h1 className="font-bold text-black">COLOR</h1>
+                            <h1 className="font-bold text-black">
+                              {Strings.COLOR}
+                            </h1>
                             <ul className="space-y-[4px]">
                               {item.color.map((color, subIndex) => (
                                 <li
@@ -929,7 +937,9 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       <div>
                         {item.style && item.style.length > 0 && (
                           <>
-                            <h1 className="font-bold text-black">STYLE</h1>
+                            <h1 className="font-bold text-black">
+                              {Strings.STYLE}
+                            </h1>
                             <ul className="space-y-[4px]">
                               {item.style.map((style, subIndex) => (
                                 <li
@@ -954,7 +964,9 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       <div>
                         {item.shape && item.shape.length > 0 && (
                           <>
-                            <h1 className="font-bold text-black">SHAPE</h1>
+                            <h1 className="font-bold text-black">
+                              {Strings.SHAPE}
+                            </h1>
                             <ul className="space-y-[4px]">
                               {item.shape.map((shape, subIndex) => (
                                 <li

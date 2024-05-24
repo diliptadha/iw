@@ -3,20 +3,187 @@
 import "../app/globals.css";
 
 import { Images, Strings } from "@/constant";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Footer } from "@/Component/footer";
 import Header from "@/Component/header";
 import Image from "next/image";
 import Product from "@/Component/Product";
+import axios from "axios";
 import { useRouter } from "next/navigation";
+
+interface FavoriteProduct {
+  productInfo: any;
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  userId: string;
+  productId: string;
+  product: any;
+}
 
 const Profile = () => {
   const router = useRouter();
+  const [search, setSearch] = useState("");
   const [showProfile, setShowProfile] = useState<boolean>(true);
   const [showEditProfile, setShowEditProfile] = useState<boolean>(false);
   const [myfavorites, setMyfavorites] = useState<boolean>(false);
   const [activeButton, setActiveButton] = useState<string>("General");
+  const [myFavorites, setMyFavorites] = useState<FavoriteProduct[]>([]);
+  const [userId, setUserId] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [city, setCity] = useState("");
+  const [address, setAddress] = useState("");
+  const [pincode, setPinCode] = useState("");
+  const [favoriteStatus, setFavoriteStatus] = useState<{
+    [key: string]: boolean;
+  }>(() => {
+    if (typeof window !== "undefined") {
+      const storedFavorites = localStorage.getItem("favoriteStatus");
+      return storedFavorites ? JSON.parse(storedFavorites) : {};
+    }
+    return {};
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("favoriteStatus", JSON.stringify(favoriteStatus));
+    }
+  }, [favoriteStatus]);
+
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    if (storedUserId) {
+      setUserId(storedUserId);
+    }
+  }, []);
+
+  useEffect(() => {
+    const storedFirstName = localStorage.getItem("firstName");
+    const storedLastName = localStorage.getItem("lastName");
+    const storedCity = localStorage.getItem("city");
+    const storedAddress = localStorage.getItem("address");
+    const storedPincode = localStorage.getItem("pincode");
+
+    if (storedFirstName) setFirstName(storedFirstName);
+    if (storedLastName) setLastName(storedLastName);
+    if (storedCity) setCity(storedCity);
+    if (storedAddress) setAddress(storedAddress);
+    if (storedPincode) setPinCode(storedPincode);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("firstName", firstName);
+    localStorage.setItem("lastName", lastName);
+    localStorage.setItem("city", city);
+    localStorage.setItem("address", address);
+    localStorage.setItem("pincode", pincode);
+  }, [firstName, lastName, city, address, pincode]);
+
+  const updateUserProfile = async () => {
+    try {
+      let data = JSON.stringify({
+        firstName: firstName,
+        lastName: lastName,
+        city: city,
+        address: address,
+        pincode: pincode,
+      });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}user/userProfileUpdate?userId=${userId}`,
+        headers: {
+          authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJJSzAwMDAwMDciLCJpYXQiOjE3MTYzODQwMjl9.XW2k72Jh9HcmrI4YKgKUDBuIwvgileSaWvx4XxZnJJU",
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      let response = await axios.request(config);
+      console.log("jdksss", JSON.stringify(response.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getFavoriteProduct = async () => {
+    try {
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}product/getFavoriteProduct?userId=${userId}`,
+        headers: {},
+      };
+      // console.log("uuuuuu", userId);
+      const response = await axios.request(config);
+      console.log("Favorite products:", response.data.data);
+      setMyFavorites(response.data.data);
+      const favoriteStatus = response.data.data.reduce(
+        (acc: { [key: string]: boolean }, product: FavoriteProduct) => {
+          acc[product.productInfo.productId] = true;
+          return acc;
+        },
+        {}
+      );
+      setFavoriteStatus(favoriteStatus);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (userId) {
+      getFavoriteProduct();
+    }
+  }, [userId]);
+
+  const handleToggleFavorite = (productId: string) => {
+    if (userId) {
+      if (favoriteStatus[productId]) {
+        removeFavoriteProduct(productId, userId);
+      } else {
+        addFavoriteProduct(productId, userId);
+      }
+    } else {
+      console.log("User ID is null. Cannot add to favorites.");
+    }
+  };
+
+  const removeFavoriteProduct = async (productId: string, userId: string) => {
+    try {
+      const data = JSON.stringify({ userId, productId });
+      const config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}product/removeFavoriteProduct?userId=${userId}&productId=${productId}`,
+        headers: {},
+        data,
+      };
+      const response = await axios.request(config);
+      console.log(JSON.stringify(response.data.productData));
+      setFavoriteStatus((prevState) => {
+        const newState = { ...prevState };
+        delete newState[productId];
+        return newState;
+      });
+      setMyFavorites((prevFavorites) =>
+        prevFavorites.filter(
+          (product) => product.productInfo.productId !== productId
+        )
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addFavoriteProduct = async (productId: string, userId: string) => {
+    // Implementation for adding a favorite product
+    // Ensure this function updates both favoriteStatus and myFavorites
+  };
 
   const handleButtonClick = (buttonName: string) => {
     setActiveButton(buttonName);
@@ -40,8 +207,6 @@ const Profile = () => {
     localStorage.removeItem("accessToken");
     router.push("/");
   };
-
-  const [search, setSearch] = useState("");
 
   return (
     <div className="max-w-screen-2xl m-auto">
@@ -168,18 +333,28 @@ const Profile = () => {
                 <p className="border-t-[1.5px] border-slate-300" />
 
                 <div className="flex overflow-x-auto ">
-                  <h1 className=" w-24">{Strings.Full_name}</h1>
-                  <p>{Strings.Tom_cook}</p>
+                  <h1 className=" w-24">First Name :</h1>
+                  <p>{firstName}</p>
+                </div>
+                <p className="border-t-[1.5px] border-slate-300" />
+                <div className="flex overflow-x-auto ">
+                  <h1 className=" w-24">Last Name :</h1>
+                  <p>{lastName}</p>
+                </div>
+                <p className="border-t-[1.5px] border-slate-300" />
+                <div className="flex overflow-x-auto ">
+                  <h1 className=" w-24">City :</h1>
+                  <p>{city}</p>
                 </div>
                 <p className="border-t-[1.5px] border-slate-300" />
                 <div className="flex  overflow-x-auto">
-                  <h1 className=" w-24">{Strings.email}</h1>
-                  <p>{Strings.example_email}</p>
+                  <h1 className=" w-24">Address :</h1>
+                  <p>{address}</p>
                 </div>
                 <p className="border-t-[1.5px] border-slate-300" />
                 <div className="flex">
-                  <h1 className=" w-24">{Strings.Phone}</h1>
-                  <p>{Strings.Phone_No}</p>
+                  <h1 className=" w-24">Pin code :</h1>
+                  <p>{pincode}</p>
                 </div>
               </div>
             )}
@@ -193,34 +368,60 @@ const Profile = () => {
                 </div>
                 <p className="border-t-[1.5px] border-slate-300" />
 
-                <div className="flex ">
-                  <h1 className=" w-24">{Strings.Full_name}</h1>
+                <div className="flex">
+                  <h1 className=" w-24">First Name :</h1>
                   <input
                     type="text"
                     className="flex bg-[#f2f2f2] justify-center outline-none border-b border-gray-500"
-                    defaultValue="Tom cook"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
                   />
                 </div>
                 <p className="border-t-[1.5px] border-slate-300" />
                 <div className="flex ">
-                  <h1 className=" w-24">{Strings.email}</h1>
+                  <h1 className=" w-24">Last Name :</h1>
                   <input
                     type="email"
                     className="flex bg-[#f2f2f2] justify-center outline-none border-b border-gray-500"
-                    defaultValue="tom.cook@example.com"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
                   />
                 </div>
                 <p className="border-t-[1.5px] border-slate-300" />
                 <div className="flex">
-                  <h1 className=" w-24">{Strings.Phone}</h1>
+                  <h1 className=" w-24">City :</h1>
                   <input
                     type="tel"
                     className="flex bg-[#f2f2f2] justify-center outline-none border-b border-gray-500"
-                    defaultValue="02667-77777"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
                   />
                 </div>
                 <p className="border-t-[1.5px] border-slate-300" />
-                <button className="hover:bg-PictonBlue border w-[137px] h-[34px] rounded-[5px] font-normal text-sm text-white bg-black">
+                <div className="flex">
+                  <h1 className=" w-24">Address :</h1>
+                  <input
+                    type="tel"
+                    className="flex bg-[#f2f2f2] justify-center outline-none border-b border-gray-500"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                </div>
+                <p className="border-t-[1.5px] border-slate-300" />
+                <div className="flex">
+                  <h1 className=" w-24">Pin Code :</h1>
+                  <input
+                    type="tel"
+                    className="flex bg-[#f2f2f2] justify-center outline-none border-b border-gray-500"
+                    value={pincode}
+                    onChange={(e) => setPinCode(e.target.value)}
+                  />
+                </div>
+                <p className="border-t-[1.5px] border-slate-300" />
+                <button
+                  onClick={updateUserProfile}
+                  className="hover:bg-PictonBlue border w-[137px] h-[34px] rounded-[5px] font-normal text-sm text-white bg-black"
+                >
                   {Strings.Update}
                 </button>
               </div>
@@ -234,8 +435,37 @@ const Profile = () => {
                   <p>{Strings.My_Favorites_Sub}</p>
                 </div>
                 <p className="border-t-[1.5px] border-slate-300" />
-                <div className="flex ">
-                  <div className=" flex-wrap xs:justify-center xl:justify-normal flex gap-x-20"></div>
+                <div className="flex justify-center ">
+                  <div className="flex-wrap xs:justify-center xl:justify-normal flex sm:gap-x-10 lg:gap-x-20 ">
+                    {myFavorites?.length > 0 ? (
+                      myFavorites?.map((favoriteProduct, index) => {
+                        const product = favoriteProduct.productInfo;
+                        return (
+                          <Product
+                            key={index}
+                            image={product?.productImage}
+                            title={product?.title}
+                            color={product?.color}
+                            description={""}
+                            rating={product?.rating}
+                            price={product?.salePrice}
+                            productId={product?.productId}
+                            showLoginModal={false}
+                            isAuthenticated={false}
+                            handleToggleFavorite={() =>
+                              handleToggleFavorite(product.productId)
+                            }
+                            isFavorite={
+                              favoriteStatus[product.productId] || true
+                            }
+                            subProductId={product?.subProductId}
+                          />
+                        );
+                      })
+                    ) : (
+                      <p>No favorite products found.</p>
+                    )}
+                  </div>
                 </div>
               </div>
             )}

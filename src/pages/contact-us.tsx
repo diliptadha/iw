@@ -18,10 +18,12 @@ interface IFormInput {
 
 const Contactus = () => {
   const [search, setSearch] = useState("");
+  const [sumbmitted, setSumbitted] = useState(false);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<IFormInput>();
 
@@ -30,13 +32,16 @@ const Contactus = () => {
 
   const sendEmail = async (data: IFormInput) => {
     try {
+      setSumbitted(false);
       console.log(data);
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}contact-us/email`,
+        `${process.env.NEXT_PUBLIC_API_URL}contact/emailSend`,
         data
       );
-      console.log(res.data);
+      reset();
+      setSumbitted(true);
     } catch (error) {
+      setSumbitted(false);
       console.log(error);
     }
   };
@@ -112,6 +117,11 @@ const Contactus = () => {
               className="w-full cursor-pointer rounded-md bg-black hover:bg-PictonBlue px-3 py-2 text-white md:text-2xl"
               type="submit"
             />
+            {sumbmitted && (
+              <p className="text-center w-[70%] mx-auto text-green-500">
+                {ContactUs.CONTACT_MSG}
+              </p>
+            )}
           </form>
         </div>
         <hr />

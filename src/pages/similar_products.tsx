@@ -4,10 +4,10 @@ import { Images, Strings } from "@/constant";
 import React, { useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
+import Loader from "@/Component/Loader";
 import SimilarProduct from "@/Component/SimilarProduct";
 import axios from "axios";
 import { useRouter } from "next/router";
-import Loader from "@/Component/Loader";
 
 interface ProductData {
   color: any;
@@ -54,7 +54,19 @@ const SimilarProductPage = () => {
 
   const [favoriteStatus, setFavoriteStatus] = useState<{
     [key: string]: boolean;
-  }>({});
+  }>(() => {
+    if (typeof window !== "undefined") {
+      const storedFavorites = localStorage.getItem("favoriteStatus");
+      return storedFavorites ? JSON.parse(storedFavorites) : {};
+    }
+    return {};
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("favoriteStatus", JSON.stringify(favoriteStatus));
+    }
+  }, [favoriteStatus]);
   const storedUserId =
     typeof window !== "undefined" ? localStorage.getItem("userId") : null;
 

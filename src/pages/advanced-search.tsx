@@ -7,14 +7,14 @@ import { Footer } from "@/Component/footer";
 import Header from "@/Component/header";
 import Image from "next/image";
 import Link from "next/link";
+import Loader from "@/Component/Loader";
 import Pagination from "react-paginate";
 import Product from "@/Component/Product";
 import ReactPaginate from "react-paginate";
 import Shape from "@/Component/Shape";
+import WhatsAppButton from "@/Component/WhatsAppButton";
 import axios from "axios";
 import { space } from "postcss/lib/list";
-import WhatsAppButton from "@/Component/WhatsAppButton";
-import Loader from "@/Component/Loader";
 
 const genders = ["Men", "Women", "Kids", "Unisex"];
 const frameStyles = ["Full Rim", "Rimless", "Half Rim"];
@@ -112,9 +112,33 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   >(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
+  // const [favoriteStatus, setFavoriteStatus] = useState<{
+  //   [key: string]: boolean;
+  // }>(() => {
+  //   const storedFavorites = localStorage.getItem("favoriteStatus");
+  //   return storedFavorites ? JSON.parse(storedFavorites) : {};
+  // });
+
+  // useEffect(() => {
+  //   localStorage.setItem("favoriteStatus", JSON.stringify(favoriteStatus));
+  // }, [favoriteStatus]);
+
   const [favoriteStatus, setFavoriteStatus] = useState<{
     [key: string]: boolean;
-  }>({});
+  }>(() => {
+    if (typeof window !== "undefined") {
+      const storedFavorites = localStorage.getItem("favoriteStatus");
+      return storedFavorites ? JSON.parse(storedFavorites) : {};
+    }
+    return {};
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("favoriteStatus", JSON.stringify(favoriteStatus));
+    }
+  }, [favoriteStatus]);
+
   const storedUserId =
     typeof window !== "undefined" ? localStorage.getItem("userId") : null;
 
@@ -1294,128 +1318,80 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
           </div>
 
           <div>
-            {search === "" &&
-            (filterApplied ? filterData : productList)?.length > 0 ? (
-              <ReactPaginate
-                previousLabel={
-                  <svg
-                    className="w-2.5 h-2.5 hover:text-PictonBlue"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M5 1 1 5l4 4"
-                    />
-                  </svg>
-                }
-                nextLabel={
-                  <svg
-                    className="w-2.5 h-2.5 hover:text-PictonBlue "
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m1 9 4-4-4-4"
-                    />
-                  </svg>
-                }
-                breakLabel={"..."}
-                pageCount={pageCountFilter}
-                onPageChange={handlePageChangeFilter}
-                containerClassName={
-                  " bg-gray-200 rounded-md h-10 pagination flex items-center text-sm justify-center"
-                }
-                pageClassName={
-                  " h-7 w-7 rounded-full flex items-center justify-center font-bold hover:font-extrabold"
-                }
-                activeClassName={"bg-PictonBlue text-white rounded-full"}
-                previousClassName={" px-[15px] text-lg"}
-                nextClassName={" px-[15px]"}
-                previousLinkClassName={
-                  currentPageFilter === 0
-                    ? "pointer-events-none opacity-50 bg-PictonBlue text-black hover:text-PictonBlue"
-                    : "bg-PictonBlue text-black hover:text-white"
-                }
-                nextLinkClassName={
-                  currentPageFilter === pageCountFilter - 1
-                    ? "pointer-events-none opacity-50 bg-PictonBlue text-black hover:text-PictonBlue"
-                    : "bg-PictonBlue text-black hover:text-white"
-                }
-                breakClassName={"border p-2 hover:bg-PictonBlue"}
-              />
-            ) : (
-              <ReactPaginate
-                previousLabel={
-                  <svg
-                    className="w-2.5 h-2.5 hover:text-PictonBlue"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M5 1 1 5l4 4"
-                    />
-                  </svg>
-                }
-                nextLabel={
-                  <svg
-                    className="w-2.5 h-2.5 hover:text-PictonBlue "
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m1 9 4-4-4-4"
-                    />
-                  </svg>
-                }
-                breakLabel={"..."}
-                pageCount={pageCountTrending}
-                onPageChange={handlePageChangeTrending}
-                containerClassName={
-                  " bg-gray-200 rounded-md h-10 pagination flex items-center text-sm justify-center"
-                }
-                pageClassName={
-                  " h-7 w-7 rounded-full flex items-center justify-center font-bold hover:font-extrabold"
-                }
-                activeClassName={"bg-PictonBlue text-white rounded-full"}
-                previousClassName={" px-[15px] text-lg"}
-                nextClassName={" px-[15px]"}
-                previousLinkClassName={
-                  currentPageTrending === 0
-                    ? "pointer-events-none opacity-50 bg-PictonBlue text-black hover:text-PictonBlue"
-                    : "bg-PictonBlue text-black hover:text-white"
-                }
-                nextLinkClassName={
-                  currentPageTrending === pageCountTrending - 1
-                    ? "pointer-events-none opacity-50 bg-PictonBlue text-black hover:text-PictonBlue"
-                    : "bg-PictonBlue text-black hover:text-white"
-                }
-                breakClassName={"border p-2 hover:bg-PictonBlue"}
-              />
-            )}
+            {((search === "" &&
+              (filterApplied ? filterData : productList)?.length > 0) ||
+              (search !== "" && trendingSearchData.length > 0)) &&
+              ((getFilteredDataForCurrentPage().length > 0 && (
+                <ReactPaginate
+                  previousLabel={
+                    <svg
+                      className="w-2.5 h-2.5 hover:text-PictonBlue"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 6 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 1 1 5l4 4"
+                      />
+                    </svg>
+                  }
+                  nextLabel={
+                    <svg
+                      className="w-2.5 h-2.5 hover:text-PictonBlue "
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 6 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m1 9 4-4-4-4"
+                      />
+                    </svg>
+                  }
+                  breakLabel={"..."}
+                  pageCount={
+                    search === "" ? pageCountFilter : pageCountTrending
+                  }
+                  onPageChange={
+                    search === ""
+                      ? handlePageChangeFilter
+                      : handlePageChangeTrending
+                  }
+                  containerClassName={
+                    " bg-gray-200 rounded-md h-10 pagination flex items-center text-sm justify-center"
+                  }
+                  pageClassName={
+                    " h-7 w-7 rounded-full flex items-center justify-center font-bold hover:font-extrabold"
+                  }
+                  activeClassName={"bg-PictonBlue text-white rounded-full"}
+                  previousClassName={" px-[15px] text-lg"}
+                  nextClassName={" px-[15px]"}
+                  previousLinkClassName={
+                    (search === "" && currentPageFilter === 0) ||
+                    (search !== "" && currentPageTrending === 0)
+                      ? "pointer-events-none opacity-50 bg-PictonBlue text-black hover:text-PictonBlue"
+                      : "bg-PictonBlue text-black hover:text-white"
+                  }
+                  nextLinkClassName={
+                    (search === "" &&
+                      currentPageFilter === pageCountFilter - 1) ||
+                    (search !== "" &&
+                      currentPageTrending === pageCountTrending - 1)
+                      ? "pointer-events-none opacity-50 bg-PictonBlue text-black hover:text-PictonBlue"
+                      : "bg-PictonBlue text-black hover:text-white"
+                  }
+                  breakClassName={"border p-2 hover:bg-PictonBlue"}
+                />
+              )) || <></>)}
           </div>
         </div>
       </div>

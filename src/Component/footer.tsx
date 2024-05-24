@@ -12,7 +12,12 @@ export const Footer = () => {
   const [EmailError, setEmailError] = useState("");
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !!localStorage.getItem("userId");
+    }
+    return false;
+  });
   const validateEmail = (companyEmail: string) => {
     const companyEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return companyEmailRegex.test(companyEmail);
@@ -107,7 +112,7 @@ export const Footer = () => {
           </div>
           <div className="mt-4">
             <Link
-              href="/profile"
+              href={isLoggedIn ? "/profile" : "/"}
               className=" font-lato text-base  text-12 font-light hover:opacity-[0.6]"
             >
               {Strings.PROFILE}

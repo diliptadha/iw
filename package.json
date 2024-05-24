@@ -31,7 +31,8 @@
     "react-simple-star-rating": "^5.1.7",
     "react-whatsapp": "^0.3.0",
     "sharp": "^0.33.3",
-    "shortid": "^2.2.16"
+    "shortid": "^2.2.16",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@types/node": "^20",
