@@ -114,7 +114,6 @@ const ProductADD = () => {
       });
     }
   };
-  console.log(userId, "usserid");
   const handleIncrementButtonClick = (productId: any, quantity: number) => {
     axios
       .post(
@@ -196,12 +195,6 @@ const ProductADD = () => {
     gettingData(userId);
     fetchAddressData(userId);
   }, []);
-
-  // useEffect(() => {
-  // }, []);
-
-  // useEffect(() => {
-  // }, []);
 
   return (
     <>

@@ -128,7 +128,7 @@ export const Footer = () => {
           </div> */}
           <div>
             <Link
-              href="/orders"
+              href="/my-order"
               className="font-lato text-base  text-12 font-light hover:opacity-[0.6]"
             >
               {Strings.ORDERS}

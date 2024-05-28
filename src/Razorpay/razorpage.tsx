@@ -5,6 +5,17 @@ import { Images } from "@/constant";
 import axios from "axios";
 import { useRouter } from "next/router";
 
+interface CardData {
+  id: any;
+  title: any;
+  productId: any;
+  originalPrice: number;
+  salePrice: number;
+  productImage: any;
+  quantity: number;
+  subProductId: any;
+}
+
 export default function RazorPage({
   onCancel,
   toDiAfPr,
@@ -18,6 +29,7 @@ export default function RazorPage({
   const [orderId, setOrderId] = useState("");
   const [isPaymentModalOpened, setIsPaymentModalOpened] = useState(false);
   const [userId, setUserId] = useState<string | null>();
+  const [cardDetails, setCardDetails] = useState<CardData[]>([]);
 
   const handlePaymentSuccess = (orderId: string) => {
     router.replace({
@@ -33,8 +45,30 @@ export default function RazorPage({
     setIsPaymentModalOpened(false);
   };
 
+  const gettingData = async (userId: any) => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=${userId}`
+      );
+      const cartData = response?.data?.cartData;
+      setCardDetails(cartData);
+      console.log("cartDetails", cartData);
+    } catch (error) {
+      console.log("Error fetching data", error);
+    }
+  };
+
+  const cartProduct = cardDetails.map((item) => ({
+    productId: item.productId,
+    subProductId: item.subProductId,
+    quantity: item.quantity,
+    totalPrice: item.salePrice, // Assuming salePrice is the total price for simplicity
+    power: 200, // This seems to be a static value in your example
+  }));
+
   const createOrder = async (userId: any) => {
     try {
+      console.log("prod", cartProduct);
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}payment/create`,
         {
@@ -45,11 +79,8 @@ export default function RazorPage({
           },
           body: JSON.stringify({
             userId: userId,
-            productId: "P0000001",
-            quantity: 1,
-            totalPrice: toDiAfPr,
             status: "pending",
-            power: 200,
+            products: cartProduct,
           }),
         }
       );
@@ -110,17 +141,26 @@ export default function RazorPage({
     }
   }, [orderId, isPaymentModalOpened, Razorpay]);
 
-  const startPaymentProcess = () => {
+  const startPaymentProcess = async () => {
     resetPaymentModal(); // Reset the isPaymentModalOpened state
-    createOrder(userId); // Create a new order
+    await gettingData(userId);
+    await createOrder(userId); // Create a new order
     handlePayment(); // Trigger the payment process
   };
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     setUserId(userId);
-    createOrder(userId);
+    if (userId) {
+      gettingData(userId);
+    }
   }, []);
+
+  useEffect(() => {
+    if (cardDetails.length > 0 && userId) {
+      createOrder(userId);
+    }
+  }, [cardDetails]);
 
   useEffect(() => {
     handlePayment();
