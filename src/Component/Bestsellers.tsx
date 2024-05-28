@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
+import LoginModal from "./LoginModal";
 import StarRating from "./StarRating";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -44,6 +45,13 @@ const Bestsellers: React.FC<BestsellersProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState<string | null>();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !!localStorage.getItem("userId");
+    }
+    return false;
+  });
 
   const openModal = () => {
     setOpen(!open);
@@ -77,6 +85,11 @@ const Bestsellers: React.FC<BestsellersProps> = ({
   };
 
   const addToCart = async (userId: any) => {
+    console.log("addToCart called with userId:", userId);
+    if (!userId) {
+      setShowLoginModal(true);
+      return;
+    }
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=${userId}`,
@@ -137,7 +150,7 @@ const Bestsellers: React.FC<BestsellersProps> = ({
               <div className="flex justify-between items-center mt-3">
                 <button
                   onClick={handleProductPage}
-                  className=" flex justify-center items-center border-black border w-[130px] h-[34px] rounded-[5px] font-bold text-xs text-black bg-white"
+                  className="hover:border-PictonBlue hover:text-PictonBlue flex justify-center items-center border-black border w-[130px] h-[34px] rounded-[5px] font-bold text-xs text-black bg-white"
                 >
                   {Strings.KNOW_MORE}
                 </button>
@@ -154,9 +167,15 @@ const Bestsellers: React.FC<BestsellersProps> = ({
           </div>
         </div>
       </div>
+      <LoginModal
+        showLoginModal={showLoginModal}
+        setShowLoginModal={setShowLoginModal}
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+      />
       {open && (
         <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center  bg-gray-500 bg-opacity-[20%] backdrop-blur-sm ">
-          <div className="relative p-8 rounded-md bg-white xs:h-[420px] xs:w-[310px] md:h-[420px] md:w-[460px] xl:h-[430px] xl:w-[400px] ">
+          <div className="relative p-5 rounded-md bg-white xs:w-[310px]  md:w-[460px]  xl:w-[400px] ">
             {isBestseller && (
               <div className="absolute top-0 left-0 bg-[#FF4307] font-extrabold text-xs text-white h-[30px] w-[125px] flex justify-center items-center rounded-[5px]">
                 {Strings.BESTSELLER}
@@ -172,15 +191,17 @@ const Bestsellers: React.FC<BestsellersProps> = ({
                 onClick={openModal}
               />
             </div>
-            <div className="flex justify-center relative w-[100px] my-0 mx-auto">
-              <img src={image} alt="/" />
-
-              <div className="absolute top-[170px] text-center">
-                <div className="">
+            <div className=" flex justify-center ">
+              <div className="space-y-4">
+                <img
+                  src={image}
+                  alt="/"
+                  className="h-[160px] w-[280px] object-cover"
+                />
+                <div className="text-center space-y-2">
                   <h1 className="font-extrabold text-lg text-black">{title}</h1>
                   <p className="font-semibold text-sm text-black">{SKU}</p>
                   <p className="font-extrabold text-sm text-black">
-                    ₹
                     {salePrice
                       ? salePrice.toLocaleString("en-IN")
                       : originalPrice.toLocaleString("en-IN")}
@@ -193,12 +214,13 @@ const Bestsellers: React.FC<BestsellersProps> = ({
                       <div>
                         <StarRating rating={rating} />
                       </div>
-                      <button
+
+                      {/* <button
                         onClick={() => addToCart(userId)}
-                        className="flex justify-center items-center border-black border w-[137px] h-[36px] rounded-[5px] font-bold text-sm text-black bg-white"
+                        className="mt-4 flex justify-center items-center border-black hover:border-PictonBlue hover:text-PictonBlue border w-[137px] h-[36px] rounded-[5px] font-bold text-sm text-black bg-white"
                       >
                         {Strings.ADD_TO_CART}
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 </div>

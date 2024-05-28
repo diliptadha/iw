@@ -1,5 +1,6 @@
 "use client";
-import { createContext, useState, useContext } from "react";
+
+import { createContext, useContext, useState } from "react";
 
 const CartContext = createContext<any>({});
 
@@ -10,9 +11,10 @@ interface CartUse {
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<CartUse>();
+  const [search, setSearch] = useState<string>("");
 
   return (
-    <CartContext.Provider value={{ cart, setCart }}>
+    <CartContext.Provider value={{ cart, setCart, search, setSearch }}>
       {children}
     </CartContext.Provider>
   );

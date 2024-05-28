@@ -154,6 +154,28 @@ const Homescreen: React.FC = () => {
   };
 
   useEffect(() => {
+    // Check if localStorage is available
+    const isStorageAvailable = () => {
+      try {
+        const testKey = "__test__";
+        localStorage.setItem(testKey, testKey);
+        localStorage.removeItem(testKey);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    };
+
+    if (!isStorageAvailable()) {
+      // Handle the case where localStorage is not available
+      console.error("localStorage is not available");
+    } else {
+      // Handle the case where localStorage is available
+      // You can perform operations with localStorage here
+    }
+  }, []);
+
+  useEffect(() => {
     axios
       .get(`${process.env.NEXT_PUBLIC_API_URL}home/products`)
       .then((response) => {

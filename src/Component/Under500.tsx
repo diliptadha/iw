@@ -176,7 +176,7 @@ const Under500: React.FC<Under500Props> = ({
       />
       {open && (
         <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center  bg-gray-500 bg-opacity-[20%] backdrop-blur-sm ">
-          <div className="relative p-8 rounded-md bg-white xs:h-[420px] xs:w-[310px] md:h-[420px] md:w-[460px] xl:h-[430px] xl:w-[400px] ">
+          <div className="relative p-5 rounded-md bg-white  xs:w-[310px]  md:w-[400px]  ">
             {isBestseller && (
               <div className="absolute top-0 left-0 bg-[#FF4307] font-extrabold text-xs text-white h-[30px] w-[125px] flex justify-center items-center rounded-[5px]">
                 {Strings.BESTSELLER}
@@ -192,11 +192,15 @@ const Under500: React.FC<Under500Props> = ({
                 onClick={openModal}
               />
             </div>
-            <div className="flex justify-center relative my-0 mx-auto w-[100px]">
-              <img src={image} alt="/" />
+            <div className=" flex justify-center ">
+              <div className="space-y-4">
+                <img
+                  src={image}
+                  alt="/"
+                  className="h-[160px] w-[280px] object-cover"
+                />
 
-              <div className="absolute top-[170px] text-center">
-                <div className="">
+                <div className=" space-y-2 text-center">
                   <h1 className="font-extrabold text-lg text-black">{Brand}</h1>
                   <p className="font-semibold text-sm text-black">{SKU}</p>
                   <p className="font-extrabold text-sm text-black">
@@ -213,12 +217,12 @@ const Under500: React.FC<Under500Props> = ({
                       <div>
                         <StarRating rating={rating} />
                       </div>
-                      <button
+                      {/* <button
                         onClick={() => addToCart(userId)}
-                        className="flex justify-center items-center border-black border w-[137px] h-[36px] rounded-[5px] font-bold text-sm text-black bg-white"
+                        className="mt-4 flex justify-center items-center hover:border-PictonBlue  hover:text-PictonBlue border-black border w-[137px] h-[36px] rounded-[5px] font-bold text-sm text-black bg-white"
                       >
                         {Strings.ADD_TO_CART}
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 </div>

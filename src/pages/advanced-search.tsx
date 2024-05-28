@@ -15,6 +15,7 @@ import Shape from "@/Component/Shape";
 import WhatsAppButton from "@/Component/WhatsAppButton";
 import axios from "axios";
 import { space } from "postcss/lib/list";
+import { useCart } from "@/Context/CartContext";
 
 const genders = ["Men", "Women", "Kids", "Unisex"];
 const frameStyles = ["Full Rim", "Rimless", "Half Rim"];

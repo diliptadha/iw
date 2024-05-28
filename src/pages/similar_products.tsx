@@ -20,6 +20,7 @@ interface ProductData {
   productId: string;
 
   data: {
+    salePrice: any;
     // createdAt: number;
     variantImage: string[] | undefined;
     otherColors: any;
@@ -97,7 +98,7 @@ const SimilarProductPage = () => {
           `${process.env.NEXT_PUBLIC_API_URL}product/getSimilarProductData?productId=${productId}`
         );
         const similarProductData = response.data.similarProductData;
-        setSimilarProductData(similarProductData);
+        setSimilarProductData(response.data.similarProductData);
       } catch (error) {
         console.error("Error fetching similar product data:", error);
       }
@@ -406,12 +407,12 @@ const SimilarProductPage = () => {
             similarProductData.map((product, index) => (
               <SimilarProduct
                 key={product.productId}
-                productImage={product.productImage}
-                title={product.title}
+                productImage={product.data.productImage}
+                title={product.data.title}
                 description={product.description}
-                salePrice={`₹ ${product.salePrice.toLocaleString("en-IN")}`}
-                rating={product.rating}
-                color={product.color}
+                salePrice={`₹ ${product.data.salePrice}`}
+                rating={product.data.rating}
+                color={product.data.color}
                 productId={product.productId}
                 showLoginModal={showLoginModal}
                 isAuthenticated={isAuthenticated}

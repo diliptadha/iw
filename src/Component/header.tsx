@@ -79,14 +79,26 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
     );
   };
 
-  const [signInText, setSignInText] = useState(Strings.SIGN_IN);
+  const [signInText, setSignInText] = useState("Sign In");
+  const [firstName, setFirstName] = useState("");
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
-    if (userId) {
+    const storedFirstName = localStorage.getItem("firstName");
+    if (userId && storedFirstName) {
+      setSignInText(storedFirstName);
+      setFirstName(storedFirstName);
+    } else if (userId) {
       setSignInText("User");
     }
   }, []);
+
+  useEffect(() => {
+    if (firstName) {
+      setSignInText(firstName);
+      localStorage.setItem("firstName", firstName);
+    }
+  }, [firstName]);
 
   const handleButtonClick = () => {
     setShowLoginModal(true);
@@ -225,34 +237,6 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
     fetchData();
   }, []);
 
-  const handleGenderClick = (category: string, gender: string) => {
-    const searchQuery = {
-      category: category,
-      gender: gender,
-    };
-    setSearch(JSON.stringify(searchQuery));
-
-    console.log("CATEGORY :", category, "GENDER :", gender);
-  };
-
-  const handleUsageClick = (category: string, usage: string) => {
-    const searchQuery = {
-      category: category,
-      usage: usage,
-    };
-    setSearch(JSON.stringify(searchQuery));
-    console.log("CATEGORY :", category, "USEGE :", usage);
-  };
-
-  const handleBrandsClick = (category: string, brand: string) => {
-    const searchQuery = {
-      category: category,
-      brands: brand,
-    };
-    setSearch(JSON.stringify(searchQuery));
-    console.log("CATEGORY :", category, "BRANDS :", brand);
-  };
-
   const toggleMegaMenu = (index: number) => {
     const updatedMenuData = menuData.map((item, i) => ({
       ...item,
@@ -372,7 +356,13 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                 <div className="flex justify-center">
                   {menuData.map(
                     (item, index) =>
-                      item.megaMenuOpen && (
+                      item.megaMenuOpen &&
+                      (item.usage.length > 0 ||
+                      item.gender.length > 0 ||
+                      item.brand.length > 0 ||
+                      item.color.length > 0 ||
+                      item.style.length > 0 ||
+                      item.shape.length > 0 ? (
                         <div
                           key={index}
                           className="w-full h-full bg-[#F2F2F2] absolute top-[80px] p-5 rounded-t-[10px] overflow-y-scroll"
@@ -408,7 +398,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                                 "-"
                                               )}-contact-lenses`}
                                           >
-                                            {usage.toUpperCase()}
+                                            {usage.charAt(0).toUpperCase() +
+                                              usage.slice(1).toLowerCase()}
                                           </Link>
                                         </li>
                                       ))}
@@ -434,7 +425,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                               .toLowerCase()
                                               .replace(/\s+/g, "-")}`}`}
                                           >
-                                            {gender.toUpperCase()}
+                                            {gender.charAt(0).toUpperCase() +
+                                              gender.slice(1).toLowerCase()}
                                           </Link>
                                         </li>
                                       ))}
@@ -474,7 +466,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                               : "-frames"
                                           }`}
                                         >
-                                          {brand.toUpperCase()}
+                                          {brand.charAt(0).toUpperCase() +
+                                            brand.slice(1).toLowerCase()}
                                         </Link>
                                       </li>
                                     ))}
@@ -507,7 +500,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                               : "-frames"
                                           }`}
                                         >
-                                          {color.toUpperCase()}
+                                          {color.charAt(0).toUpperCase() +
+                                            color.slice(1).toLowerCase()}
                                         </Link>
                                       </li>
                                     ))}
@@ -532,7 +526,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                             .toLowerCase()
                                             .replace(/\s+/g, "-")}-frames`}
                                         >
-                                          {style.toUpperCase()}
+                                          {style.charAt(0).toUpperCase() +
+                                            style.slice(1).toLowerCase()}
                                         </Link>
                                       </li>
                                     ))}
@@ -557,7 +552,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                             .toLowerCase()
                                             .replace(/\s+/g, "-")}-frames`}
                                         >
-                                          {shape.toUpperCase()}
+                                          {shape.charAt(0).toUpperCase() +
+                                            shape.slice(1).toLowerCase()}
                                         </Link>
                                       </li>
                                     ))}
@@ -567,7 +563,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                             </div>
                           </div>
                         </div>
-                      )
+                      ) : null)
                   )}
                 </div>
                 <div className="space-y-4">
@@ -799,12 +795,30 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
           <div className="flex justify-center xs:hidden lg:flex">
             {menuData.map(
               (item, index) =>
-                item.megaMenuOpen && (
+                item.megaMenuOpen &&
+                (item.usage.length > 0 ||
+                item.gender.length > 0 ||
+                item.brand.length > 0 ||
+                item.color.length > 0 ||
+                item.style.length > 0 ||
+                item.shape.length > 0 ? (
                   <div
                     key={index}
-                    className="w-[700px] z-index h-auto bg-[#F2F2F2] absolute top-56 p-5 rounded-[10px] shadow-md"
+                    className="w-auto z-index h-auto bg-[#F2F2F2] absolute top-56 p-5 rounded-[10px] shadow-md"
                   >
-                    <div className="flex text-base justify-between font-normal">
+                    {/* <div className={`flex text-base gap-x-20 font-normal`}> */}
+                    <div
+                      className={`flex text-base ${
+                        item.usage.length === 0 &&
+                        item.gender.length === 0 &&
+                        item.style.length === 0 &&
+                        item.shape.length === 0 &&
+                        item.color.length === 0 &&
+                        item.power.length === 0
+                          ? "gap-x-2"
+                          : "gap-x-20"
+                      } font-normal`}
+                    >
                       <div>
                         {item.category === "Contact Lenses" &&
                           item.usage.length > 0 && (
@@ -816,7 +830,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                 {item.usage.map((usage, subIndex) => (
                                   <li
                                     key={subIndex}
-                                    className="hover:text-PictonBlue cursor-pointer text-black font-medium text-sm"
+                                    className="hover:text-PictonBlue cursor-pointer text-black font-medium text-xs"
                                   >
                                     <Link
                                       href={`/${item.category
@@ -825,7 +839,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                         .toLowerCase()
                                         .replace(/\s+/g, "-")}-contact-lenses`}
                                     >
-                                      {usage.toUpperCase()}
+                                      {usage.charAt(0).toUpperCase() +
+                                        usage.slice(1).toLowerCase()}
                                     </Link>
                                   </li>
                                 ))}
@@ -855,7 +870,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                         .toLowerCase()
                                         .replace(/\s+/g, "-")}`}`}
                                     >
-                                      {gender.toUpperCase()}
+                                      {gender.charAt(0).toUpperCase() +
+                                        gender.slice(1).toLowerCase()}
                                     </Link>
                                   </li>
                                 ))}
@@ -870,7 +886,18 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                             <h1 className="font-bold text-black">
                               {Strings.BRANDS}
                             </h1>
-                            <ul className="space-y-[4px]">
+                            <ul
+                              className={
+                                "grid grid-cols-2 gap-x-20 space-y-[4px]"
+                              }
+                            >
+                              {/* <ul
+                              className={
+                                item.category.toLowerCase() === "brands"
+                                  ? "grid grid-cols-3 gap-x-20"
+                                  : "space-y-[4px]"
+                              }
+                            > */}
                               {item.brand.map((brand, subIndex) => (
                                 <li
                                   key={subIndex}
@@ -891,7 +918,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                         : "-frames"
                                     }`}
                                   >
-                                    {brand.toUpperCase()}
+                                    {brand.charAt(0).toUpperCase() +
+                                      brand.slice(1).toLowerCase()}
                                   </Link>
                                 </li>
                               ))}
@@ -926,7 +954,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                         : "-frames"
                                     }`}
                                   >
-                                    {color.toUpperCase()}
+                                    {color.charAt(0).toUpperCase() +
+                                      color.slice(1).toLowerCase()}
                                   </Link>
                                 </li>
                               ))}
@@ -953,7 +982,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                       .toLowerCase()
                                       .replace(/\s+/g, "-")}-frames`}
                                   >
-                                    {style.toUpperCase()}
+                                    {style.charAt(0).toUpperCase() +
+                                      style.slice(1).toLowerCase()}
                                   </Link>
                                 </li>
                               ))}
@@ -980,7 +1010,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                       .toLowerCase()
                                       .replace(/\s+/g, "-")}-frames`}
                                   >
-                                    {shape.toUpperCase()}
+                                    {shape.charAt(0).toUpperCase() +
+                                      shape.slice(1).toLowerCase()}
                                   </Link>
                                 </li>
                               ))}
@@ -990,7 +1021,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       </div>
                     </div>
                   </div>
-                )
+                ) : null)
             )}
           </div>
         </div>

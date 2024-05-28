@@ -4,13 +4,14 @@ import "../app/globals.css";
 
 import { Images, Strings } from "@/constant";
 import React, { useEffect, useState } from "react";
+import { redirect, useRouter } from "next/navigation";
 
 import { Footer } from "@/Component/footer";
 import Header from "@/Component/header";
 import Image from "next/image";
+import LoginModal from "@/Component/LoginModal";
 import Product from "@/Component/Product";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 
 interface FavoriteProduct {
   productInfo: any;
@@ -59,6 +60,20 @@ const Profile = () => {
     }
   }, []);
 
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !!localStorage.getItem("userId");
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/");
+    }
+  }, [isLoggedIn, router]);
+
   useEffect(() => {
     const storedFirstName = localStorage.getItem("firstName");
     const storedLastName = localStorage.getItem("lastName");
@@ -81,6 +96,34 @@ const Profile = () => {
     localStorage.setItem("pincode", pincode);
   }, [firstName, lastName, city, address, pincode]);
 
+  const [userProfile, setUserProfile] = useState([]);
+
+  const getUserProfile = async () => {
+    try {
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}user/userProfile?userId=${userId}`,
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJJSzAwMDAwMDciLCJpYXQiOjE3MTY2MjQ3NzN9.EOZzIGqWTTeFzukISmzFyc-_OA4pYEgE7_bWhrASviw",
+        },
+      };
+
+      const response = await axios.request(config);
+      console.log("rrrrrrrrrrr", JSON.stringify(response.data));
+      setUserProfile(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (userId) {
+      getUserProfile();
+    }
+  }, [userId]);
+
   const updateUserProfile = async () => {
     try {
       let data = JSON.stringify({
@@ -97,7 +140,7 @@ const Profile = () => {
         url: `${process.env.NEXT_PUBLIC_API_URL}user/userProfileUpdate?userId=${userId}`,
         headers: {
           authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJJSzAwMDAwMDciLCJpYXQiOjE3MTYzODQwMjl9.XW2k72Jh9HcmrI4YKgKUDBuIwvgileSaWvx4XxZnJJU",
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJJSzAwMDAwMDciLCJpYXQiOjE3MTY2MjQ3NzN9.EOZzIGqWTTeFzukISmzFyc-_OA4pYEgE7_bWhrASviw",
           "Content-Type": "application/json",
         },
         data: data,
@@ -211,6 +254,12 @@ const Profile = () => {
   return (
     <div className="max-w-screen-2xl m-auto">
       <div>
+        <LoginModal
+          showLoginModal={showLoginModal}
+          setShowLoginModal={setShowLoginModal}
+          isLoggedIn={isLoggedIn}
+          setIsLoggedIn={setIsLoggedIn}
+        />
         <Header setSearch={setSearch} />
         <div className=" mt-10 bg-[#f2f2f2] border-t-[1.5px] border-gray-300 border-x-[1.5px] xs:mx-[20px] xl:mx-[70px] rounded-t-lg p-7">
           <div className="flex items-center justify-between ">
@@ -331,31 +380,34 @@ const Profile = () => {
                   <p>{Strings.PROFILE_SUB}</p>
                 </div>
                 <p className="border-t-[1.5px] border-slate-300" />
-
-                <div className="flex overflow-x-auto ">
-                  <h1 className=" w-24">First Name :</h1>
-                  <p>{firstName}</p>
-                </div>
-                <p className="border-t-[1.5px] border-slate-300" />
-                <div className="flex overflow-x-auto ">
-                  <h1 className=" w-24">Last Name :</h1>
-                  <p>{lastName}</p>
-                </div>
-                <p className="border-t-[1.5px] border-slate-300" />
-                <div className="flex overflow-x-auto ">
-                  <h1 className=" w-24">City :</h1>
-                  <p>{city}</p>
-                </div>
-                <p className="border-t-[1.5px] border-slate-300" />
-                <div className="flex  overflow-x-auto">
-                  <h1 className=" w-24">Address :</h1>
-                  <p>{address}</p>
-                </div>
-                <p className="border-t-[1.5px] border-slate-300" />
-                <div className="flex">
-                  <h1 className=" w-24">Pin code :</h1>
-                  <p>{pincode}</p>
-                </div>
+                {Object.keys(userProfile).length > 0 && (
+                  <>
+                    <div className="flex overflow-x-auto ">
+                      <h1 className=" w-24">First Name :</h1>
+                      <p>{firstName}</p>
+                    </div>
+                    <p className="border-t-[1.5px] border-slate-300" />
+                    <div className="flex overflow-x-auto ">
+                      <h1 className=" w-24">Last Name :</h1>
+                      <p>{lastName}</p>
+                    </div>
+                    <p className="border-t-[1.5px] border-slate-300" />
+                    <div className="flex overflow-x-auto ">
+                      <h1 className=" w-24">City :</h1>
+                      <p>{city}</p>
+                    </div>
+                    <p className="border-t-[1.5px] border-slate-300" />
+                    <div className="flex  overflow-x-auto">
+                      <h1 className=" w-24">Address :</h1>
+                      <p>{address}</p>
+                    </div>
+                    <p className="border-t-[1.5px] border-slate-300" />
+                    <div className="flex">
+                      <h1 className=" w-24">Pin code :</h1>
+                      <p>{pincode}</p>
+                    </div>
+                  </>
+                )}
               </div>
             )}
             {showEditProfile && (
@@ -432,10 +484,12 @@ const Profile = () => {
                   <h1 className="text-black font-semibold text-base">
                     {Strings.My_Favorites}
                   </h1>
-                  <p>{Strings.My_Favorites_Sub}</p>
+                  <p>
+                    {myFavorites?.length > 0 ? Strings.My_Favorites_Sub : " "}
+                  </p>
                 </div>
                 <p className="border-t-[1.5px] border-slate-300" />
-                <div className="flex justify-center ">
+                <div className="flex justify-center- ">
                   <div className="flex-wrap xs:justify-center xl:justify-normal flex sm:gap-x-10 lg:gap-x-20 ">
                     {myFavorites?.length > 0 ? (
                       myFavorites?.map((favoriteProduct, index) => {

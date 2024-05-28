@@ -26,7 +26,7 @@ const StoreLocation = () => {
                 <img
                   src={ele.storeImg}
                   alt="shopImage"
-                  className="w-[100%] h-[100%] rounded-[4px]"
+                  className="w-[100%] h-[100%] rounded-[4px] object-cover"
                 />
               </div>
               <div className="flex-1">
