@@ -229,7 +229,9 @@ const Homescreen: React.FC = () => {
         }
       );
       setCart(await getCartQuantity(userId));
+
       window.location.reload();
+      handleScrollToTop();
       showCartMessage("Product added to cart successfully!");
     } catch (error) {
       console.error("Error adding item to cart:", error);

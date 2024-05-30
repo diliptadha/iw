@@ -855,6 +855,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
               <p className="text-black font-extrabold text-sm">
                 {Strings.Frame_Style}
               </p>
+
               <Image
                 src={Images.Downicon}
                 alt=""

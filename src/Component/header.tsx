@@ -332,7 +332,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
               />
               <div className="space-y-2 px-5 mt-20 w-full">
                 <div className="space-y-2">
-                  {menuData.map((item, index) => (
+                  {menuData?.map((item, index) => (
                     <div key={index} className="space-y-2">
                       <div
                         onClick={() => toggleMegaMenu(index)}
@@ -354,7 +354,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                   ))}
                 </div>
                 <div className="flex justify-center">
-                  {menuData.map(
+                  {menuData?.map(
                     (item, index) =>
                       item.megaMenuOpen &&
                       (item.usage.length > 0 ||
@@ -753,7 +753,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
         </div>
         <div>
           <div className="relative justify-between flex mt-10 mx-12 xs:hidden lg:flex">
-            {menuData.map((item, index) => (
+            {menuData?.map((item, index) => (
               <div key={index}>
                 <div
                   onClick={() => toggleMegaMenu(index)}
@@ -793,7 +793,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
             ))}
           </div>
           <div className="flex justify-center xs:hidden lg:flex">
-            {menuData.map(
+            {menuData?.map(
               (item, index) =>
                 item.megaMenuOpen &&
                 (item.usage.length > 0 ||

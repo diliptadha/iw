@@ -23,14 +23,28 @@ interface FavoriteProduct {
   product: any;
 }
 
+interface Order {
+  id: string;
+  productId: string;
+  subProductId: string;
+  quantity: number;
+  totalPrice: number;
+  orderId: string;
+  power: number;
+  createdAt: string;
+  products: any;
+}
+
 const Profile = () => {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [showProfile, setShowProfile] = useState<boolean>(true);
   const [showEditProfile, setShowEditProfile] = useState<boolean>(false);
   const [myfavorites, setMyfavorites] = useState<boolean>(false);
+  const [myOrders, setMyOrders] = useState<boolean>(false);
   const [activeButton, setActiveButton] = useState<string>("General");
   const [myFavorites, setMyFavorites] = useState<FavoriteProduct[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [userId, setUserId] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -99,14 +113,15 @@ const Profile = () => {
   const [userProfile, setUserProfile] = useState([]);
 
   const getUserProfile = async () => {
+    const token = localStorage.getItem("accessToken");
+    console.log("Authorization Token for getUserProfile:", token);
     try {
       let config = {
         method: "get",
         maxBodyLength: Infinity,
         url: `${process.env.NEXT_PUBLIC_API_URL}user/userProfile?userId=${userId}`,
         headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJJSzAwMDAwMDciLCJpYXQiOjE3MTY2MjQ3NzN9.EOZzIGqWTTeFzukISmzFyc-_OA4pYEgE7_bWhrASviw",
+          Authorization: `Bearer ${token}`,
         },
       };
 
@@ -125,6 +140,8 @@ const Profile = () => {
   }, [userId]);
 
   const updateUserProfile = async () => {
+    const token = localStorage.getItem("accessToken");
+    console.log("Authorization Token for updateUserProfile:", token);
     try {
       let data = JSON.stringify({
         firstName: firstName,
@@ -139,14 +156,14 @@ const Profile = () => {
         maxBodyLength: Infinity,
         url: `${process.env.NEXT_PUBLIC_API_URL}user/userProfileUpdate?userId=${userId}`,
         headers: {
-          authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJJSzAwMDAwMDciLCJpYXQiOjE3MTY2MjQ3NzN9.EOZzIGqWTTeFzukISmzFyc-_OA4pYEgE7_bWhrASviw",
+          authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         data: data,
       };
 
       let response = await axios.request(config);
+      window.location.reload();
       console.log("jdksss", JSON.stringify(response.data));
     } catch (error) {
       console.log(error);
@@ -161,7 +178,7 @@ const Profile = () => {
         url: `${process.env.NEXT_PUBLIC_API_URL}product/getFavoriteProduct?userId=${userId}`,
         headers: {},
       };
-      // console.log("uuuuuu", userId);
+
       const response = await axios.request(config);
       console.log("Favorite products:", response.data.data);
       setMyFavorites(response.data.data);
@@ -223,10 +240,33 @@ const Profile = () => {
     }
   };
 
-  const addFavoriteProduct = async (productId: string, userId: string) => {
-    // Implementation for adding a favorite product
-    // Ensure this function updates both favoriteStatus and myFavorites
+  const addFavoriteProduct = async (productId: string, userId: string) => {};
+
+  const fetchUserOrderData = async () => {
+    const token = localStorage.getItem("accessToken");
+    console.log("Authorization Token for UserOrderData:", token);
+    try {
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}user/userOrderData?userId=IK0000005 `,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios.request(config);
+
+      console.log("orders", JSON.stringify(response.data.data));
+      setOrders(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  useEffect(() => {
+    fetchUserOrderData();
+  }, []);
 
   const handleButtonClick = (buttonName: string) => {
     setActiveButton(buttonName);
@@ -234,14 +274,22 @@ const Profile = () => {
       setShowProfile(true);
       setShowEditProfile(false);
       setMyfavorites(false);
+      setMyOrders(false);
     } else if (buttonName === "EditProfile") {
+      setMyOrders(false);
       setShowProfile(false);
       setMyfavorites(false);
       setShowEditProfile(true);
     } else if (buttonName === "My favorites") {
+      setMyOrders(false);
       setShowProfile(false);
       setShowEditProfile(false);
       setMyfavorites(true);
+    } else if (buttonName === "My Orders") {
+      setShowProfile(false);
+      setShowEditProfile(false);
+      setMyfavorites(false);
+      setMyOrders(true);
     }
   };
 
@@ -254,12 +302,6 @@ const Profile = () => {
   return (
     <div className="max-w-screen-2xl m-auto">
       <div>
-        <LoginModal
-          showLoginModal={showLoginModal}
-          setShowLoginModal={setShowLoginModal}
-          isLoggedIn={isLoggedIn}
-          setIsLoggedIn={setIsLoggedIn}
-        />
         <Header setSearch={setSearch} />
         <div className=" mt-10 bg-[#f2f2f2] border-t-[1.5px] border-gray-300 border-x-[1.5px] xs:mx-[20px] xl:mx-[70px] rounded-t-lg p-7">
           <div className="flex items-center justify-between ">
@@ -295,7 +337,7 @@ const Profile = () => {
           </div>
         </div>
         <div className="mb-28 bg-[#f2f2f2] border-[1.5px] border-slate-300 xs:mx-[20px] xl:mx-[70px] rounded-b-lg xs:p-3 xl:p-7 flex  xs:flex-col lg:flex-row  lg:justify-between">
-          <div className="flex text-black xs:mb-6 lg:mb-0 xs:flex-row lg:flex-col xs:justify-between lg:justify-normal lg:space-y-6 lg:w-[140px]">
+          <div className="flex   text-black xs:mb-6 lg:mb-0 xs:flex-row lg:flex-col xs:justify-between lg:justify-normal lg:space-y-6 lg:w-[140px]">
             <button
               className={`flex items-center hover:text-PictonBlue  ${
                 activeButton === "General" ? "text-PictonBlue" : ""
@@ -316,7 +358,7 @@ const Profile = () => {
                   d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                 />
               </svg>
-              <p className="font-semibold xs:text-sm md:text-base">
+              <p className="xs:font-normal md:font-semibold  xs:text-xs md:text-base xs:hidden- sm:block">
                 {Strings.GENERAL}
               </p>
             </button>
@@ -332,7 +374,7 @@ const Profile = () => {
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                className="xs:h-[18px] xs:w-5 md:w-6 md:h-6"
+                className="xs:h-[14px] xs:w-4 md:w-6 md:h-6"
               >
                 <path
                   stroke-linecap="round"
@@ -341,7 +383,7 @@ const Profile = () => {
                 />
               </svg>
 
-              <p className="font-semibold xs:text-sm md:text-base">
+              <p className="xs:font-normal md:font-semibold  xs:text-xs md:text-base xs:hidden- sm:block">
                 {Strings.Edit_Profile}
               </p>
             </button>
@@ -357,7 +399,7 @@ const Profile = () => {
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                className="xs:h-4 xs:w-5 md:w-6 md:h-6"
+                className="xs:h-4 xs:w-4 md:w-6 md:h-6"
               >
                 <path
                   stroke-linecap="round"
@@ -365,8 +407,33 @@ const Profile = () => {
                   d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
                 />
               </svg>
-              <p className="font-semibold xs:text-sm md:text-base">
+              <p className="xs:font-normal md:font-semibold  xs:text-xs md:text-base xs:hidden- sm:block">
                 {Strings.My_Favorites}
+              </p>
+            </button>
+            <button
+              className={`flex items-center hover:text-PictonBlue ${
+                activeButton === "My Orders" ? "text-PictonBlue" : ""
+              }`}
+              onClick={() => handleButtonClick("My Orders")}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="xs:h-4 xs:w-4 md:w-6 md:h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                />
+              </svg>
+
+              <p className="xs:font-normal md:font-semibold  xs:text-xs md:text-base xs:hidden- sm:block">
+                {Strings.My_Orders}
               </p>
             </button>
           </div>
@@ -521,6 +588,62 @@ const Profile = () => {
                     )}
                   </div>
                 </div>
+              </div>
+            )}
+            {myOrders && (
+              <div className="space-y-4 ">
+                <div className="space-y-2">
+                  <h1 className="text-black font-semibold text-base">
+                    {`Hello, ${firstName || "User"}`}
+                  </h1>
+                  <p>
+                    View a snapshot of your recent orders here. Click on View
+                    Details for detailed order information.
+                  </p>
+                </div>
+                {orders.map((order, index) => (
+                  <div
+                    key={index}
+                    className="card bg-white py-6 px-3 sm:flex mb-4 shadow-box"
+                  >
+                    <div className="border flex justify-center items-center py-[10px] xs:h-[60px] xs:w-[80px] md:h-[90px] md:w-[150px] lg:h-[110px] lg:w-[180px] mr-3 mb-2 sm:mb-0">
+                      <img
+                        src={order.products.productImage}
+                        alt={order.products.title}
+                        className="xs:h-[80px] xs:w-[80px] md:w-[100%] md:h-[100%] object-cover"
+                      />
+                    </div>
+
+                    <div className="w-full">
+                      <div className="flex justify-between w-full border-b items-center pb-2">
+                        <div>
+                          <h3 className="frame-name text-[13px] sm:text-[14px] font-semibold">
+                            {order.products.title}
+                          </h3>
+                        </div>
+                      </div>
+
+                      <div className="flex items-baseline justify-between  pt-[10px]">
+                        <h3 className="text-[13px] sm:text-[14px]">
+                          <span className="text-PictonBlue">Frame</span>{" "}
+                          {order.products.frameShape} /{" "}
+                          {order.products.frameStyle}
+                        </h3>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <h2>Price: {order.products.salePrice}</h2>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <h2>Qty: {order.quantity}</h2>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>

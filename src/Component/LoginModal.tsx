@@ -2,8 +2,8 @@ import { Images, Strings } from "@/constant";
 import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
-import axios from "axios";
 import Loader from "./Loader";
+import axios from "axios";
 
 export const toggleModal = (
   showLoginModal: boolean,
@@ -169,6 +169,7 @@ const LoginModal = ({
       setUserId(response.data.signInData.userData.userId);
       setShowLoginModal(false);
       setIsLoggedIn(true);
+      window.location.reload();
     } catch (error) {
       console.log(error);
     } finally {

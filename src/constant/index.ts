@@ -829,6 +829,7 @@ export const Strings = {
   Edit_Profile: "Edit Profile",
   Edit_Profile_Sub: "Update your personal details here.",
   My_Favorites: "My Favorites",
+  My_Orders: "My Orders",
   My_Favorites_Sub: "Here are your Favourites.",
   Update: "Update",
   Tom_cook: "Tom cook",

@@ -43,12 +43,14 @@ export const Footer = () => {
     if (Email.trim() === "") {
       setEmailError("Please enter an email address.");
       setIsSubmitted(true);
+      clearErrorMessageAfterDelay();
       return;
     }
 
     if (!validateEmail(Email)) {
       setEmailError("Please enter a valid email address.");
       setIsSubmitted(true);
+      clearErrorMessageAfterDelay();
       return;
     }
 
@@ -58,10 +60,18 @@ export const Footer = () => {
       )
       .then((response) => {
         setIsSubmitted(true);
+        setEmail("");
       })
       .catch((error) => {
         console.error("Error subscribing:", error);
       });
+  };
+
+  const clearErrorMessageAfterDelay = () => {
+    setTimeout(() => {
+      setEmailError("");
+      setIsSubmitted(false);
+    }, 5000);
   };
 
   return (
@@ -215,6 +225,7 @@ export const Footer = () => {
               className="rounded-lg font-lato text-black placeholder-black bg-white px-4 py-2 outline-none w-full xs:text-base lg:text-md md:w-[280px] lg:w-[260px] xl:w-[380px]"
             />
             <button
+              type="submit"
               onClick={handleSubmit}
               className="absolute inset-y-0 right-0 flex items-center px-2 md:left-60 lg:left-48 xl:left-64"
             >
