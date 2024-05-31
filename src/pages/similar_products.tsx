@@ -20,6 +20,9 @@ interface ProductData {
   productId: string;
 
   data: {
+    brands: string | undefined;
+    frameColor: string | undefined;
+    gender: string | undefined;
     salePrice: any;
     // createdAt: number;
     variantImage: string[] | undefined;
@@ -34,6 +37,7 @@ interface ProductData {
     isBestSeller?: boolean;
     createdAt: string;
     isNew?: boolean;
+    category?: string;
   };
 }
 const SimilarProductPage = () => {
@@ -98,6 +102,7 @@ const SimilarProductPage = () => {
           `${process.env.NEXT_PUBLIC_API_URL}product/getSimilarProductData?productId=${productId}`
         );
         const similarProductData = response.data.similarProductData;
+        console.log(similarProductData, "similarProductData");
         setSimilarProductData(response.data.similarProductData);
       } catch (error) {
         console.error("Error fetching similar product data:", error);
@@ -413,6 +418,10 @@ const SimilarProductPage = () => {
                 salePrice={`₹ ${product.data.salePrice}`}
                 rating={product.data.rating}
                 color={product.data.color}
+                catogory={product.data.category}
+                brands={product.data.brands}
+                gender={product.data.gender}
+                frameColor={product.data.frameColor}
                 productId={product.productId}
                 showLoginModal={showLoginModal}
                 isAuthenticated={isAuthenticated}
@@ -420,6 +429,7 @@ const SimilarProductPage = () => {
                   handleToggleFavorite(product.productId)
                 }
                 isFavorite={favoriteStatus[product.productId] || false}
+                subProductId={product.data.subProductId}
                 // isBestseller={index === 3}
               />
             ))}

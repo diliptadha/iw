@@ -62,8 +62,8 @@ export default function RazorPage({
     productId: item.productId,
     subProductId: item.subProductId,
     quantity: item.quantity,
-    totalPrice: item.salePrice, // Assuming salePrice is the total price for simplicity
-    power: 200, // This seems to be a static value in your example
+    totalPrice: item.quantity * item.salePrice,
+    power: 200,
   }));
 
   const createOrder = async (userId: any) => {
@@ -107,7 +107,7 @@ export default function RazorPage({
     try {
       const options: RazorpayOptions = {
         key: RAZORPAY_KEY,
-        amount: "50000",
+        amount: (toDiAfPr * 100).toString(),
         currency: "INR",
         name: "Iksana Opticals",
         description: "Test Transaction",
@@ -117,7 +117,7 @@ export default function RazorPage({
           handlePaymentSuccess(orderId);
         },
         prefill: {
-          name: "Piyush Garg",
+          name: "Iksana Opticals",
           email: "youremail@example.com",
           contact: "9999999999",
         },

@@ -310,7 +310,6 @@ const AddAdress = () => {
 
   // Calculate total price after discount
   const toDiAfPr = toOrPr - toDi;
-
   const tQty = cardDetails.reduce((total, ele) => total + ele.quantity, 0);
 
   return (

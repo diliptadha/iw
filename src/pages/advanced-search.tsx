@@ -17,10 +17,33 @@ import axios from "axios";
 import { space } from "postcss/lib/list";
 import { useCart } from "@/Context/CartContext";
 
-const genders = ["Men", "Women", "Kids", "Unisex"];
-const frameStyles = ["Full Rim", "Rimless", "Half Rim"];
-const frameMaterials = ["Acetate", "TR90", "Metal", "Wood", "Titanium"];
-const brands = ["A", "B", "C", "D", "E", "F"];
+// const genders = ["Men", "Women", "Kids", "Unisex"];
+// const frameStyles = ["Full Rim", "Rimless", "Half Rim"];
+// const frameMaterials = ["Acetate", "TR90", "Metal", "Wood", "Titanium"];
+// const brands = ["A", "B", "C", "D", "E", "S"];
+// const brands = [
+//   "Iksana",
+//   "Tom Ford",
+//   "MayBach",
+//   "Scott",
+//   "K&D",
+//   "Visibilla",
+//   "Zoe Miller",
+//   "Page 4",
+//   "Swarovski",
+//   "Origin Virgin",
+//   "Maverick",
+//   "Femina Flaunt",
+//   "Gotti",
+//   "Kosch",
+//   "Gucci",
+//   "Prada",
+//   "Moleskine",
+//   "Carrera",
+//   "Mozzati",
+//   "Intense",
+//   "Esprit",
+// ];
 
 interface RequestData {
   [key: string]: string[] | string | undefined;
@@ -448,6 +471,10 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
         url += `&frameMaterial=${urlSelectedMaterial}`;
       }
 
+      if (selectedBrands.length > 0) {
+        url += `&brands=${urlSelectedBrands.toLowerCase()}`;
+      }
+
       url += `&sortBy=${sortBy}&page=1&limit=9`;
 
       let config = {
@@ -795,6 +822,36 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
     }
   }, []);
 
+  const [genders, setGenders] = useState<string[]>([]);
+  const [frameStyles, setFrameStyles] = useState<string[]>([]);
+  const [frameMaterials, setFrameMaterials] = useState<string[]>([]);
+  const [brands, setBrands] = useState<string[]>([]);
+
+  const fetchfilterList = async () => {
+    try {
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: "https://ikkana-backend-sqivzfs3fq-el.a.run.app/home/filterList",
+        headers: {},
+      };
+
+      const response = await axios.request(config);
+      console.log("ssss", JSON.stringify(response.data));
+      const data = response.data.filterList;
+      setGenders(data.gender);
+      setFrameStyles(data.frameStyles);
+      setFrameMaterials(data.frameMaterials);
+      setBrands(data.brands);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchfilterList();
+  }, []);
+
   return (
     <div className="list-bg max-w-screen-2xl m-auto">
       <Header setSearch={setSearch} />
@@ -855,7 +912,6 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
               <p className="text-black font-extrabold text-sm">
                 {Strings.Frame_Style}
               </p>
-
               <Image
                 src={Images.Downicon}
                 alt=""

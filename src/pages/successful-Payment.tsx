@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 
 const SuccessPayment = () => {
   interface CardData {
+    products: any;
     id: any;
     title: any;
     productId: any;
@@ -33,8 +34,22 @@ const SuccessPayment = () => {
   const [cardDetails, setCardDetails] = useState<CardData[]>([]);
   const [addGet, setAddGet] = useState<AddressData | null>(null);
   const [userId, setUserId] = useState<string | null>();
+  const router = useRouter();
+  const { orderId, toDiAfPr } = router.query;
+  console.log(router.query, "query");
 
-  const fetchAddressData = (userId: any) => {
+  const netPrice = Array.isArray(toDiAfPr)
+    ? parseInt(toDiAfPr[0] ?? "0", 10)
+    : parseInt(toDiAfPr ?? "0", 10);
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    if (storedUserId) {
+      setUserId(storedUserId);
+    }
+  }, []);
+
+  const fetchAddressData = () => {
+    const userId = localStorage.getItem("userId");
     axios
       .get(
         `${process.env.NEXT_PUBLIC_API_URL}user/getAddressDataById?userId=${userId}`
@@ -50,32 +65,62 @@ const SuccessPayment = () => {
       });
   };
 
-  const gettingData = (userId: any) => {
-    axios
-      .get(
-        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=${userId}`
-      )
-      .then((response) => {
-        setCardDetails(response?.data?.cartData);
-      })
-      .catch((error) => {
-        console.log("Error fetching data", error);
-      });
+  // const gettingData = (userId: any) => {
+  //   axios
+  //     .get(
+  //       `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=${userId}`
+  //     )
+  //     .then((response) => {
+  //       setCardDetails(response?.data?.cartData);
+  //     })
+  //     .catch((error) => {
+  //       console.log("Error fetching data", error);
+  //     });
+  // };
+
+  const gettingData = async () => {
+    const token = localStorage.getItem("accessToken");
+    try {
+      const config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}user/userSuccessOrderData?userId=${userId}&orderId=${orderId}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios.request(config);
+      // console.log(JSON.stringify(response.data), "response data");
+      setCardDetails(response.data.data);
+    } catch (error) {
+      console.error("Error fetching user success order data:", error);
+    }
   };
 
+  // ok thank you bro check kari  le?ok
+
+  // const cardDetails = [
+  //   {
+  //     id: 1,
+  //     productId: "SC5355",
+  //     productImage: Images.SHAPE1,
+  //     quantity: "2",
+  //     title: "Avaiator",
+  //     totalPrice: 6020,
+  //     frameShape: "RECTANGLE",
+  //     frameStyle: "Rimless",
+  //     frameMaterial: "METAL",
+  //   },
+  // ];
+
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    setUserId(userId);
-    fetchAddressData(userId);
-
-    gettingData(userId);
-  }, []);
-  const router = useRouter();
-  const { orderId, toDiAfPr } = router.query;
-
-  const netPrice = Array.isArray(toDiAfPr)
-    ? parseInt(toDiAfPr[0] ?? "0", 10)
-    : parseInt(toDiAfPr ?? "0", 10);
+    if (userId && orderId) {
+      gettingData();
+      // setUserId(userId);
+      fetchAddressData();
+    }
+  }, [userId, orderId]);
 
   return (
     <div className=" px-[1rem] py-[1rem] md:px-[3rem] xl:px-[6rem] ">
@@ -102,45 +147,52 @@ const SuccessPayment = () => {
 
         <div className="wrap-div flex gap-5 flex-wrap sm:flex-nowrap mt-11">
           <div className="left-card sm:min-w-[65%] w-full">
-            {cardDetails.map((ele, index) => {
-              return (
-                <div
-                  className="card py-6 px-3 sm:flex mb-4 shadow-box"
-                  key={index}
-                >
-                  <div className="border py-[10px] h-[50px] w-[60px] md:h-[90px] md:w-[150px] lg:h-[110px] lg:w-[180px] mr-3 mb-2 sm:mb-0">
-                    <img
-                      src={ele.productImage}
-                      alt="gog"
-                      className="w-[100%] h-[100%] object-contain"
-                    />
-                  </div>
+            {cardDetails.length === 0 ? (
+              <p>No data available</p>
+            ) : (
+              cardDetails.map((ele, index) => {
+                const product = ele.products;
+                return (
+                  <div
+                    className="card py-6 px-3 sm:flex mb-4 shadow-box"
+                    key={index}
+                  >
+                    <div className="border py-[10px] h-[50px] w-[60px] md:h-[90px] md:w-[150px] lg:h-[110px] lg:w-[180px] mr-3 mb-2 sm:mb-0">
+                      <img
+                        src={product.productImage}
+                        alt={product.title}
+                        className="w-[100%] h-[100%] object-contain"
+                      />
+                    </div>
 
-                  <div className="w-full">
-                    <div className="flex justify-between w-full border-b items-center pb-2">
-                      <div>
-                        <h3 className="frame-name text-[13px] sm:text-[14px] font-semibold">
-                          {ele.title}
+                    <div className="w-full">
+                      <div className="flex justify-between w-full border-b items-center pb-2">
+                        <div>
+                          <h3 className="frame-name text-[13px] sm:text-[14px] font-semibold">
+                            {product.title}
+                          </h3>
+                        </div>
+                      </div>
+
+                      <div className="flex items-baseline justify-between mb-2 pt-[10px]">
+                        <h3 className="text-[13px] sm:text-[14px]">
+                          <span className="text-PictonBlue">
+                            {product.frameShape}
+                          </span>{" "}
+                          {product.frameStyle}
                         </h3>
                       </div>
-                    </div>
 
-                    <div className="flex items-baseline justify-between mb-2 pt-[10px]">
-                      <h3 className="text-[13px] sm:text-[14px]">
-                        <span className="text-PictonBlue">{Strings.FRAME}</span>{" "}
-                        {Strings.FRAME_TYPE}
-                      </h3>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <h2>Qty: {ele.quantity}</h2>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <h2>Qty: {ele.quantity}</h2>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
             <div className="mt-6">
               <h3 className="text-[12px] py-5 text-center bg-[#FFE194]">
                 Got a feedback for us? Drop a word at{" "}
@@ -186,7 +238,7 @@ const SuccessPayment = () => {
             </div>
           </div>
         </div>
-
+        {/* pan api aa call karwani che  */}
         <div className="text-center mt-[30px] flex flex-col sm:block items-center">
           <button
             onClick={() => router.push("/")}

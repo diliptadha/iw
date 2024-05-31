@@ -131,26 +131,24 @@ const Product: React.FC<ProductProps> = ({
     console.log("dghrhtyhtthtyhrthrt", productData);
   };
 
+  const lowercaseBrand = productData?.brands.toLowerCase().replace(/\s+/g, "-");
+  const lowercaseColor = productData?.frameColor
+    .toLowerCase()
+    .replace(/\s+/g, "-");
+  const lowercaseShape = productData?.frameShape
+    .toLowerCase()
+    .replace(/\s+/g, "-");
+  const lowercaseCategory = productData?.category
+    .toLowerCase()
+    .replace(/\s+/g, "-");
+  const lowercaseGender = productData?.gender
+    .toLowerCase()
+    .replace(/\s+/g, "-");
+  const lowercaseSKU = productData?.SKU.toLowerCase().replace(/\s+/g, "-");
+
+  const actualRoute = `/eyewear/${lowercaseCategory}/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseGender}-${lowercaseSKU}`;
+
   const handleProductClick = () => {
-    const lowercaseBrand = productData?.brands
-      .toLowerCase()
-      .replace(/\s+/g, "-");
-    const lowercaseColor = productData?.frameColor
-      .toLowerCase()
-      .replace(/\s+/g, "-");
-    const lowercaseShape = productData?.frameShape
-      .toLowerCase()
-      .replace(/\s+/g, "-");
-    const lowercaseCategory = productData?.category
-      .toLowerCase()
-      .replace(/\s+/g, "-");
-    const lowercaseGender = productData?.gender
-      .toLowerCase()
-      .replace(/\s+/g, "-");
-    const lowercaseSKU = productData?.SKU.toLowerCase().replace(/\s+/g, "-");
-
-    const actualRoute = `/eyewear/${lowercaseCategory}/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseGender}-${lowercaseSKU}`;
-
     localStorage.setItem("productId", productId);
     localStorage.setItem("subProductId", subProductId);
     router.push(actualRoute);
@@ -158,8 +156,8 @@ const Product: React.FC<ProductProps> = ({
 
   return (
     <div>
-      <div className="relative h-[315px] overflow-y-auto- no-scrollbar- w-[280px] rounded-[10px] bg-white p-6 my-3 hover:shadow-lg">
-        <button onClick={handleProductClick}>
+      <div className="relative h-[315px]  overflow-y-auto no-scrollbar w-[280px] rounded-[10px] bg-white p-6 my-3 hover:shadow-lg">
+        <Link href={actualRoute} onClick={handleProductClick}>
           <Image
             src={currentImage}
             height={140}
@@ -167,10 +165,13 @@ const Product: React.FC<ProductProps> = ({
             className="h-32 object-cover"
             alt="/"
           />
-        </button>
+        </Link>
         <div className="absolute- bottom-0- ">
           <p className="border-[.5px] border-black mt-[24px] mb-[10px]"></p>
-          <h1 className="font-normal text-[16px]">{title}</h1>
+          <Link href={actualRoute} onClick={handleProductClick}>
+            <h1 className="font-normal text-[16px]">{title}</h1>
+          </Link>
+
           <p>{description}</p>
           <p className="mt-[10px] font-extrabold text-[22px]">{price}</p>
           <div className="flex mt-[10px] justify-between items-center font-extrabold ">

@@ -206,21 +206,21 @@ const ProductDetails = () => {
     }
   };
 
-  // useEffect(() => {
-  //   async function fetchRecentReviews() {
-  //     try {
-  //       const response = await axios.get(
-  //         `${process.env.NEXT_PUBLIC_API_URL}home/getRecenetReviews`
-  //       );
-  //       const recentReviewsData = response.data.recentReviews;
-  //       setRecentReviews(recentReviewsData.slice(0, 2));
-  //     } catch (error) {
-  //       console.error("Error fetching recent reviews:", error);
-  //     }
-  //   }
+  useEffect(() => {
+    async function fetchRecentReviews() {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}home/getRecenetReviews`
+        );
+        const recentReviewsData = response.data.recentReviews;
+        setRecentReviews(recentReviewsData.slice(0, 2));
+      } catch (error) {
+        console.error("Error fetching recent reviews:", error);
+      }
+    }
 
-  //   fetchRecentReviews();
-  // }, []);
+    fetchRecentReviews();
+  }, []);
 
   const handleSubmit = async () => {
     if (pincode.length !== 6 || isNaN(parseInt(pincode, 10))) {
@@ -1206,7 +1206,7 @@ const ProductDetails = () => {
                           <li className="common-style">
                             <p className="font-bold">{Strings.WEIGHT}</p>
                             <p>
-                              {selectedSubProduct.ProductData.frameWeight ||
+                              {selectedSubProduct.ProductData?.frameWeight ||
                                 "-"}
                             </p>{" "}
                           </li>{" "}
@@ -1214,7 +1214,7 @@ const ProductDetails = () => {
                           <li className="common-style">
                             <p className="font-bold">{Strings.MODEL_NUMBER}</p>
                             <p>
-                              {selectedSubProduct.ProductData.SKU || "-"}
+                              {selectedSubProduct.ProductData?.SKU || "-"}
                             </p>{" "}
                           </li>{" "}
                           <div className="common-divider"></div>
