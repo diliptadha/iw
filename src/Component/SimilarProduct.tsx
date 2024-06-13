@@ -57,12 +57,13 @@ const SimilarProduct: React.FC<SimilarProductsProps> = ({
   const lowercaseCategory = catogory?.toLowerCase().replace(/\s+/g, "-");
   const lowercaseGender = gender?.toLowerCase().replace(/\s+/g, "-");
   const lowercaseSKU = SKU?.toLowerCase().replace(/\s+/g, "-");
-  const actualRoute = `/eyewear/${lowercaseCategory}-${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseGender}-${lowercaseSKU}`;
+  const actualRoute = `/eyewear/${lowercaseCategory}/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseGender}-${lowercaseSKU}`;
 
   const handleProductClick = () => {
     localStorage.setItem("productId", productId);
     localStorage.setItem("subProductId", subProductId);
     router.push(actualRoute);
+    window.location.reload();
   };
 
   useEffect(() => {

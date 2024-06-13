@@ -25,6 +25,10 @@ interface AddressData {
 }
 
 interface CardData {
+  category: String;
+  frameStyle: String;
+  frameShape: String;
+  cartProduct: any;
   id: any;
   title: any;
   productId: any;
@@ -295,13 +299,15 @@ const AddAdress = () => {
 
   // Calculate total original price
   const toOrPr = cardDetails.reduce(
-    (total, ele) => total + ele.originalPrice * ele.quantity,
+    (total, ele) =>
+      total + ele.cartProduct.originalPrice * ele.cartProduct.quantity,
     0
   );
 
   // Calculate total discounted price
   const toDiPr = cardDetails.reduce(
-    (total, ele) => total + ele.salePrice * ele.quantity,
+    (total, ele) =>
+      total + ele.cartProduct.salePrice * ele.cartProduct.quantity,
     0
   );
 
@@ -310,7 +316,10 @@ const AddAdress = () => {
 
   // Calculate total price after discount
   const toDiAfPr = toOrPr - toDi;
-  const tQty = cardDetails.reduce((total, ele) => total + ele.quantity, 0);
+  const tQty = cardDetails.reduce(
+    (total, ele) => total + ele.cartProduct.quantity,
+    0
+  );
 
   return (
     <>
@@ -767,7 +776,7 @@ const AddAdress = () => {
                           >
                             <div className="border h-[60px] w-[100px] mr-3 mb-2 ">
                               <img
-                                src={ele.productImage}
+                                src={ele.cartProduct.productImage}
                                 alt="gog"
                                 className="w-[100%] h-[100%] object-contain"
                               />
@@ -782,17 +791,22 @@ const AddAdress = () => {
                                   <span className="text-PictonBlue">
                                     {Strings.FRAME}
                                   </span>{" "}
-                                  {Strings.FRAME_TYPE}
+                                  {ele.frameShape.charAt(0).toUpperCase() +
+                                    ele.frameShape.slice(1).toLowerCase()}{" "}
+                                  {ele.frameStyle} {ele.category}
                                 </h3>
                                 <div className="flex items-center justify-between">
                                   <h3 className="sm:mr-[14px] mr-2 text-[14px]">
                                     {Strings.QTY}{" "}
-                                    <span className="">{ele.quantity}</span>
+                                    <span className="">
+                                      {ele.cartProduct.quantity}
+                                    </span>
                                   </h3>
                                   <p className="amt text-[11px] font-semibold">
                                     ₹
                                     {(
-                                      ele.salePrice * ele.quantity
+                                      ele.cartProduct.salePrice *
+                                      ele.cartProduct.quantity
                                     ).toLocaleString()}
                                   </p>
                                 </div>

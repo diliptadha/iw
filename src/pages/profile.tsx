@@ -6,11 +6,13 @@ import { Images, Strings } from "@/constant";
 import React, { useEffect, useState } from "react";
 import { redirect, useRouter } from "next/navigation";
 
+import DynamicTitle from "@/Component/DynamicTitle";
 import { Footer } from "@/Component/footer";
 import Header from "@/Component/header";
 import Image from "next/image";
 import LoginModal from "@/Component/LoginModal";
 import Product from "@/Component/Product";
+import Swal from "sweetalert2";
 import axios from "axios";
 
 interface FavoriteProduct {
@@ -235,9 +237,24 @@ const Profile = () => {
           (product) => product.productInfo.productId !== productId
         )
       );
+      showAlert("info", "Your product has been removed to favorites!");
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const showAlert = async (icon: "success" | "info", message: string) => {
+    const toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+    });
+    toast.fire({
+      icon: icon,
+      title: message,
+      padding: "10px 20px",
+    });
   };
 
   const addFavoriteProduct = async (productId: string, userId: string) => {};
@@ -249,7 +266,7 @@ const Profile = () => {
       let config = {
         method: "get",
         maxBodyLength: Infinity,
-        url: `${process.env.NEXT_PUBLIC_API_URL}user/userOrderData?userId=IK0000005 `,
+        url: `${process.env.NEXT_PUBLIC_API_URL}user/userOrderData?userId=${userId} `,
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -265,8 +282,10 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    fetchUserOrderData();
-  }, []);
+    if (userId) {
+      fetchUserOrderData();
+    }
+  }, [userId]);
 
   const handleButtonClick = (buttonName: string) => {
     setActiveButton(buttonName);

@@ -1,6 +1,8 @@
 import { Images, Strings } from "@/constant";
 import { useEffect, useRef, useState } from "react";
+
 import Image from "next/image";
+import Link from "next/link";
 import axios from "axios";
 
 interface MenuItem {
@@ -105,6 +107,34 @@ const HeaderHeadline = () => {
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
+  const [signInText, setSignInText] = useState("Sign In");
+  const [firstName, setFirstName] = useState("");
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    const storedFirstName = localStorage.getItem("firstName");
+    if (userId && storedFirstName) {
+      setSignInText(storedFirstName);
+      setFirstName(storedFirstName);
+    } else if (userId) {
+      setSignInText("User");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (firstName) {
+      setSignInText(firstName);
+      localStorage.setItem("firstName", firstName);
+    }
+  }, [firstName]);
+
+  const openWhatsApp = () => {
+    window.open(
+      `https://api.whatsapp.com/send?phone=${Strings.Whatsapp_No}&text=Hello, I would like to know more about your services.`,
+      "_blank"
+    );
+  };
+
   return (
     <div className="max-w-screen-2xl m-auto">
       <div className="bg-PictonBlue xs:px-[16px] md:px-[46px] h-16 w-full flex justify-between items-center">
@@ -135,9 +165,11 @@ const HeaderHeadline = () => {
           </div>
           <div className="flex items-center cursor-pointer xs:hidden lg:flex">
             <Image src={Images.Phone} alt="/" height={17} width={17} />
-            <p className="text-black font-bold text-xs ml-2">
-              {Strings.NEED_HELP1}
-            </p>
+            <a href="tel:+918291251241">
+              <p className="text-black font-bold text-xs ml-2">
+                {Strings.NEED_HELP1}
+              </p>
+            </a>
           </div>
         </div>
         <div className="flex items-center xs:block lg:hidden">
@@ -362,21 +394,42 @@ const HeaderHeadline = () => {
         <div className="flex space-x-4 items-center xs:hidden lg:flex">
           <div className="flex items-center cursor-pointer">
             <Image src={Images.Location} alt="/" height={18} width={14} />
-            <p className="text-black font-bold text-xs ml-2">
-              {Strings.FIND_THE_NEAREST_STORE}
-            </p>
+            <Link href={"/store-location"}>
+              <p className="text-black font-bold text-xs ml-2">
+                {Strings.FIND_THE_NEAREST_STORE}
+              </p>
+            </Link>
           </div>
           <div className="flex items-center cursor-pointer">
             <Image src={Images.Eye} alt="/" height={14} width={22} />
-            <p className="text-black font-bold text-xs ml-2">
-              {Strings.BOOK_AN_APPOINTMENT}
+            <p className="text-black font-bold text-xs mx-2">
+              {Strings.TALK_WITH_US}
             </p>
+            <Image
+              onClick={openWhatsApp}
+              src={Images.vector}
+              alt="/"
+              height={18}
+              width={18}
+            />
           </div>
           <div className="flex items-center cursor-pointer">
-            <Image src={Images.User} alt="/" height={18} width={18} />
-            <p className="text-black font-bold text-xs ml-2">
-              {Strings.SIGN_IN}
-            </p>
+            <Link href={"/profile"}>
+              <Image
+                src={Images.User}
+                alt="/"
+                height={18}
+                width={18}
+                className="cursor-pointer"
+              />
+            </Link>
+            <button
+              className={`text-black font-bold text-xs ml-2 
+                  
+            `}
+            >
+              {signInText}
+            </button>
           </div>
         </div>
       </div>

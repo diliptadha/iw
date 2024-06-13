@@ -8,16 +8,49 @@ import Header from "@/Component/header";
 import Image from "next/image";
 import Link from "next/link";
 import StarRating from "./StarRating";
-import data from "../../public/data.json";
 
 const StoreLocation = () => {
   const [search, setSearch] = useState("");
+
+  const store = [
+    {
+      id: 1,
+      name: "Iksana opticals",
+      address:
+        "Gulmohar Cross Rd Number 6, near irla masjid, Junaid Nagar, Navpada, JVPD Scheme, Andheri West, Mumbai, Maharashtra 400058",
+      rating: 5,
+      timing: "Hours: 10:00 AM to 06:30 PM",
+      number: 7977994474,
+      storeImg: "/Images/ikshana_store1_img.jpg",
+    },
+    {
+      id: 2,
+      name: "Iksana opticals",
+      address:
+        "Elixir Eye Clinic, 811, Kohinoor square, N C. Kelkar Marg, opposite Shiv Sena Bhavan, Dadar West, Mumbai, Maharashtra 400028",
+      rating: 5,
+      timing: "Hours: 11:00 AM to 07:00 PM",
+      number: 7977994474,
+      storeImg: "/Images/ikshana_store2_img.jpg",
+    },
+    {
+      id: 3,
+      name: "Iksana opticals",
+      address:
+        "Eye Solutions, 151D, August Kranti Rd, Kemps Corner, Malabar Hill, Mumbai, Maharashtra 400036",
+      rating: 4.9,
+      timing: "Hours: 10:00 AM to 06:00 PM",
+      number: 8291251241,
+      storeImg: "/Images/ikshana_store3_img.jpg",
+    },
+  ];
+
   return (
     <>
       <Header setSearch={setSearch} />
       <div className=" px-[2rem] py-[2rem] md:px-[3rem] xl:px-[6rem]">
-        {data.store.length > 0 ? (
-          data.store.map((ele, index) => (
+        {store.length > 0 ? (
+          store.map((ele, index) => (
             <div
               key={index}
               className="border rounded-[10px] mb-[15px] lg:max-w-[80%] md:max-w-[90%] xl:max-w-[70%] md:mt-0 md:mx-auto flex-wrap md:flex-none text-justify	tracking-[0.5px] text-[12px] md:text-[15px] p-[20px] flex"

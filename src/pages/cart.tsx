@@ -9,6 +9,10 @@ import axios from "axios";
 import { useRouter } from "next/router";
 
 interface CardData {
+  frameStyle: string;
+  category: string;
+  frameShape: string;
+  cartProduct: any;
   id: any;
   title: any;
   productId: any;
@@ -55,7 +59,7 @@ const ProductADD = () => {
         `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=${userId}`
       )
       .then((response) => {
-        const cartData = response?.data?.cartData;
+        const cartData = response?.data?.cartData || [];
         setCardDetails(cartData);
         if (!cartData.length) {
           setCardDetails([]);
@@ -69,13 +73,15 @@ const ProductADD = () => {
 
   // Calculate total original price
   let toOrPr = cardDetails.reduce(
-    (total, ele) => total + ele.originalPrice * ele.quantity,
+    (total, ele) =>
+      total + ele.cartProduct.originalPrice * ele.cartProduct.quantity,
     0
   );
 
   // Calculate total discounted price
   let toDiPr = cardDetails.reduce(
-    (total, ele) => total + ele.salePrice * ele.quantity,
+    (total, ele) =>
+      total + ele.cartProduct.salePrice * ele.cartProduct.quantity,
     0
   );
 
@@ -85,7 +91,10 @@ const ProductADD = () => {
   // Calculate total price after discount
   let toDiAfPr = toOrPr - toDi;
 
-  const tQty = cardDetails.reduce((total, ele) => total + ele.quantity, 0);
+  const tQty = cardDetails.reduce(
+    (total, ele) => total + ele.cartProduct.quantity,
+    0
+  );
 
   const router = useRouter();
 
@@ -212,7 +221,7 @@ const ProductADD = () => {
                 >
                   <div className="border py-[10px] h-[50px] w-[60px] md:h-[90px] md:w-[150px] lg:h-[110px] lg:w-[180px] mr-3 mb-2 sm:mb-0">
                     <img
-                      src={ele.productImage}
+                      src={ele.cartProduct.productImage}
                       alt="gog"
                       className="w-[100%] h-[100%] object-contain"
                     />
@@ -233,8 +242,9 @@ const ProductADD = () => {
                               <h4 className="text-[7px] md:text-[9px] rounded pr-4 text-white bg-green-600 p-1">
                                 Save{" "}
                                 {(
-                                  ((ele.originalPrice - ele.salePrice) /
-                                    ele.originalPrice) *
+                                  ((ele.cartProduct.originalPrice -
+                                    ele.cartProduct.salePrice) /
+                                    ele.cartProduct.originalPrice) *
                                   100
                                 ).toFixed(1)}
                                 %
@@ -244,21 +254,23 @@ const ProductADD = () => {
                           ) : null}
                         </div>
 
-                        {ele.originalPrice ? (
-                          <p className=" ml-1 cut-amt text-[12px] sm:text-[13px] text-[#8c8c8ccf]">
+                        {ele.cartProduct.originalPrice ? (
+                          <p className="ml-1 cut-amt text-[12px] sm:text-[13px] text-[#8c8c8ccf]">
                             <s>
-                              {Strings.MRP}{" "}
-                              {(
-                                ele.originalPrice * ele.quantity
-                              ).toLocaleString()}
+                              MRP{" "}
+                              {ele.cartProduct.originalPrice.toLocaleString()}
                             </s>
                           </p>
                         ) : (
                           ""
                         )}
-                        {ele.salePrice ? (
+                        {ele.cartProduct.salePrice ? (
                           <p className="amt text-[13px] sm:text-[14px] font-semibold">
-                            ₹{(ele.salePrice * ele.quantity).toLocaleString()}
+                            ₹
+                            {(
+                              ele.cartProduct.salePrice *
+                              ele.cartProduct.quantity
+                            ).toLocaleString()}
                           </p>
                         ) : (
                           ""
@@ -268,12 +280,24 @@ const ProductADD = () => {
 
                     <div className="flex items-baseline justify-between mb-2 pt-[10px]">
                       <h3 className="text-[13px] sm:text-[14px]">
-                        <span className="text-PictonBlue">{Strings.FRAME}</span>{" "}
-                        {Strings.FRAME_TYPE}
+                        <span className="text-PictonBlue">
+                          {ele.category === "MYOPIA CONTROL LENSES"
+                            ? ele.title
+                            : Strings.FRAME}
+                        </span>{" "}
+                        {ele.frameShape.charAt(0).toUpperCase() +
+                          ele.frameShape.slice(1).toLowerCase()}
+                        {ele.frameStyle.charAt(0).toUpperCase() +
+                          ele.frameStyle.slice(1).toLowerCase()}{" "}
+                        {ele.category.charAt(0).toUpperCase() +
+                          ele.category.slice(1).toLowerCase()}
                       </h3>
-                      {ele.salePrice ? (
+                      {ele.cartProduct.salePrice ? (
                         <p className="amt text-[9px] text-[#8c8c8ccf]">
-                          ₹{(ele.salePrice * ele.quantity).toLocaleString()}
+                          ₹
+                          {(
+                            ele.cartProduct.salePrice * ele.cartProduct.quantity
+                          ).toLocaleString()}
                         </p>
                       ) : (
                         ""
@@ -288,23 +312,29 @@ const ProductADD = () => {
                         <div className="flex items-center border">
                           <button
                             onClick={() =>
-                              handleDecrementButtonClick(ele.id, ele.quantity)
+                              handleDecrementButtonClick(
+                                ele.cartProduct.id,
+                                ele.cartProduct.quantity
+                              )
                             }
                             className={`px-2 py-1 bg-gray-200 text-gray-700 text-[20px] focus:outline-none${
-                              ele.quantity == 1
-                                ? "cursor-not-allowed opacity-50"
-                                : "cursor-pointer"
+                              ele.cartProduct.quantity === 1
+                                ? " cursor-not-allowed opacity-50"
+                                : " cursor-pointer"
                             }`}
-                            disabled={ele.quantity == 1}
+                            disabled={ele.cartProduct.quantity === 1}
                           >
                             -
                           </button>
                           <span className="px-2 py-1 w-8 text-center  border-gray-300 rounded-none focus:outline-none">
-                            {ele.quantity}
+                            {ele.cartProduct.quantity}
                           </span>
                           <button
                             onClick={() =>
-                              handleIncrementButtonClick(ele.id, ele.quantity)
+                              handleIncrementButtonClick(
+                                ele.cartProduct.id,
+                                ele.cartProduct.quantity
+                              )
                             }
                             className="px-2 py-1 bg-gray-200 text-gray-700 text-[20px] focus:outline-none"
                           >
@@ -328,7 +358,9 @@ const ProductADD = () => {
                           strokeWidth="1.5"
                           stroke="currentColor"
                           className="sm:w-6 sm:h-6 w-4 h-4 cursor-pointer"
-                          onClick={() => handleDeleteCartItem(ele.id)}
+                          onClick={() =>
+                            handleDeleteCartItem(ele.cartProduct.id)
+                          }
                         >
                           <path
                             strokeLinecap="round"

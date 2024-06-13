@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Loader from "@/Component/Loader";
 import SimilarProduct from "@/Component/SimilarProduct";
+import Swal from "sweetalert2";
 import axios from "axios";
 import { useRouter } from "next/router";
 
@@ -20,6 +21,8 @@ interface ProductData {
   productId: string;
 
   data: {
+    frameShape: string | undefined;
+    SKU: string | undefined;
     brands: string | undefined;
     frameColor: string | undefined;
     gender: string | undefined;
@@ -118,7 +121,7 @@ const SimilarProductPage = () => {
       const containerScrollWidth = containerRef2.current.offsetWidth;
       const maxScrollRight = containerWidth - containerScrollWidth;
 
-      const scrollStep = containerScrollWidth; // Example adjustment, you can adjust this value as needed
+      const scrollStep = containerScrollWidth;
 
       if (scrollPosition < maxScrollRight) {
         containerRef2.current.scrollBy({
@@ -329,6 +332,7 @@ const SimilarProductPage = () => {
         ...prevState,
         [productId]: !prevState[productId],
       }));
+      showAlert("success", "Your product has been added to favorites!");
     } catch (error) {
       console.log(error);
     }
@@ -356,9 +360,24 @@ const SimilarProductPage = () => {
         delete newState[productId];
         return newState;
       });
+      showAlert("info", "Your product has been removed to favorites!");
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const showAlert = async (icon: "success" | "info", message: string) => {
+    const toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+    });
+    toast.fire({
+      icon: icon,
+      title: message,
+      padding: "10px 20px",
+    });
   };
 
   useEffect(() => {
@@ -422,6 +441,8 @@ const SimilarProductPage = () => {
                 brands={product.data.brands}
                 gender={product.data.gender}
                 frameColor={product.data.frameColor}
+                frameShape={product.data.frameShape}
+                SKU={product.data.SKU}
                 productId={product.productId}
                 showLoginModal={showLoginModal}
                 isAuthenticated={isAuthenticated}
@@ -435,7 +456,7 @@ const SimilarProductPage = () => {
             ))}
 
           {showLoginModal && !isAuthenticated && (
-            <div className="fixed left-0 top-0 z-50 flex h-full w-full items-start  justify-center  bg-gray-500 bg-opacity-[20%] backdrop-blur-sm ">
+            <div className="fixed left-0 top-0 z-index4 flex h-full w-full items-start  justify-center  bg-gray-500 bg-opacity-[20%] backdrop-blur-sm ">
               <div className=" mt-10 items-center- justify-center- flex- rounded-md bg-white p-5 xs:h-[270px]- xs:w-[310px] md:h-[270px]- md:w-[460px] ">
                 <div>
                   <div className="flex justify-between">

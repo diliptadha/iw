@@ -1,8 +1,12 @@
 "use client";
+
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+
 import React, { useEffect, useState } from "react";
+
 import { Carousel } from "react-responsive-carousel";
 import axios from "axios";
+
 interface SliderItem {
   id: string;
   title: string;
@@ -42,7 +46,8 @@ const Carosel = () => {
             <img
               src={item.image}
               alt={item.title}
-              className="relative rounded-[10px] xs:h-[160px] md:h-[258px] lg:h-[358px] "
+              loading="lazy"
+              className="relative  object-cover- rounded-[10px] xs:h-[160px] md:h-[258px] lg:h-[358px] "
             />
             <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
               <p className="text-white absolute xs:top-14 md:top-[98px] lg:top-32 font-extrabold xs:text-xl md:text-3xl lg:text-[64px] ">

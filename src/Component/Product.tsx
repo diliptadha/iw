@@ -156,7 +156,7 @@ const Product: React.FC<ProductProps> = ({
 
   return (
     <div>
-      <div className="relative h-[315px]  overflow-y-auto no-scrollbar w-[280px] rounded-[10px] bg-white p-6 my-3 hover:shadow-lg">
+      <div className="relative h-[315px]   w-[280px] rounded-[10px] bg-white p-6 my-3 hover:shadow-lg">
         <Link href={actualRoute} onClick={handleProductClick}>
           <Image
             src={currentImage}
@@ -169,7 +169,7 @@ const Product: React.FC<ProductProps> = ({
         <div className="absolute- bottom-0- ">
           <p className="border-[.5px] border-black mt-[24px] mb-[10px]"></p>
           <Link href={actualRoute} onClick={handleProductClick}>
-            <h1 className="font-normal text-[16px]">{title}</h1>
+            <h1 className="font-normal text-[16px] truncate">{title}</h1>
           </Link>
 
           <p>{description}</p>

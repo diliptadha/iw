@@ -1,6 +1,8 @@
 "use client";
 
 import "../app/globals.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 import { Images, Strings } from "@/constant";
 import LoginModal, { toggleModal } from "@/Component/LoginModal";
@@ -9,6 +11,7 @@ import React, { Fragment, Key, useLayoutEffect, useRef, useState } from "react";
 import Bestsellers from "@/Component/Bestsellers";
 import Carosel from "@/Component/Carosel";
 import Customerssay from "@/Component/Customerssay";
+import DynamicTitle from "@/Component/DynamicTitle";
 import { Footer } from "@/Component/footer";
 import Frame from "@/Component/Frame";
 import Frameforkids from "@/Component/Frameforkids";
@@ -18,6 +21,8 @@ import Header from "@/Component/header";
 import Image from "next/image";
 import ImageCarousel from "@/Component/Carosel";
 import Link from "next/link";
+import RootLayout from "@/app/layout";
+import Slider from "react-slick";
 import StarRating from "@/Component/StarRating";
 import { Tab } from "@headlessui/react";
 import Under500 from "@/Component/Under500";
@@ -521,10 +526,47 @@ const Homescreen: React.FC = () => {
     Kids: Images.kidsframe2,
   };
 
+  const sliderRef = useRef<Slider | null>(null);
+
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    variableWidth: true,
+    arrows: true,
+  };
+  const sliderRef1 = useRef<Slider | null>(null);
+
+  const settings1 = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    variableWidth: true,
+    arrows: true,
+  };
+  const sliderRef2 = useRef<Slider | null>(null);
+
+  const settings2 = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    variableWidth: true,
+    arrows: true,
+  };
+
   return (
     <>
       <div className="max-w-screen-2xl m-auto">
-        <Header setSearch={setSearch} />
+        <div className="">
+          <Header setSearch={setSearch} />
+        </div>
+
         <div className="flex justify-center mt-[40px] xs:mx-[20px] xl:mx-[70px]">
           <Carosel />
         </div>
@@ -644,8 +686,10 @@ const Homescreen: React.FC = () => {
 
                     <div
                       ref={containerRef1}
-                      className="mt-5  xs:overflow-x-auto flex xs:gap-x-8 md:gap-x-10 lg:gap-x-16  lg:no-scrollbar"
+                      className="mt-5  xs:overflow-x-auto- overflow-hidden flex xs:gap-x-8 md:gap-x-10 lg:gap-x-16  lg:no-scrollbar"
                     >
+                      {/* <Slider ref={sliderRef2} {...settings2}></Slider>
+                      <div key={index} className="px-2"></div> */}
                       {categories[selectedGender].map(
                         (category, categoryIndex) => (
                           <Frame
@@ -846,7 +890,12 @@ const Homescreen: React.FC = () => {
           </h1>
           <div className="flex items-center">
             <Image
-              onClick={handleScrollRight2}
+              // onClick={handleScrollRight2}
+              onClick={() => {
+                if (sliderRef1.current) {
+                  sliderRef1.current.slickNext();
+                }
+              }}
               src={Images.Upicon}
               alt="/"
               height={16}
@@ -854,34 +903,53 @@ const Homescreen: React.FC = () => {
               className="-rotate-90 mr-4 cursor-pointer"
             />
             <div
-              ref={containerRef2}
+              // ref={containerRef2}
               className="mt-5 overflow-hidden flex space-x-10- w-full overflow-x-scroll no-scrollbar"
             >
-              {underFive.map((product, index) => (
-                <Under500
-                  useCart={useCart}
-                  productId={product.productId}
-                  subProductId={product.subProductId}
-                  key={index}
-                  image={product.productImage}
-                  Brand={product.brands}
-                  SKU={product.SKU}
-                  salePrice={product.salePrice}
-                  originalPrice={product.originalPrice}
-                  rating={product.rating}
-                  isBestseller={product.isBestSeller}
-                  color={product.frameColor}
-                  shape={product.frameShape}
-                  gender={product.gender}
-                  category={product.category}
-                  size={product.frameSize}
-                />
-              ))}
+              <Slider ref={sliderRef1} {...settings1}>
+                {underFive.map((product, index) => (
+                  <div key={index} className="px-2">
+                    <Under500
+                      useCart={useCart}
+                      productId={product.productId}
+                      subProductId={product.subProductId}
+                      key={index}
+                      image={product.productImage}
+                      Brand={product.brands}
+                      SKU={product.SKU}
+                      salePrice={product.salePrice}
+                      originalPrice={product.originalPrice}
+                      rating={product.rating}
+                      isBestseller={product.isBestSeller}
+                      color={product.frameColor}
+                      shape={product.frameShape}
+                      gender={product.gender}
+                      category={product.category}
+                      size={product.frameSize}
+                    />
+                  </div>
+                ))}
+              </Slider>
             </div>
           </div>
         </div>
-        <div className="flex justify-center xs:mt-10 md:mt-14 xs:mx-[20px] xlg:mx-0">
+        <div className="relative flex items-center justify-center xs:mt-10 md:mt-14 xs:mx-[20px] xlg:mx-0">
           <Image src={Images.iksanabanner3} alt="/" height={285} width={1278} />
+          <div className="absolute xs:right-2 lg:right-8 xl:right-20 xs:bottom-2 md:bottom-4 lg:bottom-6 flex xs:gap-x-[2px] md:gap-x-2 xs:text-[4px] md:text-[8px] lg:text-xs xl:text-sm font-bold text-white">
+            <h1> {Strings.BRANCHES}</h1>
+            <p className="border-l-2 border-white" />
+            <Link href={`/store-location?id=1`}>
+              <h1> {Strings.DADAR}</h1>
+            </Link>
+            <p className="border-l-2 border-white" />
+            <Link href={`/store-location?id=2`}>
+              <h1> {Strings.JUHU}</h1>
+            </Link>
+            <p className="border-l-2 border-white" />
+            <Link href={`/store-location?id=3`}>
+              <h1> {Strings.ANDHERI}</h1>
+            </Link>
+          </div>
         </div>
         {getContent.map((content, index) => {
           if (index === 1) {
@@ -985,37 +1053,46 @@ const Homescreen: React.FC = () => {
           </h1>
           <div className="flex items-center">
             <Image
-              onClick={handleScrollRight3}
-              className="mr-4 cursor-pointer"
-              src={Images.Lefticon}
+              // onClick={handleScrollRight2}
+              onClick={() => {
+                if (sliderRef.current) {
+                  sliderRef.current.slickNext();
+                }
+              }}
+              src={Images.LEFT_ARROW}
               alt="/"
-              height={16}
-              width={16}
+              height={10}
+              width={10}
+              className=" mr-4 cursor-pointer"
             />
             <div
-              ref={containerRef3}
+              // ref={containerRef3}
               className="mt-5 overflow-hidden flex space-x-10- w-full overflow-x-scroll no-scrollbar"
             >
-              {bestSeller.map((product, index) => (
-                <Bestsellers
-                  productId={product.productId}
-                  subProductId={product.subProductId}
-                  key={index}
-                  image={product.productImage}
-                  title={product.brands}
-                  Brand={product.brands}
-                  SKU={product.SKU}
-                  salePrice={`₹${product.salePrice}`}
-                  originalPrice={`₹${product.originalPrice}`}
-                  rating={product.rating}
-                  isBestseller={product.isBestSeller}
-                  color={product.frameColor}
-                  shape={product.frameShape}
-                  gender={product.gender}
-                  category={product.category}
-                  size={product.frameSize}
-                />
-              ))}
+              <Slider ref={sliderRef} {...settings}>
+                {bestSeller.map((product, index) => (
+                  <div key={index} className="px-2">
+                    <Bestsellers
+                      productId={product.productId}
+                      subProductId={product.subProductId}
+                      key={index}
+                      image={product.productImage}
+                      title={product.brands}
+                      Brand={product.brands}
+                      SKU={product.SKU}
+                      salePrice={`₹${product.salePrice}`}
+                      originalPrice={`₹${product.originalPrice}`}
+                      rating={product.rating}
+                      isBestseller={product.isBestSeller}
+                      color={product.frameColor}
+                      shape={product.frameShape}
+                      gender={product.gender}
+                      category={product.category}
+                      size={product.frameSize}
+                    />
+                  </div>
+                ))}
+              </Slider>
             </div>
           </div>
         </div>

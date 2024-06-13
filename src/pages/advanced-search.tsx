@@ -12,6 +12,7 @@ import Pagination from "react-paginate";
 import Product from "@/Component/Product";
 import ReactPaginate from "react-paginate";
 import Shape from "@/Component/Shape";
+import Swal from "sweetalert2";
 import WhatsAppButton from "@/Component/WhatsAppButton";
 import axios from "axios";
 import { space } from "postcss/lib/list";
@@ -711,6 +712,8 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
         ...prevState,
         [productId]: !prevState[productId],
       }));
+
+      showAlert("success", "Your product has been added to favorites!");
     } catch (error) {
       console.log(error);
     }
@@ -738,9 +741,24 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
         delete newState[productId];
         return newState;
       });
+      showAlert("info", "Your product has been removed to favorites!");
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const showAlert = async (icon: "success" | "info", message: string) => {
+    const toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+    });
+    toast.fire({
+      icon: icon,
+      title: message,
+      padding: "10px 20px",
+    });
   };
 
   useEffect(() => {
@@ -857,9 +875,9 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       <Header setSearch={setSearch} />
       <div className="mt-[36px] xs:mx-[20px] xl:mx-[72px]- mx flex">
         <div
-          className={`drawer xs:w-[333px] ${isDrawerOpen && "md:hidden"} ${
-            isDrawerOpen && "hidden"
-          }`}
+          className={`drawer xs:z-index1 lg:z-index2 xs:w-[333px] ${
+            isDrawerOpen && "md:hidden"
+          } ${isDrawerOpen && "hidden"}`}
         >
           <div className="space-y-4 p-6 border border-black xs:overflow-y-scroll lg:overflow-auto xs:rounded-r-[10px] md:rounded-[10px] xs:h-full md:h-auto w-[333px]">
             <div className="flex justify-end">
@@ -1272,7 +1290,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
             )} */}
 
             {showLoginModal && !isAuthenticated && (
-              <div className="fixed left-0 top-0 z-50 flex h-full w-full items-start  justify-center  bg-gray-500 bg-opacity-[20%] backdrop-blur-sm ">
+              <div className="fixed left-0 top-0 z-index4 flex h-full w-full items-start  justify-center  bg-gray-500 bg-opacity-[20%] backdrop-blur-sm ">
                 <div className=" mt-10 items-center- justify-center- flex- rounded-md bg-white p-5 xs:h-[270px]- xs:w-[310px] md:h-[270px]- md:w-[460px] ">
                   <div>
                     <div className="flex justify-between">

@@ -403,6 +403,10 @@ body {
   }
 }
 
+.z-index4 {
+  z-index: 6000;
+}
+
 @layer utilities {
   
   .no-scrollbar::-webkit-scrollbar {
@@ -438,7 +442,7 @@ body {
     top: 0;
     left: 0;
     height: 100%;
-    z-index: 1000;
+    z-index: 5000;
     background-color: white;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -455,5 +459,11 @@ body {
 }
 .z-index1 {
   z-index: 5000;
+}
+.z-index2 {
+  z-index: 1000;
+}
+.z-index3 {
+  z-index: 800;
 }
 

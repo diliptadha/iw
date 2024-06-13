@@ -217,12 +217,12 @@ const Under500: React.FC<Under500Props> = ({
                       <div>
                         <StarRating rating={rating} />
                       </div>
-                      {/* <button
-                        onClick={() => addToCart(userId)}
-                        className="mt-4 flex justify-center items-center hover:border-PictonBlue  hover:text-PictonBlue border-black border w-[137px] h-[36px] rounded-[5px] font-bold text-sm text-black bg-white"
+                      <button
+                        onClick={handleProductPage}
+                        className="hover:border-PictonBlue hover:text-PictonBlue flex justify-center items-center border-black border w-[130px] h-[34px] rounded-[5px] font-bold text-xs text-black bg-white"
                       >
-                        {Strings.ADD_TO_CART}
-                      </button> */}
+                        {Strings.KNOW_MORE}
+                      </button>
                     </div>
                   </div>
                 </div>

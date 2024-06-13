@@ -2,8 +2,10 @@ import { Images, Strings } from "@/constant";
 import LoginModal, { toggleModal } from "@/Component/LoginModal";
 import { useEffect, useRef, useState } from "react";
 
+import DynamicTitle from "./DynamicTitle";
 import Image from "next/image";
 import Link from "next/link";
+import RootLayout from "@/app/layout";
 import axios from "axios";
 import { useCart } from "@/Context/CartContext";
 import { useRouter } from "next/navigation";
@@ -38,10 +40,13 @@ interface HeaderProps {
 }
 
 interface CardData {
+  cartProduct: any;
   quantity: number;
 }
 
 const Header: React.FC<HeaderProps> = ({ setSearch }) => {
+  const router = useRouter();
+
   const { cart }: any = useCart();
   const [selectedLanguage, setSelectedLanguage] = useState<string | null>(
     "English"
@@ -142,6 +147,21 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
     }
   };
 
+  useEffect(() => {
+    const handlePopState = () => {
+      if (window.location.pathname !== "/advanced-search") {
+        localStorage.removeItem("searchTerm");
+        localStorage.removeItem("search");
+        setSearch("");
+        setSearchLocal("");
+      }
+    };
+
+    return () => {
+      handlePopState();
+    };
+  }, []);
+
   let userId: string | null;
   useEffect(() => {
     userId = localStorage.getItem("userId");
@@ -164,11 +184,12 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
   let tQty = 0; // Initialize tQty to 0
 
   if (Array.isArray(cartQuantity)) {
-    tQty = cartQuantity.reduce((total, ele) => total + ele.quantity, 0);
+    tQty = cartQuantity.reduce(
+      (total, ele) => total + ele.cartProduct.quantity,
+      0
+    );
   }
   // console.log("qty", tQty);
-
-  const router = useRouter();
 
   const handleCartPage = () => {
     if (tQty <= 0) {
@@ -274,10 +295,77 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
     setRotateImage(!rotateImage);
   };
 
+  // const [category, setCategory] = useState("");
+  // const [usage, setUsage] = useState("");
+  // const [color, setColor] = useState("");
+  // const [brand, setBrand] = useState("");
+
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     const getPathParams = () => {
+  //       const pathArray = window.location.pathname.split("/").filter(Boolean);
+  //       setCategory(pathArray[0] || "");
+  //       setUsage(pathArray[1] || "");
+  //     };
+  //     getPathParams();
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     const getPathParams2 = () => {
+  //       const pathArray2 = window.location.pathname.split("/").filter(Boolean);
+  //       setColor(pathArray2[1] || "");
+  //     };
+  //     getPathParams2();
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     const getPathParams1 = () => {
+  //       const pathArray1 = window.location.pathname.split("/").filter(Boolean);
+  //       setBrand(pathArray1[1] || "");
+  //     };
+  //     getPathParams1();
+  //   }
+  // }, [brand]);
+
+  const [category, setCategory] = useState("");
+  const [usage, setUsage] = useState("");
+  const [color, setColor] = useState("");
+  const [brand, setBrand] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const getPathParams = () => {
+        const pathArray = window.location.pathname.split("/").filter(Boolean);
+        setCategory(pathArray[0] || "");
+        setUsage(pathArray[1] || "");
+
+        if (pathArray.length >= 3) {
+          setColor(pathArray[1] || "");
+        }
+        if (pathArray.length >= 4) {
+          setBrand(pathArray[1] || "");
+        }
+      };
+      getPathParams();
+    }
+  }, []);
+
   return (
     <>
-      <div className="max-w-screen-2xl m-auto">
-        <div className="bg-PictonBlue xs:px-[16px] md:px-[46px] h-16 w-full flex justify-between items-center">
+      <DynamicTitle
+        category={category}
+        usage={usage}
+        color={color}
+        searchTerm={search}
+        brand={brand}
+      />
+
+      <div className=" max-w-screen-2xl m-auto">
+        <div className="fixed top-0 z-index2 bg-PictonBlue  xs:px-[16px] md:px-[46px] h-16 w-full flex justify-between items-center">
           <div className="flex items-center space-x-4">
             <div className="flex bg-[#F2F2F2] h-7 w-[150px] rounded-[5px] items-center text-black">
               <button
@@ -303,6 +391,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                 {Strings.हिन्दी}
               </button>
             </div>
+
             <div className="flex items-center cursor-pointer xs:hidden lg:flex">
               <Image src={Images.Phone} alt="/" height={17} width={17} />
               <a href="tel:+918291251241">
@@ -406,6 +495,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     </ul>
                                   </div>
                                 )}
+
                               {item.category !== "Contact Lenses" &&
                                 item.gender.length > 0 && (
                                   <div>
@@ -686,7 +776,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
             </div>
           </div>
         </div>
-        <div className="bg-[] flex mt-8 xs:flex-col sm:flex-row sm:justify-between xs:space-y-4 md:space-y-0 items-center xs:mx-4 md:mx-12">
+        <div className=" flex mt-[94px] xs:flex-col sm:flex-row sm:justify-between xs:space-y-4 md:space-y-0 items-center xs:mx-4 md:mx-12">
           <Link href={"/"}>
             <Image
               src={Images.Logo}
@@ -756,8 +846,10 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
             {menuData?.map((item, index) => (
               <div key={index}>
                 <div
-                  onClick={() => toggleMegaMenu(index)}
-                  className={`flex items-center font-normal lg:text-[11.5px] xl:text-xs  cursor-pointer ${
+                  onMouseEnter={() => toggleMegaMenu(index)}
+                  // onMouseLeave={() => toggleMegaMenu(index)}
+                  // onClick={() => toggleMegaMenu(index)}
+                  className={`flex items-center font-semibold text-xs  cursor-pointer ${
                     item.megaMenuOpen
                       ? "text-PictonBlue font-semibold"
                       : "text-black"
@@ -804,7 +896,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                 item.shape.length > 0 ? (
                   <div
                     key={index}
-                    className="w-auto z-index h-auto bg-[#F2F2F2] absolute top-56 p-5 rounded-[10px] shadow-md"
+                    className="w-auto z-index3 h-auto bg-[#F2F2F2] absolute top-56 p-5 rounded-[10px] shadow-md"
+                    onMouseLeave={() => toggleMegaMenu(index)}
                   >
                     {/* <div className={`flex text-base gap-x-20 font-normal`}> */}
                     <div
@@ -832,7 +925,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     key={subIndex}
                                     className="hover:text-PictonBlue cursor-pointer text-black font-medium text-xs"
                                   >
-                                    <Link
+                                    <a
                                       href={`/${item.category
                                         .toLowerCase()
                                         .replace(/\s+/g, "-")}/${usage
@@ -841,13 +934,12 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     >
                                       {usage.charAt(0).toUpperCase() +
                                         usage.slice(1).toLowerCase()}
-                                    </Link>
+                                    </a>
                                   </li>
                                 ))}
                               </ul>
                             </div>
                           )}
-
                         {item.category !== "Contact Lenses" &&
                           item.gender.length > 0 && (
                             <div>
@@ -860,7 +952,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     key={subIndex}
                                     className="hover:text-PictonBlue cursor-pointer text-black font-normal text-xs"
                                   >
-                                    <Link
+                                    <a
                                       href={`/${item.category
                                         .toLowerCase()
                                         .replace(
@@ -872,7 +964,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     >
                                       {gender.charAt(0).toUpperCase() +
                                         gender.slice(1).toLowerCase()}
-                                    </Link>
+                                    </a>
                                   </li>
                                 ))}
                               </ul>
@@ -887,9 +979,11 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                               {Strings.BRANDS}
                             </h1>
                             <ul
-                              className={
-                                "grid grid-cols-2 gap-x-20 space-y-[4px]"
-                              }
+                              className={`${
+                                item.brand.length > 11
+                                  ? "grid grid-cols-2 gap-x-20"
+                                  : ""
+                              } space-y-[4px]`}
                             >
                               {/* <ul
                               className={
@@ -902,8 +996,9 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                 <li
                                   key={subIndex}
                                   className="hover:text-PictonBlue cursor-pointer text-black font-medium text-xs"
+                                  // onClick={() => handleBrandClick(brand)}
                                 >
-                                  <Link
+                                  <a
                                     href={`/${item.category
                                       .toLowerCase()
                                       .replace(/\s+/g, "-")}/${brand
@@ -920,14 +1015,13 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                   >
                                     {brand.charAt(0).toUpperCase() +
                                       brand.slice(1).toLowerCase()}
-                                  </Link>
+                                  </a>
                                 </li>
                               ))}
                             </ul>
                           </>
                         )}
                       </div>
-
                       <div>
                         {item.color && item.color.length > 0 && (
                           <>
@@ -939,8 +1033,9 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                 <li
                                   key={subIndex}
                                   className="hover:text-PictonBlue cursor-pointer text-black font-medium text-xs"
+                                  // onClick={() => handleColorClick(color)}
                                 >
-                                  <Link
+                                  <a
                                     href={`/${item.category
                                       .toLowerCase()
                                       .replace(/\s+/g, "-")}/${color
@@ -956,7 +1051,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                   >
                                     {color.charAt(0).toUpperCase() +
                                       color.slice(1).toLowerCase()}
-                                  </Link>
+                                  </a>
                                 </li>
                               ))}
                             </ul>

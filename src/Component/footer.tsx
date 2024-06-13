@@ -79,13 +79,15 @@ export const Footer = () => {
       <div className="flex flex-col lg:flex-row justify-between ">
         <div className="flex flex-col text-left w-full md: lg:w-[530px] xl:w-[700px]">
           <div className="items-center- lg:flext-start- xs:w-[300px] md:w-[400px]- lg:w-full-">
-            <img
-              src={Images.IKSANA_LOGO}
-              width={220}
-              height={75}
-              alt="logo"
-              className=""
-            />
+            <Link href={"/"}>
+              <img
+                src={Images.IKSANA_LOGO}
+                width={220}
+                height={75}
+                alt="logo"
+                className=""
+              />
+            </Link>
           </div>
           <div className="font-lato font-base xs:text-[18px] text-[26px] text-white mt-8">
             <div>{Strings.THE_BEST_QUALITY}</div>
@@ -288,8 +290,20 @@ export const Footer = () => {
         </div>
       </div>
 
-      <div className="mt-4 lg:mt-8 font-lato text-12 font-bold text-white">
-        {Strings.BRANCHES}
+      <div className=" flex gap-x-2 mt-4 lg:mt-8 font-lato xs:text-xs md:text-12 font-bold text-white">
+        <h1> {Strings.BRANCHES}</h1>
+        <p className="border-l-2 border-white" />
+        <Link href={`/store-location?id=1`}>
+          <h1> {Strings.DADAR}</h1>
+        </Link>
+        <p className="border-l-2 border-white" />
+        <Link href={`/store-location?id=2`}>
+          <h1> {Strings.JUHU}</h1>
+        </Link>
+        <p className="border-l-2 border-white" />
+        <Link href={`/store-location?id=3`}>
+          <h1> {Strings.ANDHERI}</h1>
+        </Link>
       </div>
       <div className="h-[1px] md:mx-0 md:w-full bg-white rounded-xl mt-3"></div>
       <div className="flex flex-col lg:flex-row mt-2">
