@@ -796,7 +796,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       let config = {
         method: "get",
         maxBodyLength: Infinity,
-        url: "https://ikkana-backend-sqivzfs3fq-el.a.run.app/home/filterList",
+        url: `${process.env.NEXT_PUBLIC_API_URL}home/filterList`,
         headers: {},
       };
 

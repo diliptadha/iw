@@ -16,16 +16,14 @@ const metadata = {
 
 const RootLayout: React.FC<LayoutProps> = ({ children, title }) => {
   return (
-    <>
-      <html lang="en">
-        <Head>
-          <title>{title}</title>
-        </Head>
-        <body>
-          <CartProvider>{children}</CartProvider>
-        </body>
-      </html>
-    </>
+    <html lang="en">
+      <Head>
+        <title>{title || metadata.title}</title>
+      </Head>
+      <body>
+        <CartProvider>{children}</CartProvider>
+      </body>
+    </html>
   );
 };
 

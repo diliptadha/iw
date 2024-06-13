@@ -77,12 +77,6 @@ const DynamicTitle: React.FC<DynamicTitleProps> = ({
   // }, []);
 
   useEffect(() => {
-    if (searchTerm) {
-      setTitle(`Buy ${searchTerm} Online at Best Price | iksana Opticals`);
-    }
-  }, [searchTerm]);
-
-  useEffect(() => {
     const currentPath = window.location.pathname;
     const formattedPath = currentPath.replace(/\//g, " ").trim();
     setTitle(`iksana Opticals | ${formattedPath}`);
@@ -96,8 +90,15 @@ const DynamicTitle: React.FC<DynamicTitleProps> = ({
     if (color) keywordsArray.push(color.replace(/-lens/, ""));
     setKeywords(keywordsArray.join(", "));
   }, [usage, brand, color]);
+
+  useEffect(() => {
+    if (searchTerm) {
+      setTitle(`Buy ${searchTerm} Online at Best Price | iksana Opticals`);
+    }
+  }, [searchTerm]);
+
   const finalTitle = (() => {
-    if (category !== "contact-lenses") {
+    if (category !== "contact-lenses" && !searchTerm) {
       return title.replace(/Lenses/g, "");
     } else {
       return title;
@@ -108,10 +109,7 @@ const DynamicTitle: React.FC<DynamicTitleProps> = ({
     <Head>
       <title>{finalTitle}</title>
       <meta name="robots" content="index" />
-      <meta
-        name="description"
-        content="Checkout our selection of monthly disposable contact lenses from top brands like Johnson & Johnson, Bausch & Lomb, Alcon etc. Enjoy comfort and clarity all month long. Best prices guaranteed! Easy Returns!"
-      />
+      <meta name="description" content="description" />
       <meta name="keywords" content={keywords} />
       <meta name="author" content="John Doe" />
       <link rel="canonical" href={canonicalUrl} />
