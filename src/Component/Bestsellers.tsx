@@ -10,12 +10,12 @@ interface BestsellersProps {
   title: string;
   SKU: string;
   Brand: string;
-  salePrice: string;
+  salePrice: number;
   rating?: number;
   isBestseller?: boolean;
   productId: string;
   subProductId: string;
-  originalPrice: string;
+  originalPrice: number;
   color: string;
   shape: string;
   gender: string;
@@ -40,7 +40,7 @@ const Bestsellers: React.FC<BestsellersProps> = ({
   gender,
   category,
   size,
-  onZoomClick, 
+  onZoomClick,
 }) => {
   const router = useRouter();
 
@@ -99,7 +99,7 @@ const Bestsellers: React.FC<BestsellersProps> = ({
                   height={28.5}
                   width={28.5}
                   className="cursor-pointer"
-                  onClick={onZoomClick} 
+                  onClick={onZoomClick}
                 />
               </div>
             </div>

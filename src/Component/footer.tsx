@@ -59,7 +59,6 @@ export const Footer = () => {
         `${process.env.NEXT_PUBLIC_API_URL}home/sendSubscriptionMail?emailId=${Email}`
       )
       .then((response) => {
-        console.log(JSON.stringify(response.data));
         setIsSubmitted(true);
         setEmail("");
       })
