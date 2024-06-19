@@ -23,6 +23,11 @@ interface FormData {
 }
 
 interface CardData {
+  frameStyle: any;
+  frameShape: any;
+  category: string;
+  totalQuantity: any;
+  cartProduct: any;
   id: any;
   title: any;
   productId: any;
@@ -61,8 +66,7 @@ const ShippingAddress = () => {
         `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=${userId}`
       )
       .then((response) => {
-        const cartData = response?.data?.cartData;
-        setCardDetails(cartData);
+        setCardDetails(response?.data?.cartData);
       })
       .catch((error) => {
         console.log("Error fetching data", error);
@@ -159,13 +163,15 @@ const ShippingAddress = () => {
   };
 
   const toOrPr = cardDetails.reduce(
-    (total, ele) => total + ele.originalPrice * ele.quantity,
+    (total, ele) =>
+      total + ele.cartProduct.originalPrice * ele.cartProduct.quantity,
     0
   );
 
   // Calculate total discounted price
   const toDiPr = cardDetails.reduce(
-    (total, ele) => total + ele.salePrice * ele.quantity,
+    (total, ele) =>
+      total + ele.cartProduct.salePrice * ele.cartProduct.quantity,
     0
   );
 
@@ -175,7 +181,22 @@ const ShippingAddress = () => {
   // Calculate total price after discount
   const toDiAfPr = toOrPr - toDi;
 
-  const tQty = cardDetails.reduce((total, ele) => total + ele.quantity, 0);
+  const tQty = cardDetails.reduce(
+    (total, ele) => total + ele.cartProduct.quantity,
+    0
+  );
+
+  const groupedCardDetails = Object.values(
+    cardDetails.reduce((acc: { [key: string]: CardData }, ele: CardData) => {
+      const key = `${ele.cartProduct.productId}-${ele.cartProduct.subproductId}`;
+      if (!acc[key]) {
+        acc[key] = { ...ele, totalQuantity: ele.cartProduct.quantity };
+      } else {
+        acc[key].totalQuantity += ele.cartProduct.quantity;
+      }
+      return acc;
+    }, {})
+  );
 
   return (
     <>
@@ -399,7 +420,7 @@ const ShippingAddress = () => {
               <div>
                 {isOpen && (
                   <>
-                    {cardDetails.map((ele, index) => {
+                    {groupedCardDetails.map((groupedItem, index) => {
                       return (
                         <>
                           <div
@@ -408,7 +429,7 @@ const ShippingAddress = () => {
                           >
                             <div className="border h-[60px] w-[100px] mr-3 mb-2 ">
                               <img
-                                src={ele.productImage}
+                                src={groupedItem.cartProduct.productImage}
                                 alt="gog"
                                 className="w-[100%] h-[100%] object-contain"
                               />
@@ -417,23 +438,44 @@ const ShippingAddress = () => {
                             <div>
                               <div>
                                 <h3 className="frame-name text-[12px] font-semibold">
-                                  {ele.title}
+                                  {groupedItem.cartProduct.title}
                                 </h3>
                                 <h3 className="text-[13px] mb-1">
                                   <span className="text-PictonBlue">
-                                    {Strings.FRAME}
+                                    {groupedItem.category ===
+                                    "MYOPIA CONTROL LENSES"
+                                      ? groupedItem.title
+                                      : "Frame"}
                                   </span>{" "}
-                                  {Strings.FRAME_TYPE}
+                                  {groupedItem.frameShape
+                                    .charAt(0)
+                                    .toUpperCase() +
+                                    groupedItem.frameShape
+                                      .slice(1)
+                                      .toLowerCase()}{" "}
+                                  {groupedItem.frameStyle
+                                    .charAt(0)
+                                    .toUpperCase() +
+                                    groupedItem.frameStyle
+                                      .slice(1)
+                                      .toLowerCase()}{" "}
+                                  {groupedItem.category
+                                    .charAt(0)
+                                    .toUpperCase() +
+                                    groupedItem.category.slice(1).toLowerCase()}
                                 </h3>
                                 <div className="flex items-center justify-between">
                                   <h3 className="sm:mr-[14px] mr-2 text-[14px]">
                                     {Strings.QTY}{" "}
-                                    <span className="">{ele.quantity}</span>
+                                    <span className="">
+                                      {groupedItem.totalQuantity}
+                                    </span>
                                   </h3>
                                   <p className="amt text-[11px] font-semibold">
                                     ₹
                                     {(
-                                      ele.salePrice * ele.quantity
+                                      groupedItem.cartProduct.salePrice *
+                                      groupedItem.totalQuantity
                                     ).toLocaleString()}
                                   </p>
                                 </div>

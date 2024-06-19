@@ -393,7 +393,9 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
             </div>
 
             <div className="flex items-center cursor-pointer xs:hidden lg:flex">
-              <Image src={Images.Phone} alt="/" height={17} width={17} />
+              <a href="tel:+918291251241">
+                <Image src={Images.Phone} alt="/" height={17} width={17} />
+              </a>
               <a href="tel:+918291251241">
                 <p className="text-black font-bold text-xs ml-2">
                   {Strings.NEED_HELP1}
@@ -657,20 +659,24 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                   )}
                 </div>
                 <div className="space-y-4">
-                  <div className="flex items-center cursor-pointer   ">
-                    <Image
-                      src={Images.Phonewhite}
-                      alt="/"
-                      height={17}
-                      width={17}
-                    />
+                  <h1 className="flex items-center cursor-pointer   ">
+                    <a href="tel:+918291251241">
+                      <Image
+                        src={Images.Phonewhite}
+                        alt="/"
+                        height={17}
+                        width={17}
+                      />
+                    </a>
                     <a href="tel:+918291251241">
                       <p className="text-white font-normal text-xs ml-2 ">
                         {Strings.NEED_HELP}
                       </p>
                     </a>
-                  </div>
+                  </h1>
+
                   <p className="border"></p>
+
                   <div className="flex items-center cursor-pointer">
                     <Image
                       src={Images.Locationwhite}
@@ -684,8 +690,12 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       </p>
                     </Link>
                   </div>
+
                   <p className="border"></p>
-                  <div className="flex items-center cursor-pointer">
+                  <div
+                    onClick={openWhatsApp}
+                    className="flex items-center cursor-pointer"
+                  >
                     <Image
                       src={Images.Eyewhite}
                       alt="/"
@@ -709,7 +719,9 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                     </Link>
                     <button
                       onClick={handleButtonClick}
-                      className="text-white font-normal text-xs ml-2"
+                      className={`text-white font-normal text-xs ml-2 ${
+                        isLoggedIn ? "cursor-default" : ""
+                      } `}
                       disabled={isLoggedIn}
                     >
                       {signInText}
@@ -727,15 +739,19 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
             </div>
           )}
           <div className="flex space-x-4 items-center xs:hidden lg:flex">
-            <div className="flex items-center cursor-pointer">
-              <Image src={Images.Location} alt="/" height={18} width={14} />
-              <Link href={"/store-location"}>
+            <Link href={"/store-location"}>
+              <div className="flex items-center cursor-pointer">
+                <Image src={Images.Location} alt="/" height={18} width={14} />
+
                 <p className="text-black font-bold text-xs ml-2">
                   {Strings.FIND_THE_NEAREST_STORE}
                 </p>
-              </Link>
-            </div>
-            <div className="flex items-center cursor-pointer">
+              </div>
+            </Link>
+            <div
+              onClick={openWhatsApp}
+              className="flex items-center cursor-pointer"
+            >
               <Image src={Images.Eye} alt="/" height={14} width={22} />
               <p className="text-black font-bold text-xs mx-2">
                 {Strings.TALK_WITH_US}
@@ -761,7 +777,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
               <button
                 onClick={handleButtonClick}
                 className={`text-black font-bold text-xs ml-2 ${
-                  isLoggedIn ? "cursor-default" : "cursor-pointer"
+                  signInText === "Sign In" ? "cursor-pointer" : "cursor-default"
                 } `}
                 disabled={isLoggedIn}
               >

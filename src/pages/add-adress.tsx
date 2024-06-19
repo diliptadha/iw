@@ -25,6 +25,7 @@ interface AddressData {
 }
 
 interface CardData {
+  totalQuantity: any;
   category: String;
   frameStyle: String;
   frameShape: String;
@@ -144,6 +145,7 @@ const AddAdress = () => {
     setShowRazorPage((prevShowRazorPage) => {
       return !prevShowRazorPage;
     });
+    console.log("ssss");
   };
 
   const handleProceedToShipping = () => {
@@ -319,6 +321,18 @@ const AddAdress = () => {
   const tQty = cardDetails.reduce(
     (total, ele) => total + ele.cartProduct.quantity,
     0
+  );
+
+  const groupedCardDetails = Object.values(
+    cardDetails.reduce((acc: { [key: string]: CardData }, ele: CardData) => {
+      const key = `${ele.cartProduct.productId}-${ele.cartProduct.subproductId}`;
+      if (!acc[key]) {
+        acc[key] = { ...ele, totalQuantity: ele.cartProduct.quantity };
+      } else {
+        acc[key].totalQuantity += ele.cartProduct.quantity;
+      }
+      return acc;
+    }, {})
   );
 
   return (
@@ -767,16 +781,16 @@ const AddAdress = () => {
               <div>
                 {isOpen && (
                   <>
-                    {cardDetails.map((ele) => {
+                    {groupedCardDetails.map((groupedItem, index) => {
                       return (
                         <>
                           <div
                             className=" mt-2 text-[14px] flex gap-2 py-3 justify-around"
-                            key={ele.id}
+                            key={index}
                           >
                             <div className="border h-[60px] w-[100px] mr-3 mb-2 ">
                               <img
-                                src={ele.cartProduct.productImage}
+                                src={groupedItem.cartProduct.productImage}
                                 alt="gog"
                                 className="w-[100%] h-[100%] object-contain"
                               />
@@ -785,28 +799,36 @@ const AddAdress = () => {
                             <div>
                               <div>
                                 <h3 className="frame-name text-[12px] font-semibold">
-                                  {ele.title}
+                                  {groupedItem.title}
                                 </h3>
                                 <h3 className="text-[13px] mb-1">
                                   <span className="text-PictonBlue">
-                                    {Strings.FRAME}
+                                    {groupedItem.category ===
+                                    "MYOPIA CONTROL LENSES"
+                                      ? groupedItem.title
+                                      : "Frame"}
                                   </span>{" "}
-                                  {ele.frameShape.charAt(0).toUpperCase() +
-                                    ele.frameShape.slice(1).toLowerCase()}{" "}
-                                  {ele.frameStyle} {ele.category}
+                                  {groupedItem.frameShape
+                                    .charAt(0)
+                                    .toUpperCase() +
+                                    groupedItem.frameShape
+                                      .slice(1)
+                                      .toLowerCase()}{" "}
+                                  {groupedItem.frameStyle}{" "}
+                                  {groupedItem.category}
                                 </h3>
                                 <div className="flex items-center justify-between">
                                   <h3 className="sm:mr-[14px] mr-2 text-[14px]">
                                     {Strings.QTY}{" "}
                                     <span className="">
-                                      {ele.cartProduct.quantity}
+                                      {groupedItem.totalQuantity}
                                     </span>
                                   </h3>
                                   <p className="amt text-[11px] font-semibold">
                                     ₹
                                     {(
-                                      ele.cartProduct.salePrice *
-                                      ele.cartProduct.quantity
+                                      groupedItem.cartProduct.salePrice *
+                                      groupedItem.totalQuantity
                                     ).toLocaleString()}
                                   </p>
                                 </div>

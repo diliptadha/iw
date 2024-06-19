@@ -21,11 +21,13 @@ import Header from "@/Component/header";
 import Image from "next/image";
 import ImageCarousel from "@/Component/Carosel";
 import Link from "next/link";
+import Modal from "@/Component/Modal";
 import RootLayout from "@/app/layout";
 import Slider from "react-slick";
 import StarRating from "@/Component/StarRating";
 import { Tab } from "@headlessui/react";
 import Under500 from "@/Component/Under500";
+import Under500Modal from "@/Component/Under500Modal";
 import WhatsAppButton from "@/Component/WhatsAppButton";
 import axios from "axios";
 import getCartQuantity from "@/utils/getCartQty";
@@ -560,6 +562,30 @@ const Homescreen: React.FC = () => {
     arrows: true,
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+
+  const handleZoomClick = (product: NewArrival) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+  };
+  const [isOpen, setIsOpen] = useState(false);
+  const [Product, setProduct] = useState<any | null>(null);
+
+  const handleZoomClickForUnder500 = (product: NewArrival) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const closeModal2 = () => {
+    setIsOpen(false);
+    setProduct(null);
+  };
   return (
     <>
       <div className="max-w-screen-2xl m-auto">
@@ -890,7 +916,6 @@ const Homescreen: React.FC = () => {
           </h1>
           <div className="flex items-center">
             <Image
-              // onClick={handleScrollRight2}
               onClick={() => {
                 if (sliderRef1.current) {
                   sliderRef1.current.slickNext();
@@ -902,10 +927,7 @@ const Homescreen: React.FC = () => {
               width={16}
               className="-rotate-90 mr-4 cursor-pointer"
             />
-            <div
-              // ref={containerRef2}
-              className="mt-5 overflow-hidden flex space-x-10- w-full overflow-x-scroll no-scrollbar"
-            >
+            <div className="mt-5 overflow-hidden flex space-x-10- w-full overflow-x-scroll no-scrollbar">
               <Slider ref={sliderRef1} {...settings1}>
                 {underFive.map((product, index) => (
                   <div key={index} className="px-2">
@@ -926,11 +948,17 @@ const Homescreen: React.FC = () => {
                       gender={product.gender}
                       category={product.category}
                       size={product.frameSize}
+                      onZoomClick={() => handleZoomClickForUnder500(product)}
                     />
                   </div>
                 ))}
               </Slider>
             </div>
+            <Under500Modal
+              Open={isOpen}
+              Close={closeModal2}
+              product={Product}
+            />
           </div>
         </div>
         <div className="relative flex items-center justify-center xs:mt-10 md:mt-14 xs:mx-[20px] xlg:mx-0">
@@ -938,15 +966,15 @@ const Homescreen: React.FC = () => {
           <div className="absolute xs:right-2 lg:right-8 xl:right-20 xs:bottom-2 md:bottom-4 lg:bottom-6 flex xs:gap-x-[2px] md:gap-x-2 xs:text-[4px] md:text-[8px] lg:text-xs xl:text-sm font-bold text-white">
             <h1> {Strings.BRANCHES}</h1>
             <p className="border-l-2 border-white" />
-            <Link href={`/store-location?id=1`}>
+            <Link href={`/store-location#dadar`}>
               <h1> {Strings.DADAR}</h1>
             </Link>
             <p className="border-l-2 border-white" />
-            <Link href={`/store-location?id=2`}>
+            <Link href={`/store-location#juhu`}>
               <h1> {Strings.JUHU}</h1>
             </Link>
             <p className="border-l-2 border-white" />
-            <Link href={`/store-location?id=3`}>
+            <Link href={`/store-location#andheri`}>
               <h1> {Strings.ANDHERI}</h1>
             </Link>
           </div>
@@ -1032,7 +1060,7 @@ const Homescreen: React.FC = () => {
                     className="bg-black hover:bg-PictonBlue text-white font-normal text-xs xs:w-[100px] xs:h-[22px] xl:w-[137px] xl:h-[34px] rounded-[5px] xs:mt-1 md:mt-2 xl:mt-4"
                     disabled={isLoggedIn}
                   >
-                    {Strings.SIGN_UP}
+                    {Strings.SIGN_IN}
                   </button>
                   <LoginModal
                     showLoginModal={showLoginModal}
@@ -1059,17 +1087,17 @@ const Homescreen: React.FC = () => {
                   sliderRef.current.slickNext();
                 }
               }}
-              src={Images.LEFT_ARROW}
+              src={Images.Downiconblack}
               alt="/"
-              height={10}
-              width={10}
-              className=" mr-4 cursor-pointer"
+              height={8}
+              width={16}
+              className="rotate-90 mr-4 cursor-pointer"
             />
             <div
               // ref={containerRef3}
-              className="mt-5 overflow-hidden flex space-x-10- w-full overflow-x-scroll no-scrollbar"
+              className="mt-5 overflow-hidden flex space-x-10- w-full "
             >
-              <Slider ref={sliderRef} {...settings}>
+              <Slider ref={sliderRef} {...settings} className="">
                 {bestSeller.map((product, index) => (
                   <div key={index} className="px-2">
                     <Bestsellers
@@ -1089,11 +1117,17 @@ const Homescreen: React.FC = () => {
                       gender={product.gender}
                       category={product.category}
                       size={product.frameSize}
+                      onZoomClick={() => handleZoomClick(product)}
                     />
                   </div>
                 ))}
               </Slider>
             </div>
+            <Modal
+              isOpen={isModalOpen}
+              onClose={closeModal}
+              product={selectedProduct}
+            />
           </div>
         </div>
         <div className=" xs:my-[60px] xl:my-[100px] xs:mx-[20px] xl:mx-[60px]">

@@ -1,36 +1,80 @@
-import { Images, Faqs, Strings } from "@/constant";
-import "../app/globals.css"
-import React from 'react';
+import "../app/globals.css";
+
+import { Faqs, Images, Strings } from "@/constant";
+import React, { useState } from "react";
+
+import { Footer } from "@/Component/footer";
+import Header from "@/Component/header";
 
 const FAQ = () => {
+  const [search, setSearch] = useState("");
+  const openWhatsApp = () => {
+    window.open(
+      `https://api.whatsapp.com/send?phone=${Strings.Whatsapp_No}&text=Hello, I would like to know more about your services.`,
+      "_blank"
+    );
+  };
   return (
     <>
+      <Header setSearch={setSearch} />
       <div className=" px-[2rem] py-[2rem] md:px-[3rem] xl:px-[6rem]">
-
         <div className="main-ques mb-[10px]">
           <h1 className="text-[#3A90E2] text-[22px]">{Faqs.GOT_QUES}</h1>
           <h1 className="text-[#3A90E2] text-[22px]">{Faqs.WE_HERE_HELP}</h1>
         </div>
         <div className="mb-[20px]">
           {/* 4 tags */}
-          <a href="#" className="underline mb-[2px] font-bold">{Faqs.KNOW_YOUR_WEAR}</a><br />
-          <a href="#" className="underline mb-[2px] font-bold">{Faqs.POLICIES}</a><br />
-          <a href="#" className="underline mb-[2px] font-bold">{Faqs.MEMBERSHIPS}</a><br />
-          <a href="#" className="underline mb-[2px] font-bold">{Faqs.FAQS}</a><br />
+          <a href="#" className="underline mb-[2px] font-bold">
+            {Faqs.KNOW_YOUR_WEAR}
+          </a>
+          <br />
+          <a href="#" className="underline mb-[2px] font-bold">
+            {Faqs.POLICIES}
+          </a>
+          <br />
+          <a href="#" className="underline mb-[2px] font-bold">
+            {Faqs.MEMBERSHIPS}
+          </a>
+          <br />
+          <a href="#" className="underline mb-[2px] font-bold">
+            {Faqs.FAQS}
+          </a>
+          <br />
         </div>
 
         <div className="text-justify">
           <h2 className="faq-main-h">{Faqs.KNOW_YOUR_WEAR}</h2>
           <h3 className="faq-titi-col">{Faqs.FAQ_H1_TIT1}</h3>
           <h2 className="faq-h">{Faqs.FAQ_P1}</h2>
-          <p className="faq-p">{Faqs.FAQ_P2_1} <a href="#" className="text-[blue] font-bold underline">{Faqs.HERE}</a> {Faqs.FAQ_P2_2} <a href="#" className="text-[blue] font-bold underline">{Faqs.VIRTUAL_AR_TECH}</a> {Faqs.FAQ_P2_3}</p>
+          <p className="faq-p">
+            {Faqs.FAQ_P2_1}{" "}
+            <a
+              href="https://www.lenskart.com/frame-size-guide"
+              target="_blank"
+              className="text-[blue] font-bold underline"
+            >
+              {Faqs.HERE}
+            </a>{" "}
+            {Faqs.FAQ_P2_2}{" "}
+            <a
+              href="https://www.lenskart.com/compare-looks"
+              target="_blank"
+              className="text-[blue] font-bold underline"
+            >
+              {Faqs.VIRTUAL_AR_TECH}
+            </a>{" "}
+            {Faqs.FAQ_P2_3}
+          </p>
           <p className="faq-p">{Faqs.FAQ_P3}</p>
           <h2 className="faq-h">{Faqs.FAQ_P4}</h2>
           <p className="faq-p">{Faqs.FAQ_P5}</p>
 
           <div className="w-full md:p-[2rem] md:h-[420px] h-[200px] mb-[30px]">
             <img
-              src={Images.FAQ_ONE} alt="spack-img" className="w-[100%] h-[100%] object-contain" />
+              src={Images.FAQ_ONE}
+              alt="spack-img"
+              className="w-[100%] h-[100%] object-contain"
+            />
           </div>
 
           <h2 className="faq-h">{Faqs.FAQ_P6}</h2>
@@ -52,7 +96,10 @@ const FAQ = () => {
               </thead>
               <tbody className="text-xs md:text-[14px]">
                 <tr className=" border-b border-[#fff]">
-                  <td scope="row" className="px-6 border-r py-4 text-center border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-center border-[#fff]"
+                  >
                     {Faqs.ANTIGLARE_ANTIREFLECT}
                   </td>
                   <td className="px-6 py-2">
@@ -64,7 +111,10 @@ const FAQ = () => {
                   </td>
                 </tr>
                 <tr className=" border-b border-[#fff]">
-                  <td scope="row" className="px-6 border-r py-4 text-center border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-center border-[#fff]"
+                  >
                     {Faqs.UV_PROTECTION}
                   </td>
                   <td className="px-6 py-2">
@@ -76,7 +126,10 @@ const FAQ = () => {
                   </td>
                 </tr>
                 <tr className=" ">
-                  <td scope="row" className="px-6 py-4 border-r border-[#fff] text-center">
+                  <td
+                    scope="row"
+                    className="px-6 py-4 border-r border-[#fff] text-center"
+                  >
                     {Faqs.ANTIGLARE_ANTIREFLECT}
                   </td>
                   <td className="px-6 py-2">
@@ -97,45 +150,72 @@ const FAQ = () => {
           {/* tABLE */}
 
           <div className="relative overflow-x-auto shadow-md mb-[20px]">
-            <table className="w-full text-sm bg-[#C6D9F1]" >
+            <table className="w-full text-sm bg-[#C6D9F1]">
               <thead className="text-xs border border-[#fff]">
                 <tr className="text-center">
-                  <th scope="col" className="">
-                  </th>
+                  <th scope="col" className=""></th>
                   <th scope="col" className="text-center ">
-                    <img alt="table-one" src={Images.FAQ_TWO} className="w-[100%] object-contain h-[160px] flex flex-col " />
+                    <img
+                      alt="table-one"
+                      src={Images.FAQ_TWO}
+                      className="w-[100%] object-contain h-[160px] flex flex-col "
+                    />
                   </th>
                   <th scope="col" className="text-center">
-                    <img alt="table-one" src={Images.FAQ_THREE} className="w-[100%] object-contain h-[160px] flex flex-col " />
+                    <img
+                      alt="table-one"
+                      src={Images.FAQ_THREE}
+                      className="w-[100%] object-contain h-[160px] flex flex-col "
+                    />
                   </th>
                   <th scope="col" className="text-center ">
-                    <img alt="table-one" src={Images.FAQ_FOUR} className="w-[100%] object-contain h-[160px] flex flex-col " />
+                    <img
+                      alt="table-one"
+                      src={Images.FAQ_FOUR}
+                      className="w-[100%] object-contain h-[160px] flex flex-col "
+                    />
                   </th>
                 </tr>
               </thead>
               <tbody className="text-xs md:text-[14px]">
                 <tr className=" border-b text-center border-[#fff]">
-                  <td scope="row" className="px-6 border-r border-[#fff] py-4 text-wrap w-1/6 ">
+                  <td
+                    scope="row"
+                    className="px-6 border-r border-[#fff] py-4 text-wrap w-1/6 "
+                  >
                     {Faqs.FIELDS_OF_VISION}
                   </td>
-                  <td scope="row" className="px-6 border-r border-[#fff] py-4 text-wrap w-1/6 ">
+                  <td
+                    scope="row"
+                    className="px-6 border-r border-[#fff] py-4 text-wrap w-1/6 "
+                  >
                     {Faqs.ONE}
                   </td>
-                  <td scope="row" className="px-6 border-r border-[#fff] py-4 text-wrap w-1/6 ">
+                  <td
+                    scope="row"
+                    className="px-6 border-r border-[#fff] py-4 text-wrap w-1/6 "
+                  >
                     {Faqs.TWO}
                   </td>
-                  <td className="px-6 py-2 w-1/6">
-                    {Faqs.THREE}
-                  </td>
+                  <td className="px-6 py-2 w-1/6">{Faqs.THREE}</td>
                 </tr>
                 <tr className=" border-b border-[#fff] text-center">
-                  <td scope="row" className="px-6 border-r py-4 text-wrap w-1/6 border-[#fff] ">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap w-1/6 border-[#fff] "
+                  >
                     {Faqs.T2_TAB1}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap w-1/6 border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap w-1/6 border-[#fff]"
+                  >
                     {Faqs.T2_TAB2}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap w-1/6 border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap w-1/6 border-[#fff]"
+                  >
                     {Faqs.T2_TAB3}
                   </td>
                   <td scope="row" className="px-6 py-2 w-1/6">
@@ -143,32 +223,46 @@ const FAQ = () => {
                   </td>
                 </tr>
                 <tr className="border-b border-[#fff] text-center">
-                  <td scope="row" className="px-6 py-4 border-r text-wrap w-1/6 border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 py-4 border-r text-wrap w-1/6 border-[#fff]"
+                  >
                     {Faqs.T2_TAB5}
                   </td>
-                  <td scope="row" className="px-6 py-4 border-r text-wrap w-1/6 border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 py-4 border-r text-wrap w-1/6 border-[#fff]"
+                  >
                     {Faqs.T2_TAB6}
                   </td>
-                  <td scope="row" className="px-6 py-4 border-r text-wrap w-1/6 border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 py-4 border-r text-wrap w-1/6 border-[#fff]"
+                  >
                     {Faqs.T2_TAB7}
                   </td>
-                  <td className="px-6 py-2 w-1/6">
-                    {Faqs.T2_TAB8}
-                  </td>
+                  <td className="px-6 py-2 w-1/6">{Faqs.T2_TAB8}</td>
                 </tr>
                 <tr className="text-center">
-                  <td scope="row" className="px-6 py-4 border-r border-[#fff] text-wrap w-1/6">
+                  <td
+                    scope="row"
+                    className="px-6 py-4 border-r border-[#fff] text-wrap w-1/6"
+                  >
                     {Faqs.T2_TAB9}
                   </td>
-                  <td scope="row" className="px-6 py-4 border-r border-[#fff] text-wrap w-1/6">
+                  <td
+                    scope="row"
+                    className="px-6 py-4 border-r border-[#fff] text-wrap w-1/6"
+                  >
                     {Faqs.T2_TAB10}
                   </td>
-                  <td scope="row" className="px-6 py-4 border-r border-[#fff] text-wrap w-1/6">
+                  <td
+                    scope="row"
+                    className="px-6 py-4 border-r border-[#fff] text-wrap w-1/6"
+                  >
                     {Faqs.CORRECT_PRESBYOPIA}
                   </td>
-                  <td className="px-6 py-2 w-1/6">
-                    {Faqs.CORRECT_PRESBYOPIA}
-                  </td>
+                  <td className="px-6 py-2 w-1/6">{Faqs.CORRECT_PRESBYOPIA}</td>
                 </tr>
               </tbody>
             </table>
@@ -177,20 +271,43 @@ const FAQ = () => {
           {/* table */}
 
           <h2 className="faq-h">{Faqs.FAQ_H3}</h2>
-          <p className="faq-p">{Faqs.FAQ_P9_1} <a href="#" className="text-[blue] font-bold underline">{Faqs.VIRTUAL_AR_TECH}</a> {Faqs.FAQ_P9_1}</p>
+          <p className="faq-p">
+            {Faqs.FAQ_P9_1}{" "}
+            <a
+              href="https://www.lenskart.com/compare-looks"
+              target="_blank"
+              className="text-[blue] font-bold underline"
+            >
+              {Faqs.VIRTUAL_AR_TECH}
+            </a>{" "}
+            {Faqs.FAQ_P9_1}
+          </p>
           <p className="faq-p">{Faqs.FAQ_P10}</p>
           <h2 className="faq-h">{Faqs.FAQ_H4}</h2>
-          <p className="faq-p">{Faqs.FAQ_P11_1} <a href="#" className="text-[blue] font-bold underline">{Faqs.EYE_STEP12}</a> {Faqs.FAQ_P11_1}</p>
+          <p className="faq-p">
+            {Faqs.FAQ_P11_1}{" "}
+            <a
+              href="https://www.lenskart.com/eyetestnear"
+              className="text-[blue] font-bold underline"
+            >
+              {Faqs.EYE_STEP12}
+            </a>{" "}
+            {Faqs.FAQ_P11_1}
+          </p>
           <h2 className="faq-h">{Faqs.FAQ_H5}</h2>
           <p className="faq-p">{Faqs.FAQ_P12}</p>
           <h3 className="faq-titi-col">{Faqs.FAQ_H1_TIT2}</h3>
           <h2 className="faq-h">{Faqs.FAQ_H6}</h2>
           <p className="faq-p">{Faqs.FAQ_P13}</p>
           <h2 className="faq-h">{Faqs.FAQ_H7}</h2>
-          <p className="faq-p">{Faqs.FAQ_P14} <a href="mailto:-" className="text-[blue] font-bold underline">{Faqs.SUPPORT_EMAIL_ID}</a></p>
+          <p className="faq-p">
+            {Faqs.FAQ_P14}{" "}
+            <a href="mailto:-" className="text-[blue] font-bold underline">
+              {Faqs.SUPPORT_EMAIL_ID}
+            </a>
+          </p>
           <h2 className="faq-h">{Faqs.FAQ_H8}</h2>
           <p className="faq-p">{Faqs.FAQ_P15}</p>
-
         </div>
 
         {/* Policies Start  */}
@@ -227,49 +344,73 @@ const FAQ = () => {
               </thead>
               <tbody className="text-xs md:text-[14px]">
                 <tr className=" border-b border-[#fff] text-center">
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.EYEGLASSES}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.DAYS2_3}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.DAYS5_7}
                   </td>
-                  <td className="px-6 py-2">
-                    {Faqs.DAYS7_10}
-                  </td>
+                  <td className="px-6 py-2">{Faqs.DAYS7_10}</td>
                 </tr>
                 <tr className=" border-b border-[#fff] text-center">
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.SUNGLASSES}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.DAYS2_3}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.DAYS5_7}
                   </td>
-                  <td className="px-6 py-2">
-                    {Faqs.DAYS7_10}
-                  </td>
+                  <td className="px-6 py-2">{Faqs.DAYS7_10}</td>
                 </tr>
                 <tr className=" border-b border-[#fff] text-center">
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Strings.CONTACT_LENSES}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.DAYS2_3}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.DAYS5_7}
                   </td>
-                  <td className="px-6 py-2">
-                    {Faqs.DAYS7_10}
-                  </td>
+                  <td className="px-6 py-2">{Faqs.DAYS7_10}</td>
                 </tr>
                 <tr className="">
-                  <td scope="col" className="px-6 py-4 border-r border-[#fff] text-wrap text-center">
+                  <td
+                    scope="col"
+                    className="px-6 py-4 border-r border-[#fff] text-wrap text-center"
+                  >
                     {Faqs.ACCESSORIES}
                   </td>
                   <td scope="col" colSpan={3} className=" px-6 py-2">
@@ -329,59 +470,104 @@ const FAQ = () => {
               </thead>
               <tbody className="text-xs md:text-[14px]">
                 <tr className=" border-b border-[#fff] text-center">
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.EYEGLASSES}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.WITHIN_14_DAYS}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.WITHIN_14_DAYS}
                   </td>
                 </tr>
 
                 <tr className=" border-b border-[#fff] text-center">
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.SUNGLASSES}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.WITHIN_7_DAYS}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.WITHIN_7_DAYS}
                   </td>
                 </tr>
 
                 <tr className=" border-b border-[#fff] text-center">
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.CONTACT_LENSES}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.WITHIN_14_DAYS}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.NOT_ELIGIBLE}
                   </td>
                 </tr>
                 <tr className=" border-b border-[#fff] text-center">
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.OTHER_BRANDS}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.NA}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.WITHIN_14_DAYS}
                   </td>
                 </tr>
                 <tr className=" border-b border-[#fff] text-center">
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.OTHERS_LENS}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.NOT_ELIGIBLE}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.NOT_ELIGIBLE}
                   </td>
                 </tr>
@@ -389,7 +575,16 @@ const FAQ = () => {
             </table>
           </div>
 
-          <p className="faq-p">{Faqs.POL_P5} <a href="#" className="text-[blue] font-bold underline">{Faqs.WEB}</a></p>
+          <p className="faq-p">
+            {Faqs.POL_P5}{" "}
+            <a
+              href="https://www.lenskart.com/exchange-order"
+              target="_blank"
+              className="text-[blue] font-bold underline"
+            >
+              {Faqs.WEB}
+            </a>
+          </p>
 
           <h2 className="faq-h">{Faqs.POL_H5}</h2>
           <p className="faq-p">{Faqs.POL_P6}</p>
@@ -424,7 +619,9 @@ const FAQ = () => {
             {Faqs.P_ADD2} <br />
             {Faqs.P_ADD3}
           </h3>
-          <p className="faq-p">{Faqs.POL_P9} <a href="mailto:-">{Faqs.SUPPORT_EMAIL_ID}</a></p>
+          <p className="faq-p">
+            {Faqs.POL_P9} <a href="mailto:-">{Faqs.SUPPORT_EMAIL_ID}</a>
+          </p>
           <h2 className="faq-h">{Faqs.POL_H9}</h2>
           <ul className="list-disc pl-[20px] mb-[10px]">
             <li className="faq_li">{Faqs.POL_L22}</li>
@@ -435,7 +632,17 @@ const FAQ = () => {
           <ul className="list-disc pl-[20px] mb-[10px]">
             <li className="faq_li">{Faqs.POL_L24}</li>
             <li className="faq_li">{Faqs.POL_L25}</li>
-            <li className="faq_li">{Faqs.POL_L26_1} <a href="#">{Faqs.HERE}</a> {Faqs.POL_L26_2}</li>
+            <li className="faq_li">
+              {Faqs.POL_L26_1}{" "}
+              <a
+                href="https://www.lenskart.com/gfaq#insurance"
+                target="_blank"
+                className="text-[blue] font-bold underline"
+              >
+                {Faqs.HERE}
+              </a>{" "}
+              {Faqs.POL_L26_2}
+            </li>
           </ul>
 
           <h2 className="faq-h">{Faqs.POL_H11}</h2>
@@ -493,10 +700,16 @@ const FAQ = () => {
             <table className=" w-full text-sm text-left rtl:text-right bg-[#C6D9F1] ">
               <thead className="text-xs md:text-[15px] border border-[#fff]">
                 <tr className="text-center">
-                  <th scope="col" className="px-6 py-4 border-r w-1/3 border-[#fff]">
+                  <th
+                    scope="col"
+                    className="px-6 py-4 border-r w-1/3 border-[#fff]"
+                  >
                     {Faqs.REFUND_SOURCE}
                   </th>
-                  <th scope="col" className="px-6 py-4 border-r w-1/3 border-[#fff]">
+                  <th
+                    scope="col"
+                    className="px-6 py-4 border-r w-1/3 border-[#fff]"
+                  >
                     {Faqs.TIMELINE}
                   </th>
                   <th scope="col" className="px-6 py-4 w-1/3">
@@ -506,42 +719,73 @@ const FAQ = () => {
               </thead>
               <tbody className="text-xs md:text-[14px]">
                 <tr className=" border-b text-center border-[#fff]">
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.STORE_CREDIT}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.T5_1}
                   </td>
-                  <td scope="row" rowSpan={3} className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    rowSpan={3}
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.T5_2}
                   </td>
                 </tr>
 
                 <tr className=" border-b text-center border-[#fff]">
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.W_DEBIT_CARD}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.T5_3}
                   </td>
                 </tr>
 
                 <tr className=" border-b border-[#fff] text-center">
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.CREDIT_CARD}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.T5_4}
                   </td>
                 </tr>
                 <tr className=" border-b border-[#fff] text-center">
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.UPI_PAY}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.T5_5}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.T5_6}
                   </td>
                 </tr>
@@ -588,22 +832,38 @@ const FAQ = () => {
               </thead>
               <tbody className="text-xs md:text-[14px]">
                 <tr className=" border-b text-center border-[#fff]">
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.T6_3}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.T6_4}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.T6_5}
                   </td>
                 </tr>
 
                 <tr className=" border-b text-center border-[#fff]">
-                  <td scope="row" className="px-6 border-r border-[#fff] py-4 text-wrap">
+                  <td
+                    scope="row"
+                    className="px-6 border-r border-[#fff] py-4 text-wrap"
+                  >
                     {Faqs.T6_6}
                   </td>
-                  <td scope="row" colSpan={2} className="px-6 border-r border-[#fff] py-4 text-wrap">
+                  <td
+                    scope="row"
+                    colSpan={2}
+                    className="px-6 border-r border-[#fff] py-4 text-wrap"
+                  >
                     {Faqs.T6_7}
                   </td>
                 </tr>
@@ -625,7 +885,6 @@ const FAQ = () => {
           <p className="faq-p">{Faqs.POL_P25}</p>
           <h2 className="faq-h">{Faqs.POL_H24}</h2>
           <p className="faq-p">{Faqs.POL_P26}</p>
-
         </div>
 
         {/* warranty pages Start */}
@@ -644,9 +903,14 @@ const FAQ = () => {
           </ul>
           <p className="faq-p">
             {Faqs.W_P1_1} <br />
-            <a href="tel:-" className="text-[blue] font-bold underline">{Faqs.IKSANA_NUMBER_7977} </a> <br />
+            <a href="tel:-" className="text-[blue] font-bold underline">
+              {Faqs.IKSANA_NUMBER_7977}{" "}
+            </a>{" "}
+            <br />
             {Faqs.W_P1_2}
-            <a href="mailto:-" className="text-[blue] font-bold underline">{Faqs.SUPPORT_EMAIL_ID}</a>
+            <a href="mailto:-" className="text-[blue] font-bold underline">
+              {Faqs.SUPPORT_EMAIL_ID}
+            </a>
           </p>
 
           {/* nUMBER */}
@@ -690,11 +954,27 @@ const FAQ = () => {
           <h2 className="faq-titi-col">{Faqs.F_H1}</h2>
           <p className="faq-p">
             {Faqs.F_P1_1}
-            <a href="#" className="text-[blue] font-bold underline">{Faqs.HERE}</a>
+            <a
+              href="https://www.lenskart.com/frame-size-guide"
+              target="_blank"
+              className="text-[blue] font-bold underline"
+            >
+              {Faqs.HERE}
+            </a>
             {Faqs.F_P1_2}
           </p>
           <p className="faq-p">{Faqs.F_P2}</p>
-          <p className="faq-p">{Faqs.F_P3_1} <a href="#" className="text-[blue] font-bold underline">{Faqs.VIRTUAL_AR_TECH}</a> {Faqs.F_P3_2}</p>
+          <p className="faq-p">
+            {Faqs.F_P3_1}{" "}
+            <a
+              href="https://www.lenskart.com/compare-looks"
+              target="_blank"
+              className="text-[blue] font-bold underline"
+            >
+              {Faqs.VIRTUAL_AR_TECH}
+            </a>{" "}
+            {Faqs.F_P3_2}
+          </p>
           <h2 className="faq-titi-col">{Faqs.F_H2}</h2>
           <p className="faq-p">{Faqs.F_P4}</p>
           <p className="faq-p">{Faqs.F_P5}</p>
@@ -703,23 +983,50 @@ const FAQ = () => {
           <h2 className="faq-titi-col">{Faqs.F_H4}</h2>
           <p className="faq-p">
             {Faqs.F_P7_1}
-            <a href="mailto:-" className="text-[blue] font-bold underline">{Faqs.SUPPORT_EMAIL_ID}</a>
+            <a href="mailto:-" className="text-[blue] font-bold underline">
+              {Faqs.SUPPORT_EMAIL_ID}
+            </a>
             {Faqs.F_P7_2}
-            <a href="#" className="text-[blue] font-bold underline">{Faqs.WEB}</a>
+            <a
+              href="https://www.lenskart.com/how-to-add-power"
+              target="_blank"
+              className="text-[blue] font-bold underline"
+            >
+              {Faqs.WEB}
+            </a>
           </p>
           <h2 className="faq-titi-col">{Faqs.F_H5}</h2>
           <p className="faq-p">{Faqs.F_P8}</p>
           <h2 className="faq-titi-col">{Faqs.F_H6}</h2>
           <p className="faq-p">
             {Faqs.F_P9_1}
-            <a href="#" className="text-[blue] font-bold underline">{Faqs.F_P9_a1}</a>
+            <a
+              href="https://www.lenskart.com/eyetestnear"
+              target="_blank"
+              className="text-[blue] font-bold underline"
+            >
+              {Faqs.F_P9_a1}
+            </a>
             {Faqs.F_P9_2}
-            <a href="#" className="text-[blue] font-bold underline">{Faqs.F_P9_a2}</a>
-            {Faqs.F_P9_3}</p>
+            <a
+              href="https://www.lenskart.com/HTO/"
+              target="_blank"
+              className="text-[blue] font-bold underline"
+            >
+              {Faqs.F_P9_a2}
+            </a>
+            {Faqs.F_P9_3}
+          </p>
           <h2 className="faq-titi-col">{Faqs.F_H7}</h2>
           <p className="faq-p">
             {Faqs.F_P10_1}
-            <a href="#" className="text-[blue] font-bold underline">{Faqs.VIRTUAL_AR_TECH}</a>
+            <a
+              href="https://www.lenskart.com/compare-looks"
+              target="_blank"
+              className="text-[blue] font-bold underline"
+            >
+              {Faqs.VIRTUAL_AR_TECH}
+            </a>
             {Faqs.F_P10_1}
           </p>
           <p className="faq-p">{Faqs.F_P11}</p>
@@ -741,15 +1048,29 @@ const FAQ = () => {
             <li className="faq_li">{Faqs.F_L4}</li>
             <li className="faq_li">
               {Faqs.F_L5_1}
-              <a href="mailto:-" className="text-[blue] font-bold underline">{Faqs.SUPPORT_EMAIL_ID}</a>
+              <a href="mailto:-" className="text-[blue] font-bold underline">
+                {Faqs.SUPPORT_EMAIL_ID}
+              </a>
               {Faqs.F_L5_2}
-              <a href="#" className="text-[blue] font-bold underline">{Faqs.WEB}</a>
+              <a
+                href="https://www.lenskart.com/cancel-order"
+                target="_blank"
+                className="text-[blue] font-bold underline"
+              >
+                {Faqs.WEB}
+              </a>
             </li>
           </ul>
           <h2 className="faq-titi-col">{Faqs.F_H12}</h2>
           <p className="faq-p">
             {Faqs.F_P17_1}
-            <a href="#" className="text-[blue] font-bold underline">{Faqs.HERE}</a>
+            <a
+              href="https://www.lenskart.com/stores"
+              target="_blank"
+              className="text-[blue] font-bold underline"
+            >
+              {Faqs.HERE}
+            </a>
             {Faqs.F_P17_2}
           </p>
           <h2 className="faq-titi-col">{Faqs.F_H13}</h2>
@@ -765,11 +1086,17 @@ const FAQ = () => {
           <h2 className="faq-titi-col">{Faqs.F_H18}</h2>
           <p className="faq-p">
             {Faqs.F_P23_1}
-            <a href="tel:-" className="text-[blue] font-bold underline">{Faqs.IKSANA_NUMBER_7977}</a>
+            <a href="tel:-" className="text-[blue] font-bold underline">
+              {Faqs.IKSANA_NUMBER_7977}
+            </a>
             {Faqs.F_P23_2}
-            <a href="mailto:-" className="text-[blue] font-bold underline">{Faqs.SUPPORT_EMAIL_ID}</a>
+            <a href="mailto:-" className="text-[blue] font-bold underline">
+              {Faqs.SUPPORT_EMAIL_ID}
+            </a>
             {Faqs.F_P23_3}
-            <a href="mailto:-" className="text-[blue] font-bold underline">{Faqs.EYE_EMAIL_ID}</a>
+            <a href="mailto:-" className="text-[blue] font-bold underline">
+              {Faqs.EYE_EMAIL_ID}
+            </a>
             {Faqs.F_P23_4}
           </p>
 
@@ -789,27 +1116,58 @@ const FAQ = () => {
               </thead>
               <tbody className="text-xs md:text-[14px]">
                 <tr className=" border-b text-center border-[#fff]">
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
                     {Faqs.LEVEL_1}
                   </td>
-                  <td scope="row" className="px-6 border-r py-4 text-wrap border-[#fff]">
-                    {Faqs.T7_1} <a href="tel:-" className="text-[blue] font-bold underline">{Faqs.IKSANA_NUMBER_7977}</a> <br />
+                  <td
+                    scope="row"
+                    className="px-6 border-r py-4 text-wrap border-[#fff]"
+                  >
+                    {Faqs.T7_1}{" "}
+                    <a href="tel:-" className="text-[blue] font-bold underline">
+                      {Faqs.IKSANA_NUMBER_7977}
+                    </a>{" "}
+                    <br />
                     {Faqs.T7_2} <br />
-                    {Faqs.T7_3} <a href="mailto:-" className="text-[blue] font-bold underline">{Faqs.SUPPORT_EMAIL_ID}</a>
+                    {Faqs.T7_3}{" "}
+                    <a
+                      href="mailto:-"
+                      className="text-[blue] font-bold underline"
+                    >
+                      {Faqs.SUPPORT_EMAIL_ID}
+                    </a>
                   </td>
                 </tr>
                 <tr className=" border-b text-center border-[#fff]">
-                  <td scope="row" className="px-6 border-r border-[#fff] py-4 text-wrap">
+                  <td
+                    scope="row"
+                    className="px-6 border-r border-[#fff] py-4 text-wrap"
+                  >
                     {Faqs.LEVEL_2} <br />
                     {Faqs.T7_4}
                   </td>
-                  <td scope="row" className="px-6 border-r border-[#fff] py-4 text-wrap">
-                    <a href="mailto:-" className="text-[blue] font-bold underline">{Faqs.EYE_EMAIL_ID}</a>
+                  <td
+                    scope="row"
+                    className="px-6 border-r border-[#fff] py-4 text-wrap"
+                  >
+                    <a
+                      href="mailto:-"
+                      className="text-[blue] font-bold underline"
+                    >
+                      {Faqs.EYE_EMAIL_ID}
+                    </a>
                   </td>
                 </tr>
 
                 <tr className=" border-b border-[#fff] text-center">
-                  <td scope="row" colSpan={2} className="px-6 border-r border-[#fff] py-4 text-wrap">
+                  <td
+                    scope="row"
+                    colSpan={2}
+                    className="px-6 border-r border-[#fff] py-4 text-wrap"
+                  >
                     {Faqs.T7_5}
                   </td>
                 </tr>
@@ -824,7 +1182,6 @@ const FAQ = () => {
             <li className="faq_li">{Faqs.F_L6}</li>
             <li className="faq_li">{Faqs.F_L7}</li>
           </ul>
-
         </div>
 
         {/* Need More help part */}
@@ -836,26 +1193,51 @@ const FAQ = () => {
 
         <div>
           <div>
-            <img src={Images.CALL_ICON} alt="phone-icon" className="w-[28px] h-[28px]" />
+            <img
+              src={Images.CALL_ICON}
+              alt="phone-icon"
+              className="w-[28px] h-[28px]"
+            />
             <p>
-              <a href="tel:-" className=" text-[blue] font-bold">{Faqs.IKSANA_NUM_8291}</a>
+              <a href="tel:-" className=" text-[blue] font-bold">
+                {Faqs.IKSANA_NUM_8291}
+              </a>
             </p>
           </div>
           <div>
-            <img src={Images.WHATSAPP_ICON} alt="whatsapp-icon" className="w-[28px] h-[28px]" />
+            <img
+              onClick={openWhatsApp}
+              src={Images.WHATSAPP_ICON}
+              alt="whatsapp-icon"
+              className="w-[28px] h-[28px]"
+            />
             <p>
-              <a href="#" className="text-[blue] font-bold underline">{Faqs.CHAT_ON_WHATSAPP}</a>
+              <a
+                onClick={(e) => {
+                  e.preventDefault();
+                  openWhatsApp();
+                }}
+                className="text-[blue] font-bold underline cursor-pointer"
+              >
+                {Faqs.CHAT_ON_WHATSAPP}
+              </a>
             </p>
           </div>
           <div>
-            <img src={Images.MSG_ICON} alt="email-icon" className="w-[28px] h-[28px]" />
+            <img
+              src={Images.MSG_ICON}
+              alt="email-icon"
+              className="w-[28px] h-[28px]"
+            />
             <p>
-              <a href="mailto:-" className="text-[blue] font-bold underline">{Faqs.SUPPORT_EMAIL_ID}</a>
+              <a href="mailto:-" className="text-[blue] font-bold underline">
+                {Faqs.SUPPORT_EMAIL_ID}
+              </a>
             </p>
           </div>
         </div>
-
       </div>
+      <Footer />
     </>
   );
 };

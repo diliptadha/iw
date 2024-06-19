@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 
 const SuccessPayment = () => {
   interface CardData {
+    subProductId: any;
+    totalQuantity: number;
     products: any;
     id: any;
     title: any;
@@ -80,6 +82,7 @@ const SuccessPayment = () => {
 
   const gettingData = async () => {
     const token = localStorage.getItem("accessToken");
+
     try {
       const config = {
         method: "get",
@@ -91,7 +94,7 @@ const SuccessPayment = () => {
       };
 
       const response = await axios.request(config);
-      // console.log(JSON.stringify(response.data), "response data");
+      console.log(JSON.stringify(response.data), "response data");
       setCardDetails(response.data.data);
     } catch (error) {
       console.error("Error fetching user success order data:", error);
@@ -122,6 +125,18 @@ const SuccessPayment = () => {
     }
   }, [userId, orderId]);
 
+  const groupedCardDetails = Object.values(
+    cardDetails.reduce((acc, ele) => {
+      const key = `${ele.productId}-${ele.subProductId}`;
+      if (!acc[key]) {
+        acc[key] = { ...ele, totalQuantity: ele.quantity };
+      } else {
+        acc[key].totalQuantity += ele.quantity;
+      }
+      return acc;
+    }, {} as { [key: string]: CardData & { totalQuantity: number } })
+  );
+
   return (
     <div className=" px-[1rem] py-[1rem] md:px-[3rem] xl:px-[6rem] ">
       <div className="-bg-[#90e9c1] ">
@@ -150,8 +165,8 @@ const SuccessPayment = () => {
             {cardDetails.length === 0 ? (
               <p>No data available</p>
             ) : (
-              cardDetails.map((ele, index) => {
-                const product = ele.products;
+              groupedCardDetails.map((group, index) => {
+                const product = group.products;
                 return (
                   <div
                     className="card py-6 px-3 sm:flex mb-4 shadow-box"
@@ -185,7 +200,7 @@ const SuccessPayment = () => {
 
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
-                          <h2>Qty: {ele.quantity}</h2>
+                          <h2>Qty: {group.totalQuantity}</h2>
                         </div>
                       </div>
                     </div>

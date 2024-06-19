@@ -644,9 +644,18 @@ const Profile = () => {
 
                       <div className="flex items-baseline justify-between  pt-[10px]">
                         <h3 className="text-[13px] sm:text-[14px]">
-                          <span className="text-PictonBlue">Frame</span>{" "}
-                          {order.products.frameShape} /{" "}
-                          {order.products.frameStyle}
+                          <span className="text-PictonBlue">
+                            {" "}
+                            {order.products.category ===
+                              "MYOPIA CONTROL LENSES" || "contact-lenses"
+                              ? order.products.title
+                              : "Frame"}
+                          </span>{" "}
+                          {order.products.frameShape.charAt(0).toUpperCase() +
+                            order.products.frameShape
+                              .slice(1)
+                              .toLowerCase()}{" "}
+                          / {order.products.frameStyle}
                         </h3>
                       </div>
 

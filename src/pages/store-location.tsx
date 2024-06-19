@@ -1,7 +1,7 @@
 import "../app/globals.css";
 
 import { Images, Strings } from "@/constant";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Footer } from "@/Component/footer";
 import Header from "@/Component/header";
@@ -45,15 +45,36 @@ const StoreLocation = () => {
     },
   ];
 
+  const headerHeight = 5;
+
+  useEffect(() => {
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+      const element = document.getElementById(hash);
+      if (element) {
+        const headerOffset = headerHeight * 5;
+        const elementPosition = element.offsetTop - headerOffset;
+        window.scrollTo({
+          top: elementPosition,
+          behavior: "smooth",
+        });
+      }
+    }
+  }, []);
+
   return (
     <>
-      <Header setSearch={setSearch} />
-      <div className=" px-[2rem] py-[2rem] md:px-[3rem] xl:px-[6rem]">
+      <div className="">
+        <Header setSearch={setSearch} />
+      </div>
+      <div className=" px-[2rem] py-[2rem] md:px-[3rem] xl:px-[6rem] ">
         {store.length > 0 ? (
           store.map((ele, index) => (
             <div
+              id={ele.id === 1 ? "dadar" : ele.id === 2 ? "juhu" : "andheri"}
               key={index}
-              className="border rounded-[10px] mb-[15px] lg:max-w-[80%] md:max-w-[90%] xl:max-w-[70%] md:mt-0 md:mx-auto flex-wrap md:flex-none text-justify	tracking-[0.5px] text-[12px] md:text-[15px] p-[20px] flex"
+              className="border rounded-[10px]  mb-[15px] lg:max-w-[80%] md:max-w-[90%] xl:max-w-[70%] md:mt-0 md:mx-auto flex-wrap md:flex-none text-justify	tracking-[0.5px] text-[12px] md:text-[15px] p-[20px] flex"
+              style={{ scrollMarginTop: `${headerHeight}rem` }}
             >
               <div className="md:w-[250px] md:h-[250px] h-[220px] w-[100%] md:mr-[20px] mb-[10px] lg:mb-0">
                 <img

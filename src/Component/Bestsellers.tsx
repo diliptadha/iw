@@ -1,11 +1,8 @@
 import { Images, Strings } from "@/constant";
-import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
-import Link from "next/link";
-import LoginModal from "./LoginModal";
+import React from "react";
 import StarRating from "./StarRating";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 
 interface BestsellersProps {
@@ -13,17 +10,18 @@ interface BestsellersProps {
   title: string;
   SKU: string;
   Brand: string;
-  salePrice: any;
+  salePrice: string;
   rating?: number;
   isBestseller?: boolean;
   productId: string;
   subProductId: string;
-  originalPrice: any;
-  color: any;
-  shape: any;
-  gender: any;
-  category: any;
-  size: any;
+  originalPrice: string;
+  color: string;
+  shape: string;
+  gender: string;
+  category: string;
+  size: string;
+  onZoomClick: () => void; // Define the prop for Zoom click handling
 }
 
 const Bestsellers: React.FC<BestsellersProps> = ({
@@ -42,30 +40,10 @@ const Bestsellers: React.FC<BestsellersProps> = ({
   gender,
   category,
   size,
+  onZoomClick, 
 }) => {
-  const [open, setOpen] = useState(false);
-  const [userId, setUserId] = useState<string | null>();
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    if (typeof window !== "undefined") {
-      return !!localStorage.getItem("userId");
-    }
-    return false;
-  });
-
-  const openModal = () => {
-    setOpen(!open);
-  };
-
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-  }, [open]);
-
   const router = useRouter();
+
   const handleProductPage = () => {
     const lowercaseBrand = Brand.toLowerCase().replace(/\s+/g, "-");
     const lowercaseColor = color.toLowerCase().replace(/\s+/g, "-");
@@ -74,7 +52,6 @@ const Bestsellers: React.FC<BestsellersProps> = ({
     const lowercaseGender = gender.toLowerCase().replace(/\s+/g, "-");
     const lowercaseSKU = SKU.toLowerCase().replace(/\s+/g, "-");
 
-    // Construct the actual route with all lowercase words
     const actualRoute = `/eyewear/${lowercaseCategory}/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseGender}-${lowercaseSKU}`;
     const url = `/${lowercaseCategory}/${lowercaseBrand}-${lowercaseColor}-${lowercaseShape}-${lowercaseGender}-${lowercaseSKU}`;
 
@@ -83,43 +60,6 @@ const Bestsellers: React.FC<BestsellersProps> = ({
 
     router.push(actualRoute);
   };
-
-  const addToCart = async (userId: any) => {
-    if (!userId) {
-      setShowLoginModal(true);
-      return;
-    }
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=${userId}`,
-        {
-          cartProducts: [
-            {
-              productId: productId,
-              subProductId: subProductId,
-              size: size,
-              quantity: 1,
-              salePrice: salePrice,
-              originalPrice: originalPrice,
-              productImage: image,
-            },
-          ],
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      window.location.reload();
-    } catch (error) {
-      console.error("Error adding item to cart:", error);
-    }
-  };
-  useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    setUserId(userId);
-  }, []);
 
   return (
     <div>
@@ -159,75 +99,13 @@ const Bestsellers: React.FC<BestsellersProps> = ({
                   height={28.5}
                   width={28.5}
                   className="cursor-pointer"
-                  onClick={openModal}
+                  onClick={onZoomClick} 
                 />
               </div>
             </div>
           </div>
         </div>
       </div>
-      <LoginModal
-        showLoginModal={showLoginModal}
-        setShowLoginModal={setShowLoginModal}
-        isLoggedIn={isLoggedIn}
-        setIsLoggedIn={setIsLoggedIn}
-      />
-      {open && (
-        <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center  bg-gray-500 bg-opacity-[20%] backdrop-blur-sm ">
-          <div className="relative p-5 rounded-md bg-white xs:w-[310px]  md:w-[460px]  xl:w-[400px] ">
-            {isBestseller && (
-              <div className="absolute top-0 left-0 bg-[#FF4307] font-extrabold text-xs text-white h-[30px] w-[125px] flex justify-center items-center rounded-[5px]">
-                {Strings.BESTSELLER}
-              </div>
-            )}
-            <div className="absolute top-2 right-2">
-              <Image
-                src={Images.Closeblack}
-                alt="/"
-                height={24}
-                width={24}
-                className="cursor-pointer"
-                onClick={openModal}
-              />
-            </div>
-            <div className=" flex justify-center ">
-              <div className="space-y-4">
-                <img
-                  src={image}
-                  alt="/"
-                  className="h-[160px] w-[280px] object-cover"
-                />
-                <div className="text-center space-y-2">
-                  <h1 className="font-extrabold text-lg text-black">{title}</h1>
-                  <p className="font-semibold text-sm text-black">{SKU}</p>
-                  <p className="font-extrabold text-sm text-black">
-                    {salePrice
-                      ? salePrice.toLocaleString("en-IN")
-                      : originalPrice.toLocaleString("en-IN")}
-                  </p>
-                  <p className="font-bold text-sm text-black">
-                    {Strings.Inclusive_of_all_taxes}
-                  </p>
-                  <div className="flex justify-center">
-                    <div>
-                      <div>
-                        <StarRating rating={rating} />
-                      </div>
-
-                      <button
-                        onClick={handleProductPage}
-                        className="hover:border-PictonBlue hover:text-PictonBlue flex justify-center items-center border-black border w-[130px] h-[34px] rounded-[5px] font-bold text-xs text-black bg-white"
-                      >
-                        {Strings.KNOW_MORE}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

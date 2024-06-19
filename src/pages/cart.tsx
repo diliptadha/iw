@@ -9,6 +9,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 
 interface CardData {
+  totalQuantity: any;
   frameStyle: string;
   category: string;
   frameShape: string;
@@ -51,6 +52,18 @@ const ProductADD = () => {
   const [handleDel, setHandleDel] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [userId, setUserId] = useState<string | null>();
+
+  const groupedCardDetails = Object.values(
+    cardDetails.reduce((acc: { [key: string]: CardData }, ele: CardData) => {
+      const key = `${ele.cartProduct.productId}-${ele.cartProduct.subproductId}`;
+      if (!acc[key]) {
+        acc[key] = { ...ele, totalQuantity: ele.cartProduct.quantity };
+      } else {
+        acc[key].totalQuantity += ele.cartProduct.quantity;
+      }
+      return acc;
+    }, {})
+  );
 
   // Cart Data Api
   const gettingData = (userId: any) => {
@@ -173,6 +186,7 @@ const ProductADD = () => {
         // After successful deletion, fetch the updated address data
         fetchAddressData(userId);
         gettingData(userId);
+
         setHandleDel(false);
       })
       .catch((error) => {
@@ -183,6 +197,7 @@ const ProductADD = () => {
   // Delete popup
   const handleDeleteCartItem = (addressId: any) => {
     setSelectedAddressId(addressId);
+
     setHandleDel(true);
   };
 
@@ -213,7 +228,7 @@ const ProductADD = () => {
         <div className="wrap-div flex gap-5 flex-wrap sm:flex-nowrap">
           <div className="left-card sm:min-w-[65%] w-full">
             <h2 className="mb-[15px] font-semibold">{Strings.REVIEW_ORDER}</h2>
-            {cardDetails.map((ele, index) => {
+            {groupedCardDetails.map((groupedItem, index) => {
               return (
                 <div
                   className="card py-6 px-3 sm:flex mb-4 shadow-box"
@@ -221,7 +236,7 @@ const ProductADD = () => {
                 >
                   <div className="border py-[10px] h-[50px] w-[60px] md:h-[90px] md:w-[150px] lg:h-[110px] lg:w-[180px] mr-3 mb-2 sm:mb-0">
                     <img
-                      src={ele.cartProduct.productImage}
+                      src={groupedItem.cartProduct.productImage}
                       alt="gog"
                       className="w-[100%] h-[100%] object-contain"
                     />
@@ -231,20 +246,20 @@ const ProductADD = () => {
                     <div className="flex justify-between w-full border-b items-center pb-2">
                       <div>
                         <h3 className="frame-name text-[13px] sm:text-[14px] font-semibold">
-                          {ele.title}
+                          {groupedItem.title}
                         </h3>
                       </div>
                       <div className="flex gap-2 items-center">
                         <div>
-                          {ele.salePrice !== 0 &&
-                          ele.salePrice !== undefined ? (
+                          {groupedItem.salePrice !== 0 &&
+                          groupedItem.salePrice !== undefined ? (
                             <div className="relative">
                               <h4 className="text-[7px] md:text-[9px] rounded pr-4 text-white bg-green-600 p-1">
                                 Save{" "}
                                 {(
-                                  ((ele.cartProduct.originalPrice -
-                                    ele.cartProduct.salePrice) /
-                                    ele.cartProduct.originalPrice) *
+                                  ((groupedItem.cartProduct.originalPrice -
+                                    groupedItem.cartProduct.salePrice) /
+                                    groupedItem.cartProduct.originalPrice) *
                                   100
                                 ).toFixed(1)}
                                 %
@@ -254,49 +269,46 @@ const ProductADD = () => {
                           ) : null}
                         </div>
 
-                        {ele.cartProduct.originalPrice ? (
+                        {groupedItem.cartProduct.originalPrice ? (
                           <p className="ml-1 cut-amt text-[12px] sm:text-[13px] text-[#8c8c8ccf]">
                             <s>
                               MRP{" "}
-                              {ele.cartProduct.originalPrice.toLocaleString()}
+                              {groupedItem.cartProduct.originalPrice.toLocaleString()}
                             </s>
                           </p>
-                        ) : (
-                          ""
-                        )}
-                        {ele.cartProduct.salePrice ? (
+                        ) : null}
+                        {groupedItem.cartProduct.salePrice ? (
                           <p className="amt text-[13px] sm:text-[14px] font-semibold">
                             ₹
                             {(
-                              ele.cartProduct.salePrice *
-                              ele.cartProduct.quantity
+                              groupedItem.cartProduct.salePrice *
+                              groupedItem.totalQuantity
                             ).toLocaleString()}
                           </p>
-                        ) : (
-                          ""
-                        )}
+                        ) : null}
                       </div>
                     </div>
 
                     <div className="flex items-baseline justify-between mb-2 pt-[10px]">
                       <h3 className="text-[13px] sm:text-[14px]">
                         <span className="text-PictonBlue">
-                          {ele.category === "MYOPIA CONTROL LENSES"
-                            ? ele.title
-                            : Strings.FRAME}
+                          {groupedItem.category === "MYOPIA CONTROL LENSES"
+                            ? groupedItem.title
+                            : "Frame"}
                         </span>{" "}
-                        {ele.frameShape.charAt(0).toUpperCase() +
-                          ele.frameShape.slice(1).toLowerCase()}
-                        {ele.frameStyle.charAt(0).toUpperCase() +
-                          ele.frameStyle.slice(1).toLowerCase()}{" "}
-                        {ele.category.charAt(0).toUpperCase() +
-                          ele.category.slice(1).toLowerCase()}
+                        {groupedItem.frameShape.charAt(0).toUpperCase() +
+                          groupedItem.frameShape.slice(1).toLowerCase()}{" "}
+                        {groupedItem.frameStyle.charAt(0).toUpperCase() +
+                          groupedItem.frameStyle.slice(1).toLowerCase()}{" "}
+                        {groupedItem.category.charAt(0).toUpperCase() +
+                          groupedItem.category.slice(1).toLowerCase()}
                       </h3>
-                      {ele.cartProduct.salePrice ? (
+                      {groupedItem.cartProduct.salePrice ? (
                         <p className="amt text-[9px] text-[#8c8c8ccf]">
                           ₹
                           {(
-                            ele.cartProduct.salePrice * ele.cartProduct.quantity
+                            groupedItem.cartProduct.salePrice *
+                            groupedItem.cartProduct.quantity
                           ).toLocaleString()}
                         </p>
                       ) : (
@@ -313,27 +325,27 @@ const ProductADD = () => {
                           <button
                             onClick={() =>
                               handleDecrementButtonClick(
-                                ele.cartProduct.id,
-                                ele.cartProduct.quantity
+                                groupedItem.cartProduct.id,
+                                groupedItem.cartProduct.quantity
                               )
                             }
                             className={`px-2 py-1 bg-gray-200 text-gray-700 text-[20px] focus:outline-none${
-                              ele.cartProduct.quantity === 1
+                              groupedItem.cartProduct.quantity === 1
                                 ? " cursor-not-allowed opacity-50"
                                 : " cursor-pointer"
                             }`}
-                            disabled={ele.cartProduct.quantity === 1}
+                            disabled={groupedItem.totalQuantity === 1}
                           >
                             -
                           </button>
                           <span className="px-2 py-1 w-8 text-center  border-gray-300 rounded-none focus:outline-none">
-                            {ele.cartProduct.quantity}
+                            {groupedItem.totalQuantity}
                           </span>
                           <button
                             onClick={() =>
                               handleIncrementButtonClick(
-                                ele.cartProduct.id,
-                                ele.cartProduct.quantity
+                                groupedItem.cartProduct.id,
+                                groupedItem.cartProduct.quantity
                               )
                             }
                             className="px-2 py-1 bg-gray-200 text-gray-700 text-[20px] focus:outline-none"
@@ -359,7 +371,7 @@ const ProductADD = () => {
                           stroke="currentColor"
                           className="sm:w-6 sm:h-6 w-4 h-4 cursor-pointer"
                           onClick={() =>
-                            handleDeleteCartItem(ele.cartProduct.id)
+                            handleDeleteCartItem(groupedItem.cartProduct.id)
                           }
                         >
                           <path
@@ -412,7 +424,7 @@ const ProductADD = () => {
                                     {Strings.CANCEL}
                                   </button>
                                   <button
-                                    onClick={() => deleteAddress()}
+                                    onClick={deleteAddress}
                                     className="py-[10px] px-[15px] hover:text-white border border-PictonBlue text-PictonBlue hover:bg-PictonBlue hover:bg-opacity-80 duration-200 rounded "
                                   >
                                     {Strings.DELETE}

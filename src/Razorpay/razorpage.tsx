@@ -6,6 +6,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 
 interface CardData {
+  cartProduct: any;
   id: any;
   title: any;
   productId: any;
@@ -59,10 +60,10 @@ export default function RazorPage({
   };
 
   const cartProduct = cardDetails.map((item) => ({
-    productId: item.productId,
-    subProductId: item.subProductId,
-    quantity: item.quantity,
-    totalPrice: item.quantity * item.salePrice,
+    productId: item.cartProduct.productId,
+    subProductId: item.cartProduct.subProductId,
+    quantity: item.cartProduct.quantity,
+    totalPrice: item.cartProduct.quantity * item.cartProduct.salePrice,
     power: 200,
   }));
 
