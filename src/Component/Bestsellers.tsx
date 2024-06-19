@@ -10,12 +10,12 @@ interface BestsellersProps {
   title: string;
   SKU: string;
   Brand: string;
-  salePrice: number;
+  salePrice: string;
   rating?: number;
   isBestseller?: boolean;
   productId: string;
   subProductId: string;
-  originalPrice: number;
+  originalPrice: string;
   color: string;
   shape: string;
   gender: string;
