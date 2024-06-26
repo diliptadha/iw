@@ -140,20 +140,20 @@ export const Footer = () => {
           </div> */}
           <div>
             <Link
-              href="/my-order"
+              href={isLoggedIn ? "/my-order" : "/"}
               className="font-lato text-base  text-12 font-light hover:opacity-[0.6]"
             >
               {Strings.ORDERS}
             </Link>
           </div>
-          <div>
+          {/* <div>
             <Link
               href="/payment"
               className="font-lato text-base  text-12 font-light hover:opacity-[0.6]"
             >
               {Strings.PAYMENT}
             </Link>
-          </div>
+          </div> */}
           <div>
             <Link
               href="/refund-policy"
@@ -293,15 +293,15 @@ export const Footer = () => {
       <div className=" flex gap-x-2 mt-4 lg:mt-8 font-lato xs:text-xs md:text-12 font-bold text-white">
         <h1> {Strings.BRANCHES}</h1>
         <p className="border-l-2 border-white" />
-        <Link href={`/store-location?id=1`}>
+        <Link href={`/store-location#dadar`}>
           <h1> {Strings.DADAR}</h1>
         </Link>
         <p className="border-l-2 border-white" />
-        <Link href={`/store-location?id=2`}>
+        <Link href={`/store-location#juhu`}>
           <h1> {Strings.JUHU}</h1>
         </Link>
         <p className="border-l-2 border-white" />
-        <Link href={`/store-location?id=3`}>
+        <Link href={`/store-location#andheri`}>
           <h1> {Strings.ANDHERI}</h1>
         </Link>
       </div>

@@ -37,8 +37,9 @@ const Carosel = () => {
         showIndicators={false}
         showThumbs={false}
         showStatus={false}
-        infiniteLoop={false}
-        autoPlay={false}
+        infiniteLoop={true}
+        interval={2000}
+        autoPlay={true}
         className="xs:h-[160px] md:h-[258px] lg:h-[358px] rounded-[10px] overflow-hidden"
       >
         {slider.map((item) => (

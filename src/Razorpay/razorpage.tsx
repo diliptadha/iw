@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useRazorpay, { RazorpayOptions } from "react-razorpay";
 
 import { Images } from "@/constant";
@@ -19,6 +19,7 @@ interface CardData {
 
 export default function RazorPage({
   onCancel,
+
   toDiAfPr,
 }: {
   onCancel: () => void;
@@ -31,15 +32,31 @@ export default function RazorPage({
   const [isPaymentModalOpened, setIsPaymentModalOpened] = useState(false);
   const [userId, setUserId] = useState<string | null>();
   const [cardDetails, setCardDetails] = useState<CardData[]>([]);
+  const isOrderCreated = useRef(false);
 
-  const handlePaymentSuccess = (orderId: string) => {
-    router.replace({
-      pathname: "/successful-Payment",
-      query: {
-        orderId,
-        toDiAfPr,
-      },
-    });
+  const handlePaymentSuccess = async (orderId: string) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}payment/update?id=${orderId}`,
+        { status: "success" },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Payment update response:", response.data);
+
+      router.replace({
+        pathname: "/successful-Payment",
+        query: {
+          orderId,
+          toDiAfPr,
+        },
+      });
+    } catch (error) {
+      console.error("Error updating payment status:", error);
+    }
   };
 
   const resetPaymentModal = () => {
@@ -53,30 +70,34 @@ export default function RazorPage({
       );
       const cartData = response?.data?.cartData;
       setCardDetails(cartData);
-      console.log("cartDetails", cartData);
     } catch (error) {
       console.log("Error fetching data", error);
     }
   };
 
-  const cartProduct = cardDetails.map((item) => ({
-    productId: item.cartProduct.productId,
-    subProductId: item.cartProduct.subProductId,
-    quantity: item.cartProduct.quantity,
-    totalPrice: item.cartProduct.quantity * item.cartProduct.salePrice,
-    power: 200,
-  }));
+  const cartProduct = cardDetails.map((item) => {
+    return {
+      productId: item.cartProduct.productId,
+      subProductId: item.cartProduct.subProductId,
+      quantity: item.cartProduct.quantity,
+      totalPrice: toDiAfPr / cardDetails.length,
+
+      power: 200,
+    };
+  });
 
   const createOrder = async (userId: any) => {
+    const token = localStorage.getItem("accessToken");
+    if (isOrderCreated.current) return;
+    isOrderCreated.current = true;
     try {
-      console.log("prod", cartProduct);
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}payment/create`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer dsLCHSAfKF6s371z8QJFKSGj",
+            authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             userId: userId,
@@ -119,7 +140,7 @@ export default function RazorPage({
         },
         prefill: {
           name: "Iksana Opticals",
-          email: "youremail@example.com",
+          email: "support@iksanaopticals.in",
           contact: "9999999999",
         },
         notes: {
@@ -136,7 +157,45 @@ export default function RazorPage({
       };
 
       const rzpay = new Razorpay(options);
+
+      let data1 = "";
+
+      let config1 = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}payment/emptyUserCart?userId=${userId}`,
+        headers: {},
+        data: data1,
+      };
+
+      axios
+        .request(config1)
+        .then((response) => {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      rzpay.on("payment.success", function (response: any) {
+        alert(response.success.code);
+        alert(response.success.description);
+        alert(response.success.source);
+        alert(response.success.step);
+        alert(response.success.reason);
+        alert(response.success.metadata.order_id);
+        alert(response.success.metadata.payment_id);
+      });
+      rzpay.on("payment.failed", function (response: any) {
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+      });
       rzpay.open();
+      console.log("www", rzpay);
     } catch (error) {
       console.log("err", error);
     }

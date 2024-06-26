@@ -101,8 +101,6 @@ const SuccessPayment = () => {
     }
   };
 
-  // ok thank you bro check kari  le?ok
-
   // const cardDetails = [
   //   {
   //     id: 1,
@@ -253,7 +251,7 @@ const SuccessPayment = () => {
             </div>
           </div>
         </div>
-        {/* pan api aa call karwani che  */}
+
         <div className="text-center mt-[30px] flex flex-col sm:block items-center">
           <button
             onClick={() => router.push("/")}

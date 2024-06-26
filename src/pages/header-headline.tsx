@@ -137,7 +137,7 @@ const HeaderHeadline = () => {
 
   return (
     <div className="max-w-screen-2xl m-auto">
-      <div className="bg-PictonBlue xs:px-[16px] md:px-[46px] h-16 w-full flex justify-between items-center">
+      <div className="bg-PictonBlue  xs:px-[16px] md:px-[46px] h-16 w-full flex justify-between items-center">
         <div className="flex items-center space-x-4">
           <div className="flex bg-[#F2F2F2] h-7 w-[150px] rounded-[5px] items-center text-black">
             <button
@@ -164,7 +164,9 @@ const HeaderHeadline = () => {
             </button>
           </div>
           <div className="flex items-center cursor-pointer xs:hidden lg:flex">
-            <Image src={Images.Phone} alt="/" height={17} width={17} />
+            <a href="tel:+918291251241">
+              <Image src={Images.Phone} alt="/" height={17} width={17} />
+            </a>
             <a href="tel:+918291251241">
               <p className="text-black font-bold text-xs ml-2">
                 {Strings.NEED_HELP1}
@@ -392,26 +394,35 @@ const HeaderHeadline = () => {
           </div>
         )}
         <div className="flex space-x-4 items-center xs:hidden lg:flex">
-          <div className="flex items-center cursor-pointer">
-            <Image src={Images.Location} alt="/" height={18} width={14} />
-            <Link href={"/store-location"}>
+          <Link href={"/store-location"}>
+            <div className="flex items-center cursor-pointer">
+              <Image src={Images.Location} alt="/" height={18} width={14} />
+
               <p className="text-black font-bold text-xs ml-2">
                 {Strings.FIND_THE_NEAREST_STORE}
               </p>
-            </Link>
-          </div>
-          <div className="flex items-center cursor-pointer">
-            <Image src={Images.Eye} alt="/" height={14} width={22} />
-            <p className="text-black font-bold text-xs mx-2">
-              {Strings.TALK_WITH_US}
-            </p>
+            </div>
+          </Link>
+          <div
+            onClick={openWhatsApp}
+            className="flex items-center cursor-pointer"
+          >
             <Image
-              onClick={openWhatsApp}
-              src={Images.vector}
+              src={Images.whatsappoutline}
               alt="/"
               height={18}
               width={18}
             />
+            <p className="text-black font-bold text-xs mx-2">
+              {Strings.TALK_WITH_US}
+            </p>
+            {/* <Image
+                onClick={openWhatsApp}
+                src={Images.vector}
+                alt="/"
+                height={18}
+                width={18}
+              /> */}
           </div>
           <div className="flex items-center cursor-pointer">
             <Link href={"/profile"}>

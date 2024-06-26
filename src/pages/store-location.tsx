@@ -1,58 +1,58 @@
 import "../app/globals.css";
 
-import { Images, Strings } from "@/constant";
 import React, { useEffect, useState } from "react";
 
 import { Footer } from "@/Component/footer";
 import Header from "@/Component/header";
 import Image from "next/image";
+import { Images } from "@/constant";
 import Link from "next/link";
 import StarRating from "./StarRating";
+import axios from "axios";
+
+interface storeData {
+  id: string;
+  title: string;
+  description: string;
+  address: string;
+  hours: string;
+  number: number;
+  rating: number;
+  isVisible: boolean;
+  createdAt: string;
+  updatedAt: string;
+  image: string;
+}
 
 const StoreLocation = () => {
   const [search, setSearch] = useState("");
+  const [storeData, setStoreData] = useState<storeData[]>([]);
 
-  const store = [
-    {
-      id: 1,
-      name: "Iksana opticals",
-      address:
-        "Gulmohar Cross Rd Number 6, near irla masjid, Junaid Nagar, Navpada, JVPD Scheme, Andheri West, Mumbai, Maharashtra 400058",
-      rating: 5,
-      timing: "Hours: 10:00 AM to 06:30 PM",
-      number: 7977994474,
-      storeImg: "/Images/ikshana_store1_img.jpg",
-    },
-    {
-      id: 2,
-      name: "Iksana opticals",
-      address:
-        "Elixir Eye Clinic, 811, Kohinoor square, N C. Kelkar Marg, opposite Shiv Sena Bhavan, Dadar West, Mumbai, Maharashtra 400028",
-      rating: 5,
-      timing: "Hours: 11:00 AM to 07:00 PM",
-      number: 7977994474,
-      storeImg: "/Images/ikshana_store2_img.jpg",
-    },
-    {
-      id: 3,
-      name: "Iksana opticals",
-      address:
-        "Eye Solutions, 151D, August Kranti Rd, Kemps Corner, Malabar Hill, Mumbai, Maharashtra 400036",
-      rating: 4.9,
-      timing: "Hours: 10:00 AM to 06:00 PM",
-      number: 8291251241,
-      storeImg: "/Images/ikshana_store3_img.jpg",
-    },
-  ];
+  const fetchStoreLocation = async () => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${process.env.NEXT_PUBLIC_API_URL}home/getStoreLocation`,
+      headers: {},
+    };
+    try {
+      const response = await axios.request(config);
+      setStoreData(response.data.storeData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const headerHeight = 5;
+  useEffect(() => {
+    fetchStoreLocation();
+  }, []);
 
   useEffect(() => {
     const hash = window.location.hash.substring(1);
     if (hash) {
       const element = document.getElementById(hash);
       if (element) {
-        const headerOffset = headerHeight * 5;
+        const headerOffset = 9 * 9;
         const elementPosition = element.offsetTop - headerOffset;
         window.scrollTo({
           top: elementPosition,
@@ -60,7 +60,7 @@ const StoreLocation = () => {
         });
       }
     }
-  }, []);
+  }, [storeData]);
 
   return (
     <>
@@ -68,17 +68,23 @@ const StoreLocation = () => {
         <Header setSearch={setSearch} />
       </div>
       <div className=" px-[2rem] py-[2rem] md:px-[3rem] xl:px-[6rem] ">
-        {store.length > 0 ? (
-          store.map((ele, index) => (
+        {storeData.length > 0 ? (
+          storeData.map((ele, index) => (
             <div
-              id={ele.id === 1 ? "dadar" : ele.id === 2 ? "juhu" : "andheri"}
+              id={
+                ele.id === "66741a679b461fcecbe847fe"
+                  ? "dadar"
+                  : ele.id === "66741a469b461fcecbe847fd"
+                  ? "andheri"
+                  : "juhu"
+              }
               key={index}
-              className="border rounded-[10px]  mb-[15px] lg:max-w-[80%] md:max-w-[90%] xl:max-w-[70%] md:mt-0 md:mx-auto flex-wrap md:flex-none text-justify	tracking-[0.5px] text-[12px] md:text-[15px] p-[20px] flex"
-              style={{ scrollMarginTop: `${headerHeight}rem` }}
+              className="border shadow-md rounded-[10px] mb-[15px] lg:max-w-[80%] md:max-w-[90%] xl:max-w-[70%] md:mt-0 md:mx-auto flex-wrap md:flex-none text-justify tracking-[0.5px] text-[12px] md:text-[15px] p-[20px] flex"
+              style={{ scrollMarginTop: "5rem" }}
             >
               <div className="md:w-[250px] md:h-[250px] h-[220px] w-[100%] md:mr-[20px] mb-[10px] lg:mb-0">
                 <img
-                  src={ele.storeImg}
+                  src={ele.image}
                   alt="shopImage"
                   className="w-[100%] h-[100%] rounded-[4px] object-cover"
                 />
@@ -86,7 +92,7 @@ const StoreLocation = () => {
               <div className="flex-1">
                 <div className="mb-[15px] font-bold flex justify-between items-center ">
                   <h2 className="text-[15px] md:text-[18px] lg:text-[20px]">
-                    {ele.name}
+                    {ele.title}
                   </h2>
                   <div className="flex items-center gap-[2px]">
                     <StarRating rating={ele.rating} />
@@ -96,7 +102,7 @@ const StoreLocation = () => {
                   {ele.address}
                 </h3>
                 <h4 className="mb-[10px] md:mb-[20px] md:text-[14px] lg:text-[16px] xl:text-[18px]">
-                  {ele.timing}
+                  {ele.hours}
                 </h4>
                 <div className="flex gap-[10px] mb-[20px] items-center">
                   <Image
@@ -117,7 +123,7 @@ const StoreLocation = () => {
             </div>
           ))
         ) : (
-          <div>{Strings.NO_DATA_FOUND}</div>
+          <></>
         )}
       </div>
       <Footer />

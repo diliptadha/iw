@@ -1,12 +1,19 @@
-import React, { useEffect, useState } from "react";
 import "../app/globals.css";
-import { useRouter } from "next/router";
-import axios from "axios";
+
 import { Faqs, Images, Strings } from "@/constant";
-import { Footer } from "@/Component/footer";
-import HeaderHeadline from "./header-headline";
+import React, { useEffect, useState } from "react";
 import { format, formatDate } from "date-fns";
 
+import { Footer } from "@/Component/footer";
+import HeaderHeadline from "./header-headline";
+import Headerforfaqs from "@/Component/headerforfaqs";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+
+interface ExpectedDelivery {
+  today: string;
+  expected: string;
+}
 const myOrder = () => {
   interface CardData {
     id: any;
@@ -35,10 +42,28 @@ const myOrder = () => {
     isDefault: boolean;
   }
 
+  const router = useRouter();
+
   //   const [cardDetails, setCardDetails] = useState<CardData[]>([]);
+  const [search, setSearch] = useState("");
+
   const [addGet, setAddGet] = useState<AddressData | null>(null);
   const [successData, setSuccessData] = useState<CardData[]>([]);
+  const [orders, setOrders] = useState<CardData[]>([]);
   const [userId, setUserId] = useState<string | null>();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !!localStorage.getItem("userId");
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/");
+    }
+  }, [isLoggedIn, router]);
 
   const fetchAddressData = (userId: any) => {
     axios
@@ -62,40 +87,68 @@ const myOrder = () => {
     console.log("token", token);
   }, []);
 
-  const successOrderData = (userId: any) => {
-    axios
-      .get(
-        `${process.env.NEXT_PUBLIC_API_URL}user/userOrderData?userId=${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json", // Add any other headers you need
-          },
-        }
-      )
-      .then((response) => {
-        const data = response?.data?.data;
-        setSuccessData(data);
-        console.log(data);
-        // console.log("product", response.data.productData[0].product.SKU);
-      })
-      .catch((error) => {
-        console.log("Error fetching data", error);
-      });
+  const fetchUserOrderData = async () => {
+    const token = localStorage.getItem("accessToken");
+    console.log("Authorization Token for UserOrderData:", token);
+    try {
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}user/userOrderData?userId=${userId} `,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios.request(config);
+
+      console.log("orders", JSON.stringify(response.data.data));
+      setOrders(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  useEffect(() => {
+    if (userId) {
+      fetchUserOrderData();
+    }
+  }, [userId]);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     setUserId(userId);
     fetchAddressData(userId);
     // gettingData(userId);
-    successOrderData(userId);
   }, []);
 
   const formatDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);
     return format(date, "dd-MMM-yyyy hh:mm a");
   };
+
+  const [date, setDate] = useState<ExpectedDelivery | null>(null);
+
+  const fetchExpectedDeliveryDate = async () => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${process.env.NEXT_PUBLIC_API_URL}product/getExpectedDeliveryDate`,
+      headers: {},
+    };
+
+    try {
+      const response = await axios.request(config);
+      setDate(response.data.expectedDeliveryData);
+      console.log(JSON.stringify(response.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchExpectedDeliveryDate();
+  }, []);
 
   // let toOrPr = successData.reduce(
   //   (total, ele) =>
@@ -108,7 +161,7 @@ const myOrder = () => {
 
   return (
     <>
-      <HeaderHeadline />
+      <Headerforfaqs setSearch={setSearch} />
       <div className=" px-[1rem] py-[1rem] md:px-[3rem] xl:px-[6rem] ">
         <div className="-bg-[#90e9c1] ">
           <h1 className=" text-[20px] sm:text-[30px] font-semibold text-center">
@@ -123,63 +176,55 @@ const myOrder = () => {
           <div className="wrap-div flex gap-5 flex-wrap sm:flex-nowrap mt-11 mb-14">
             <div className="left-card sm:min-w-[65%] w-full">
               {/* <div className="card mb-4 shadow-box"> */}
-              {successData.map((ele, index) => (
-                <>
-                  {ele.products.map((prods: any) => (
-                    <>
-                      <div className="card mb-4 shadow-box">
-                        <div className="py-3 px-5">
-                          <h3 className="text-[#646464]">{prods.orderId}</h3>
-                          <h3 className="text-[12px]">
-                            {formatDate(prods.createdAt)}
-                          </h3>
-                        </div>
+              {orders.map((order, index) => (
+                <div
+                  key={index}
+                  className="card bg-white py-6 px-3 sm:flex mb-4 shadow-box"
+                >
+                  <div className="border flex justify-center items-center py-[10px] xs:h-[60px] xs:w-[80px] md:h-[90px] md:w-[150px] lg:h-[110px] lg:w-[180px] mr-3 mb-2 sm:mb-0">
+                    <img
+                      src={order.products.productImage}
+                      alt={order.products.title}
+                      className="xs:h-[80px] xs:w-[80px] md:w-[100%] md:h-[100%] object-cover"
+                    />
+                  </div>
 
-                        {/* image part */}
-                        <div className="sm:flex justify-between items-center border-b-2 border-t-2">
-                          <div className=" py-[10px] h-[50px] w-[60px] md:h-[90px] md:w-[150px] lg:h-[130px] lg:w-[200px] mr-3 mb-2 sm:mb-0">
-                            <img
-                              src={prods?.product?.productImage}
-                              alt="gog"
-                              className="w-[100%] h-[100%] object-contain"
-                            />
-                          </div>
-
-                          <div>
-                            <h3 className="text-[#3aad3a] font-semibold text-[17px]">
-                              Order Placed
-                            </h3>
-                          </div>
-
-                          <div className="mr-7 ml-8">
-                            <div className="flex justify-between w-full items-center pb-2">
-                              <div>
-                                <h3 className="frame-name text-[13px] sm:text-[14px] font-semibold">
-                                  {ele.title}
-                                </h3>
-                              </div>
-                            </div>
-
-                            {/* <div className="flex items-baseline justify-between mb-1 pt-[10px]">
-                            <h3 className="text-[13px] sm:text-[14px]">
-                              {ele.productInfo.brands}
-                            </h3>
-                          </div> */}
-
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center">
-                                <h2>
-                                  {" "}
-                                  ₹{prods?.product?.salePrice.toLocaleString()}
-                                </h2>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                  <div className="w-full">
+                    <div className="flex justify-between w-full border-b items-center pb-2">
+                      <div>
+                        <h3 className="frame-name text-[13px] sm:text-[14px] font-semibold">
+                          {order.products.title}
+                        </h3>
                       </div>
-                    </>
-                  ))}
-                </>
+                    </div>
+
+                    <div className="flex items-baseline justify-between  pt-[10px]">
+                      <h3 className="text-[13px] sm:text-[14px]">
+                        <span className="text-PictonBlue">
+                          {" "}
+                          {order.products.category ===
+                            "MYOPIA CONTROL LENSES" || "contact-lenses"
+                            ? order.products.title
+                            : "Frame"}
+                        </span>{" "}
+                        {order.products.frameShape.charAt(0).toUpperCase() +
+                          order.products.frameShape.slice(1).toLowerCase()}{" "}
+                        / {order.products.frameStyle}
+                      </h3>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <h2>Price: {order.products.salePrice}</h2>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <h2>Qty: {order.quantity}</h2>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               ))}
 
               {/* {grandtotal part} */}
@@ -197,7 +242,12 @@ const myOrder = () => {
               <div className="shadow-box">
                 <div className="py-3 px-6 text-[13px] border-b border-[lightgray]">
                   <h3 className="text-PictonBlue">{Strings.ORDER_PLACED}</h3>
-                  <p>Delivery by 10-Apr-2024</p>
+                  {date && (
+                    <>
+                      <h3>Free Standard Delivery by {date.expected}</h3>
+                      {/* <h3>Expected: {date.expected}</h3> */}
+                    </>
+                  )}
                 </div>
                 <div className="py-3 pb-2 px-6 text-[13px] border-b border-[lightgray]">
                   <h3 className="text-PictonBlue">Delivery Address</h3>

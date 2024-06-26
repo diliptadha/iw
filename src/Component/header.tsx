@@ -106,7 +106,11 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
   }, [firstName]);
 
   const handleButtonClick = () => {
-    setShowLoginModal(true);
+    if (isLoggedIn) {
+      router.push("/profile");
+    } else {
+      setShowLoginModal(true);
+    }
   };
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -294,6 +298,34 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
     setMenuData(updatedMenuData);
     setRotateImage(!rotateImage);
   };
+
+  useEffect(() => {
+    if (showMenu && menuData) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [showMenu && menuData]);
+
+  useEffect(() => {
+    if (showMenu) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+
+    return () => {
+      document.body.classList.remove("no-scroll");
+    };
+  }, [showMenu]);
+
+  // useEffect(() => {
+  //   if (!showMenu) {
+  //     document.body.style.overflow = "hidden";
+  //   } else {
+  //     document.body.style.overflow = "";
+  //   }
+  // }, [!showMenu]);
 
   // const [category, setCategory] = useState("");
   // const [usage, setUsage] = useState("");
@@ -523,11 +555,11 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                         </li>
                                       ))}
                                     </ul>
+                                    <p className="border border-black mt-2"></p>
                                   </div>
                                 )}
                             </div>
 
-                            <p className="border border-black"></p>
                             <div>
                               {item.brand && item.brand.length > 0 && (
                                 <>
@@ -564,11 +596,11 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                       </li>
                                     ))}
                                   </ul>
+                                  <p className="border border-black mt-2"></p>
                                 </>
                               )}
                             </div>
 
-                            <p className="border border-black"></p>
                             <div>
                               {item.color && item.color.length > 0 && (
                                 <>
@@ -598,10 +630,11 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                       </li>
                                     ))}
                                   </ul>
+                                  <p className="border border-black mt-2"></p>
                                 </>
                               )}
                             </div>
-                            <p className="border border-black"></p>
+
                             <div>
                               {item.style && item.style.length > 0 && (
                                 <>
@@ -624,10 +657,11 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                       </li>
                                     ))}
                                   </ul>
+                                  <p className="border border-black mt-2"></p>
                                 </>
                               )}
                             </div>
-                            <p className="border border-black"></p>
+
                             <div>
                               {item.shape && item.shape.length > 0 && (
                                 <>
@@ -697,10 +731,10 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                     className="flex items-center cursor-pointer"
                   >
                     <Image
-                      src={Images.Eyewhite}
+                      src={Images.whatsappoutlinewhite}
                       alt="/"
-                      height={14}
-                      width={20}
+                      height={18}
+                      width={18}
                     />
                     <p className="text-white font-normal text-xs ml-2">
                       {Strings.TALK_WITH_US}
@@ -722,7 +756,6 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       className={`text-white font-normal text-xs ml-2 ${
                         isLoggedIn ? "cursor-default" : ""
                       } `}
-                      disabled={isLoggedIn}
                     >
                       {signInText}
                     </button>
@@ -752,17 +785,22 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
               onClick={openWhatsApp}
               className="flex items-center cursor-pointer"
             >
-              <Image src={Images.Eye} alt="/" height={14} width={22} />
+              <Image
+                src={Images.whatsappoutline}
+                alt="/"
+                height={18}
+                width={18}
+              />
               <p className="text-black font-bold text-xs mx-2">
                 {Strings.TALK_WITH_US}
               </p>
-              <Image
+              {/* <Image
                 onClick={openWhatsApp}
                 src={Images.vector}
                 alt="/"
                 height={18}
                 width={18}
-              />
+              /> */}
             </div>
             <div className="flex items-center ">
               <Link href={isLoggedIn ? "/profile" : "/"}>
@@ -776,10 +814,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
               </Link>
               <button
                 onClick={handleButtonClick}
-                className={`text-black font-bold text-xs ml-2 ${
-                  signInText === "Sign In" ? "cursor-pointer" : "cursor-default"
-                } `}
-                disabled={isLoggedIn}
+                className={`text-black font-bold text-xs ml-2 `}
               >
                 {signInText}
               </button>

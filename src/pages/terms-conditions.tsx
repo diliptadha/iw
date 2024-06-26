@@ -3,14 +3,14 @@ import "../app/globals.css";
 import React, { useState } from "react";
 
 import { Footer } from "@/Component/footer";
-import Header from "@/Component/header";
+import Headerforfaqs from "@/Component/headerforfaqs";
 import { Strings } from "@/constant";
 
 const Terms = () => {
   const [search, setSearch] = useState("");
   return (
     <>
-      <Header setSearch={setSearch} />
+      <Headerforfaqs setSearch={setSearch} />
       <div className=" px-[2rem] py-[2rem] md:px-[3rem] xl:px-[6rem] ">
         <h1 className="underline text-[30px] font-semibold mb-[20px] text-[#42b7e9]">
           {Strings.TERM_CONDITION}

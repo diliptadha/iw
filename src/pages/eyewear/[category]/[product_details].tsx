@@ -457,6 +457,7 @@ const ProductDetails = () => {
         );
         showCartMessage("Product added to cart successfully!");
         window.location.reload();
+        handleScrollToTop();
       }
     } catch (error) {
       console.error("Error adding item to cart:", error);
@@ -802,7 +803,7 @@ const ProductDetails = () => {
                         width={500}
                         src={selectedSubProduct.ProductData?.productImage}
                         alt="productImage"
-                        className="image2 md:mb-1 lg:mb-2 md:mr-1 lg:mr-2 border border-black rounded"
+                        className="image2 md:mb-1 lg:mb-2 md:mr-1 lg:mr-2 border border-black rounded  md:object-cover"
                         loading="lazy"
                       />
                       {Array.isArray(
@@ -820,7 +821,7 @@ const ProductDetails = () => {
                                 index === 0
                                   ? "md:mb-1 md:mr-1 lg:mb-2"
                                   : "md:mr-1 md:mb-1 lg:mb-0 lg:mr-2"
-                              } border border-black rounded`}
+                              } border border-black rounded md:object-cover`}
                               loading="lazy"
                             />
                           )

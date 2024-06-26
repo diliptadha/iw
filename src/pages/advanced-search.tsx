@@ -542,6 +542,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
     selected: React.SetStateAction<number>;
   }) => {
     setCurrentPageFilter(selected.selected);
+    handleScrollToTop();
   };
 
   useEffect(() => {
@@ -769,6 +770,14 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
     }
   }, [showLoginModal]);
 
+  useEffect(() => {
+    if (!isDrawerOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [!isDrawerOpen]);
+
   const [search, setSearch] = useState("");
   const [trendingSearchData, setTrendingSearchData] = useState<any[]>([]);
 
@@ -824,6 +833,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
     selected: React.SetStateAction<number>;
   }) => {
     setCurrentPageTrending(selected.selected);
+    handleScrollToTop();
   };
 
   const [searchQuery, setSearchQuery] = useState<{

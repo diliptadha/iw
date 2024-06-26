@@ -4,7 +4,7 @@ import { Faqs, Images, Strings } from "@/constant";
 import React, { useState } from "react";
 
 import { Footer } from "@/Component/footer";
-import Header from "@/Component/header";
+import Headerforfaqs from "@/Component/headerforfaqs";
 
 const FAQ = () => {
   const [search, setSearch] = useState("");
@@ -16,7 +16,7 @@ const FAQ = () => {
   };
   return (
     <>
-      <Header setSearch={setSearch} />
+      <Headerforfaqs setSearch={setSearch} />
       <div className=" px-[2rem] py-[2rem] md:px-[3rem] xl:px-[6rem]">
         <div className="main-ques mb-[10px]">
           <h1 className="text-[#3A90E2] text-[22px]">{Faqs.GOT_QUES}</h1>
@@ -24,22 +24,13 @@ const FAQ = () => {
         </div>
         <div className="mb-[20px]">
           {/* 4 tags */}
-          <a href="#" className="underline mb-[2px] font-bold">
-            {Faqs.KNOW_YOUR_WEAR}
-          </a>
-          <br />
-          <a href="#" className="underline mb-[2px] font-bold">
-            {Faqs.POLICIES}
-          </a>
-          <br />
-          <a href="#" className="underline mb-[2px] font-bold">
-            {Faqs.MEMBERSHIPS}
-          </a>
-          <br />
-          <a href="#" className="underline mb-[2px] font-bold">
-            {Faqs.FAQS}
-          </a>
-          <br />
+          <p className="underline mb-[2px] font-bold">{Faqs.KNOW_YOUR_WEAR}</p>
+
+          <p className="underline mb-[2px] font-bold">{Faqs.POLICIES}</p>
+
+          <p className="underline mb-[2px] font-bold">{Faqs.MEMBERSHIPS}</p>
+
+          <p className="underline mb-[2px] font-bold">{Faqs.FAQS}</p>
         </div>
 
         <div className="text-justify">

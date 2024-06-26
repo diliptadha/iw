@@ -59,6 +59,8 @@ export const Images = {
   SMS: "/Images/sms.png",
   EXPLORE: "/Images/explore.svg",
   RUPEE: "/Images/rupee-indian.png",
+  whatsappoutline: "/Images/whatsappoutline.png",
+  whatsappoutlinewhite: "/Images/whatsappoutlinewhite.png",
 
   //faq image
 

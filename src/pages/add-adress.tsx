@@ -10,6 +10,10 @@ import axios from "axios";
 import { formatDate } from "date-fns";
 import { useRouter } from "next/router";
 
+interface ExpectedDelivery {
+  today: string;
+  expected: string;
+}
 interface AddressData {
   city: any;
   fullName: any;
@@ -334,6 +338,29 @@ const AddAdress = () => {
       return acc;
     }, {})
   );
+
+  const [date, setDate] = useState<ExpectedDelivery | null>(null);
+
+  const fetchExpectedDeliveryDate = async () => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${process.env.NEXT_PUBLIC_API_URL}product/getExpectedDeliveryDate`,
+      headers: {},
+    };
+
+    try {
+      const response = await axios.request(config);
+      setDate(response.data.expectedDeliveryData);
+      console.log(JSON.stringify(response.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchExpectedDeliveryDate();
+  }, []);
 
   return (
     <>
@@ -682,7 +709,12 @@ const AddAdress = () => {
                     d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                   />
                 </svg>
-                <h3>{Strings.FREE_STD_DELIVERY}</h3>
+                {date && (
+                  <>
+                    <h3>Free Standard Delivery by {date.expected}</h3>
+                    {/* <h3>Expected: {date.expected}</h3> */}
+                  </>
+                )}
               </div>
             </div>
 

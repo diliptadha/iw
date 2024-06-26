@@ -33,6 +33,7 @@
     "react-router-dom": "^6.23.0",
     "react-simple-star-rating": "^5.1.7",
     "react-slick": "^0.30.2",
+    "react-spinners": "^0.13.8",
     "react-whatsapp": "^0.3.0",
     "sharp": "^0.33.3",
     "shortid": "^2.2.16",

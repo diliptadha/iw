@@ -53,18 +53,6 @@ const ProductADD = () => {
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [userId, setUserId] = useState<string | null>();
 
-  const groupedCardDetails = Object.values(
-    cardDetails.reduce((acc: { [key: string]: CardData }, ele: CardData) => {
-      const key = `${ele.cartProduct.productId}-${ele.cartProduct.subproductId}`;
-      if (!acc[key]) {
-        acc[key] = { ...ele, totalQuantity: ele.cartProduct.quantity };
-      } else {
-        acc[key].totalQuantity += ele.cartProduct.quantity;
-      }
-      return acc;
-    }, {})
-  );
-
   // Cart Data Api
   const gettingData = (userId: any) => {
     axios
@@ -228,7 +216,7 @@ const ProductADD = () => {
         <div className="wrap-div flex gap-5 flex-wrap sm:flex-nowrap">
           <div className="left-card sm:min-w-[65%] w-full">
             <h2 className="mb-[15px] font-semibold">{Strings.REVIEW_ORDER}</h2>
-            {groupedCardDetails.map((groupedItem, index) => {
+            {cardDetails.map((groupedItem, index) => {
               return (
                 <div
                   className="card py-6 px-3 sm:flex mb-4 shadow-box"
@@ -282,7 +270,7 @@ const ProductADD = () => {
                             ₹
                             {(
                               groupedItem.cartProduct.salePrice *
-                              groupedItem.totalQuantity
+                              groupedItem.cartProduct.quantity
                             ).toLocaleString()}
                           </p>
                         ) : null}
@@ -334,12 +322,12 @@ const ProductADD = () => {
                                 ? " cursor-not-allowed opacity-50"
                                 : " cursor-pointer"
                             }`}
-                            disabled={groupedItem.totalQuantity === 1}
+                            disabled={groupedItem.cartProduct.quantity === 1}
                           >
                             -
                           </button>
                           <span className="px-2 py-1 w-8 text-center  border-gray-300 rounded-none focus:outline-none">
-                            {groupedItem.totalQuantity}
+                            {groupedItem.cartProduct.quantity}
                           </span>
                           <button
                             onClick={() =>
