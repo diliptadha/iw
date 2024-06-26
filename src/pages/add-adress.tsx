@@ -146,12 +146,9 @@ const AddAdress = () => {
   }, [couponSlide]);
 
   const toggleRazorPage = () => {
-    setShowRazorPage((prevShowRazorPage) => {
-      return !prevShowRazorPage;
-    });
-    console.log("ssss");
+    setShowRazorPage((pre) => !pre);
   };
-
+  
   const handleProceedToShipping = () => {
     router.push({
       pathname: "/shipping-address",

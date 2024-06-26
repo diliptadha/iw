@@ -19,7 +19,6 @@ interface CardData {
 
 export default function RazorPage({
   onCancel,
-
   toDiAfPr,
 }: {
   onCancel: () => void;
@@ -28,11 +27,8 @@ export default function RazorPage({
   const router = useRouter();
   const [Razorpay, isLoaded] = useRazorpay();
   const RAZORPAY_KEY = "rzp_test_WG0saZcap7ShMM";
-  const [orderId, setOrderId] = useState("");
-  const [isPaymentModalOpened, setIsPaymentModalOpened] = useState(false);
-  const [userId, setUserId] = useState<string | null>();
-  const [cardDetails, setCardDetails] = useState<CardData[]>([]);
-  const isOrderCreated = useRef(false);
+  const token = localStorage.getItem("accessToken");
+  const userId = localStorage.getItem("userId");
 
   const handlePaymentSuccess = async (orderId: string) => {
     try {
@@ -45,8 +41,18 @@ export default function RazorPage({
           },
         }
       );
-      console.log("Payment update response:", response.data);
 
+      let data1 = "";
+      let config1 = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}payment/emptyUserCart?userId=${userId}`,
+        headers: {},
+        data: data1,
+      };
+      await axios.request(config1);
+
+      console.log("Payment update response:", response.data);
       router.replace({
         pathname: "/successful-Payment",
         query: {
@@ -59,74 +65,63 @@ export default function RazorPage({
     }
   };
 
-  const resetPaymentModal = () => {
-    setIsPaymentModalOpened(false);
-  };
-
-  const gettingData = async (userId: any) => {
+  const handleCreateOrderId = async (cartProduct: any, status: string) => {
     try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=${userId}`
-      );
-      const cartData = response?.data?.cartData;
-      setCardDetails(cartData);
+      const crateOrder = await axios.request({
+        method: "POST",
+        url: `${process.env.NEXT_PUBLIC_API_URL}payment/create`,
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+        data: {
+          userId: userId,
+          status,
+          products: cartProduct,
+        },
+      });
+
+      return crateOrder.data?.order?.orderId;
     } catch (error) {
-      console.log("Error fetching data", error);
-    }
-  };
-
-  const cartProduct = cardDetails.map((item) => {
-    return {
-      productId: item.cartProduct.productId,
-      subProductId: item.cartProduct.subProductId,
-      quantity: item.cartProduct.quantity,
-      totalPrice: toDiAfPr / cardDetails.length,
-
-      power: 200,
-    };
-  });
-
-  const createOrder = async (userId: any) => {
-    const token = localStorage.getItem("accessToken");
-    if (isOrderCreated.current) return;
-    isOrderCreated.current = true;
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}payment/create`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            userId: userId,
-            status: "pending",
-            products: cartProduct,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to create order");
-      }
-
-      const ordersData = await response.json();
-      const fetchedOrderId = ordersData?.order?.orderId;
-      setOrderId(fetchedOrderId);
-    } catch (error) {
-      console.error("Error creating order:", error);
+      throw error;
     }
   };
 
   const handlePayment = useCallback(async () => {
-    if (!orderId || isPaymentModalOpened) {
-      return;
-    }
-
-    setIsPaymentModalOpened(true);
-
     try {
+      /** Get cart data*/
+      const gtCardData = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}product/getCartData?userId=${userId}`
+      );
+      const cardDetails: CardData[] = gtCardData?.data?.cartData;
+
+      const cartProduct = cardDetails.map((item) => {
+        return {
+          productId: item.cartProduct.productId,
+          subProductId: item.cartProduct.subProductId,
+          quantity: item.cartProduct.quantity,
+          totalPrice: toDiAfPr / cardDetails?.length,
+          power: 200,
+        };
+      });
+
+      /**
+       * Create order
+       * @param {Array} cartProduct
+       * @param {string} status
+       * @returns {string} orderId
+       */
+      const orderId = await handleCreateOrderId(cartProduct, "pending");
+
+      if (!orderId) {
+        return;
+      }
+
+      /********
+       * Razorpay options
+       * @param {string} key
+       * @returns {void}
+       *****/
       const options: RazorpayOptions = {
         key: RAZORPAY_KEY,
         amount: (toDiAfPr * 100).toString(),
@@ -157,79 +152,42 @@ export default function RazorPage({
       };
 
       const rzpay = new Razorpay(options);
-
-      let data1 = "";
-
-      let config1 = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: `${process.env.NEXT_PUBLIC_API_URL}payment/emptyUserCart?userId=${userId}`,
-        headers: {},
-        data: data1,
-      };
-
-      axios
-        .request(config1)
-        .then((response) => {
-          console.log(JSON.stringify(response.data));
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      rzpay.on("payment.success", function (response: any) {
-        alert(response.success.code);
-        alert(response.success.description);
-        alert(response.success.source);
-        alert(response.success.step);
-        alert(response.success.reason);
-        alert(response.success.metadata.order_id);
-        alert(response.success.metadata.payment_id);
-      });
-      rzpay.on("payment.failed", function (response: any) {
-        alert(response.error.code);
-        alert(response.error.description);
-        alert(response.error.source);
-        alert(response.error.step);
-        alert(response.error.reason);
-        alert(response.error.metadata.order_id);
-        alert(response.error.metadata.payment_id);
+      rzpay.on("payment.failed", async function (response: any) {
+        console.log("FAILED", response);
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}payment/update?id=${orderId}`,
+          { status: "failed" },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        // alert(response.error.code);
+        // alert(response.error.description);
+        // alert(response.error.source);
+        // alert(response.error.step);
+        // alert(response.error.reason);
+        // alert(response.error.metadata.order_id);
+        // alert(response.error.metadata.payment_id);
       });
       rzpay.open();
       console.log("www", rzpay);
     } catch (error) {
       console.log("err", error);
     }
-  }, [orderId, isPaymentModalOpened, Razorpay]);
-
-  const startPaymentProcess = async () => {
-    resetPaymentModal(); // Reset the isPaymentModalOpened state
-    await gettingData(userId);
-    await createOrder(userId); // Create a new order
-    handlePayment(); // Trigger the payment process
-  };
+  }, [toDiAfPr, Razorpay]);
 
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    setUserId(userId);
-    if (userId) {
-      gettingData(userId);
+    if (isLoaded) {
+      handlePayment();
     }
-  }, []);
-
-  useEffect(() => {
-    if (cardDetails.length > 0 && userId) {
-      createOrder(userId);
-    }
-  }, [cardDetails]);
-
-  useEffect(() => {
-    handlePayment();
-  }, [isLoaded, orderId]);
+  }, [isLoaded]);
 
   return (
     <>
       <button onClick={onCancel}></button>
-      <button onClick={startPaymentProcess}></button>
+      <button onClick={handlePayment}></button>
     </>
   );
 }
