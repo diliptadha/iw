@@ -730,12 +730,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                     onClick={openWhatsApp}
                     className="flex items-center cursor-pointer"
                   >
-                    <Image
-                      src={Images.whatsappoutlinewhite}
-                      alt="/"
-                      height={18}
-                      width={18}
-                    />
+                    <Image src={Images.vector} alt="/" height={18} width={18} />
                     <p className="text-white font-normal text-xs ml-2">
                       {Strings.TALK_WITH_US}
                     </p>
@@ -785,22 +780,10 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
               onClick={openWhatsApp}
               className="flex items-center cursor-pointer"
             >
-              <Image
-                src={Images.whatsappoutline}
-                alt="/"
-                height={18}
-                width={18}
-              />
-              <p className="text-black font-bold text-xs mx-2">
+              <Image src={Images.vector} alt="/" height={18} width={18} />
+              <p className="text-black font-bold text-xs ml-2">
                 {Strings.TALK_WITH_US}
               </p>
-              {/* <Image
-                onClick={openWhatsApp}
-                src={Images.vector}
-                alt="/"
-                height={18}
-                width={18}
-              /> */}
             </div>
             <div className="flex items-center ">
               <Link href={isLoggedIn ? "/profile" : "/"}>

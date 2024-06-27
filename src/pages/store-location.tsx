@@ -49,16 +49,24 @@ const StoreLocation = () => {
 
   useEffect(() => {
     const hash = window.location.hash.substring(1);
-    if (hash) {
-      const element = document.getElementById(hash);
-      if (element) {
-        const headerOffset = 9 * 9;
-        const elementPosition = element.offsetTop - headerOffset;
-        window.scrollTo({
-          top: elementPosition,
-          behavior: "smooth",
-        });
-      }
+    if (hash && storeData.length > 0) {
+      console.log(`Scrolling to element with ID: ${hash}`);
+      setTimeout(() => {
+        const element = document.getElementById(hash);
+        if (element) {
+          const headerOffset = 9 * 9;
+          const elementPosition = element.offsetTop - headerOffset;
+          console.log(
+            `Element found, scrolling to position: ${elementPosition}`
+          );
+          window.scrollTo({
+            top: elementPosition,
+            behavior: "smooth",
+          });
+        } else {
+          console.log("Element not found");
+        }
+      }, 100);
     }
   }, [storeData]);
 

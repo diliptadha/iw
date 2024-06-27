@@ -112,7 +112,7 @@ export const Footer = () => {
           </div>
           <div>
             <Link
-              href="/expert-doctor"
+              href="/expert-doctor-consultation"
               className="font-lato font-light text-12 hover:opacity-[0.6]"
             >
               {Strings.EXPERT_DOCTOR}
