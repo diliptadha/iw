@@ -128,6 +128,7 @@ export const Images = {
 };
 
 export const Strings = {
+  Optional: "(Optional)",
   MEDIUM: "Medium",
   COUPONS: "Coupons",
   YOUR_CART_EMPTY: "Your shopping cart is empty!",

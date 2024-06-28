@@ -15,6 +15,7 @@ interface SliderItem {
 
 const Carosel = () => {
   const [slider, setSlider] = useState<SliderItem[]>([]);
+  const [currentSlide, setCurrentSlide] = useState<number>(0);
 
   const fetchSliderData = async () => {
     try {
@@ -29,11 +30,20 @@ const Carosel = () => {
 
   useEffect(() => {
     fetchSliderData();
-  }, []);
+    const interval = setInterval(() => {
+      if (slider.length > 0) {
+        setCurrentSlide((prevSlide) =>
+          prevSlide === slider.length - 1 ? 0 : prevSlide + 1
+        );
+      }
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [slider]);
 
   return (
     <div className="w-full">
       <Carousel
+        selectedItem={currentSlide}
         showIndicators={false}
         showThumbs={false}
         showStatus={false}

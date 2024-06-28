@@ -87,7 +87,7 @@ const StoreLocation = () => {
                   : "juhu"
               }
               key={index}
-              className="border shadow-md rounded-[10px] mb-[15px] lg:max-w-[80%] md:max-w-[90%] xl:max-w-[70%] md:mt-0 md:mx-auto flex-wrap md:flex-none text-justify tracking-[0.5px] text-[12px] md:text-[15px] p-[20px] flex"
+              className="border shadow-md rounded-[10px] mb-[15px] lg:max-w-[80%] md:max-w-[90%] xl:max-w-[70%] md:mt-0 md:mx-auto flex-wrap md:flex-none text-justify tracking-[0.5px] text-[12px] md:text-[15px] p-[20px] flex lg:transition-transform lg:hover:scale-105 lg:transform"
               style={{ scrollMarginTop: "5rem" }}
             >
               <div className="md:w-[250px] md:h-[250px] h-[220px] w-[100%] md:mr-[20px] mb-[10px] lg:mb-0">
