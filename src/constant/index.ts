@@ -141,7 +141,7 @@ export const Strings = {
   THE_BEST_GUARANTEES: "THE BEST GUARANTEES.",
   PARAGRAPH1:
     "Lorem ipsum dolor sit amet consectetur adipisicing sum dolor sit amet consectetu sectetur adipisici sectetur adipisici ipsum dolor sit amet consectetur adipisicing sum dolor sit amet consectetu sectetur adipisici sectetur  consectetu sectetur adipisici sectetu.",
-  BRANCHES: "KEMPS CORNER ",
+  KEMPS_CORNER: "KEMPS CORNER ",
   DADAR: "DADAR",
   JUHU: "JUHU",
   ANDHERI: "ANDHERI",
@@ -1345,4 +1345,27 @@ export const ContactUs = {
   TIMING_2: "9 AM to 4 PM ( Saturday )",
   CONTACT_MSG:
     "Thanks for reaching out! We've received your message and our team will respond within 24-48 hour",
+};
+export const Expert = {
+  Book_Appointment: "Book Appointment",
+  First_Name: "First Name*",
+  Last_Name: "Last Name*",
+  Mobile_No: "Mobile No.*",
+  Email: "Email",
+  Email_Err: " Please enter a valid email address.",
+  Date: "Date*",
+  Doctor: "Doctor*",
+  Select_a_Doctor: "Select a Doctor",
+  Select_a_Location: "Select a Location",
+  Location: "Location*",
+  Message: "Message*",
+  All_Doctors: "All Doctors",
+  Specialities: "Specialities : ",
+  Education: "Education : ",
+  Experience: "Experience : ",
+  Years: "Years",
+  Timing: "Timing : ",
+  Charges: "Charges : ",
+  INR: "INR",
+  location: "Location : ",
 };

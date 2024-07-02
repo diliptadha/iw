@@ -396,8 +396,8 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
         brand={brand}
       />
 
-      <div className=" max-w-screen-2xl m-auto">
-        <div className="fixed top-0 z-index2 bg-PictonBlue  xs:px-[16px] md:px-[46px] h-16 w-full flex justify-between items-center">
+      <div className="max-w-screen-2xl m-auto">
+        <div className=" max-w-screen-2xl m-auto fixed top-0 z-index2 bg-PictonBlue  xs:px-[16px] md:px-[46px] h-16 w-full flex justify-between items-center">
           <div className="flex items-center space-x-4">
             <div className="flex bg-[#F2F2F2] h-7 w-[150px] rounded-[5px] items-center text-black">
               <button

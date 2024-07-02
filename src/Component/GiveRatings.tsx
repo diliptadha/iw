@@ -5,7 +5,10 @@ interface StarRatingProps {
   onRatingChange: (rating: number) => void;
 }
 
-const GiveRatings: React.FC<StarRatingProps> = ({ giverating, onRatingChange }) => {
+const GiveRatings: React.FC<StarRatingProps> = ({
+  giverating,
+  onRatingChange,
+}) => {
   const handleStarClick = (newRating: number) => {
     onRatingChange(newRating);
   };
@@ -20,7 +23,7 @@ const GiveRatings: React.FC<StarRatingProps> = ({ giverating, onRatingChange }) 
             color: index < giverating ? "#FFC107" : "#D9D9D9",
             fontSize: 24,
             cursor: "pointer",
-            marginRight: index < 4 ? 2 : 0, // Adjust margin for all stars except the last one
+            marginRight: index < 4 ? 2 : 0,
           }}
         >
           {"\u2605"}

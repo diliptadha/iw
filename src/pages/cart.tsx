@@ -209,7 +209,7 @@ const ProductADD = () => {
   }, []);
 
   return (
-    <>
+    <div className="max-w-screen-2xl m-auto ">
       <HeaderHeadline />
 
       <div className=" px-[1rem] py-[1rem] md:px-[3rem] xl:px-[6rem] ">
@@ -473,7 +473,7 @@ const ProductADD = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

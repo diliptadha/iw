@@ -199,7 +199,7 @@ const ShippingAddress = () => {
   );
 
   return (
-    <>
+    <div className="max-w-screen-2xl m-auto ">
       <div className=" px-[1rem] py-[1rem] md:px-[3rem] xl:px-[6rem] ">
         <div className="wrap-div flex gap-5 flex-wrap sm:flex-nowrap">
           <div className="left-card sm:min-w-[65%] w-full">
@@ -538,7 +538,7 @@ const ShippingAddress = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

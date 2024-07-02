@@ -291,7 +291,9 @@ export const Footer = () => {
       </div>
 
       <div className=" flex gap-x-2 mt-4 lg:mt-8 font-lato xs:text-xs md:text-12 font-bold text-white">
-        <h1> {Strings.BRANCHES}</h1>
+      <Link href={`/store-location#kemps`}>
+            <h1> {Strings.KEMPS_CORNER}</h1>{" "}
+          </Link>
         <p className="border-l-2 border-white" />
         <Link href={`/store-location#dadar`}>
           <h1> {Strings.DADAR}</h1>

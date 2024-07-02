@@ -4,12 +4,14 @@ import "../app/globals.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+
 import { Images, Strings } from "@/constant";
 import LoginModal, { toggleModal } from "@/Component/LoginModal";
 import React, { Fragment, Key, useLayoutEffect, useRef, useState } from "react";
 
 import Bestsellers from "@/Component/Bestsellers";
-import Carosel from "@/Component/Carosel";
+import Carosel from "@/Component/Upto50off";
+import { Carousel } from "react-responsive-carousel";
 import Customerssay from "@/Component/Customerssay";
 import DynamicTitle from "@/Component/DynamicTitle";
 import { Footer } from "@/Component/footer";
@@ -19,7 +21,7 @@ import Frameformen from "@/Component/Frameformen";
 import Frameforunisex from "@/Component/Frameforunisex";
 import Header from "@/Component/header";
 import Image from "next/image";
-import ImageCarousel from "@/Component/Carosel";
+import ImageCarousel from "@/Component/Upto50off";
 import Link from "next/link";
 import MainLoader from "@/Component/MainLoader";
 import Modal from "@/Component/Modal";
@@ -29,6 +31,7 @@ import StarRating from "@/Component/StarRating";
 import { Tab } from "@headlessui/react";
 import Under500 from "@/Component/Under500";
 import Under500Modal from "@/Component/Under500Modal";
+import Upto50off from "@/Component/Upto50off";
 import WhatsAppButton from "@/Component/WhatsAppButton";
 import axios from "axios";
 import getCartQuantity from "@/utils/getCartQty";
@@ -36,7 +39,6 @@ import { it } from "node:test";
 import { useCart } from "@/Context/CartContext";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Carousel } from "react-responsive-carousel";
 
 interface CustomerssayProps {
   comment: any;
@@ -1066,32 +1068,7 @@ const Homescreen: React.FC = () => {
                   />
                 </div>
               </div>
-              <div className="flex items-center justify-center xs:mt-10 md:mt-14 xs:mx-[20px] xlg:mx-0">
-                <div className="relative flex items-end justify-end">
-                  <Image
-                    src={Images.iksanabanner3}
-                    alt="/"
-                    height={285}
-                    width={1278}
-                    className=""
-                  />
-                  <div className="absolute xs:my-2 md:my-3 lg:my-5 xs:mr-2 md:mr-4 xl:mr-5 flex xs:gap-x-[2px] md:gap-x-2 xs:text-[4px] md:text-[8px] lg:text-xs xl:text-sm font-bold text-white">
-                    <h1> {Strings.BRANCHES}</h1>
-                    <p className="border-l-2 border-white" />
-                    <Link href={`/store-location#dadar`}>
-                      <h1> {Strings.DADAR}</h1>
-                    </Link>
-                    <p className="border-l-2 border-white" />
-                    <Link href={`/store-location#juhu`}>
-                      <h1> {Strings.JUHU}</h1>
-                    </Link>
-                    <p className="border-l-2 border-white" />
-                    <Link href={`/store-location#andheri`}>
-                      <h1> {Strings.ANDHERI}</h1>
-                    </Link>
-                  </div>
-                </div>
-              </div>
+              <Upto50off />
               {getContent.map((content, index) => {
                 if (index === 1) {
                   return (

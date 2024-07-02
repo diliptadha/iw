@@ -770,13 +770,13 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
     }
   }, [showLoginModal]);
 
-  useEffect(() => {
-    if (!isDrawerOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-  }, [!isDrawerOpen]);
+  // useEffect(() => {
+  //   if (isDrawerOpen) {
+  //     document.body.style.overflow = "hidden";
+  //   } else {
+  //     document.body.style.overflow = "";
+  //   }
+  // }, [isDrawerOpen]);
 
   const [search, setSearch] = useState("");
   const [trendingSearchData, setTrendingSearchData] = useState<any[]>([]);

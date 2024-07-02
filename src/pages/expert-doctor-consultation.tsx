@@ -1,19 +1,19 @@
 import "../app/Listingpage.css";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { Images, Strings } from "@/constant";
+import { Expert, Images, Strings } from "@/constant";
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
+
 import DatePicker from "react-datepicker";
 import { Footer } from "@/Component/footer";
 import Headerforfaqs from "@/Component/headerforfaqs";
 import Image from "next/image";
 import Link from "next/link";
-
+import Loader from "@/Component/Loader";
 import axios from "axios";
 import { format } from "date-fns";
-import Loader from "@/Component/Loader";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
 interface DoctorConsultationData {
   id: number;
@@ -52,6 +52,7 @@ const ExpertDoctor = () => {
   const [isRotated2, setIsRotated2] = useState(false);
   const [isRotated3, setIsRotated3] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const { ref, inView } = useInView({
     triggerOnce: true,
@@ -82,12 +83,18 @@ const ExpertDoctor = () => {
 
   const handleDateChange = (date: Date | null) => {
     if (date) {
-      setStartDate(date);
-      const formattedDate = format(date, "d-M-yyyy");
-      console.log(formattedDate);
+      const today = new Date();
+      if (date >= today) {
+        setStartDate(date);
+        const formattedDate = format(date, "d-M-yyyy");
+        console.log(formattedDate);
+      }
     }
   };
-
+  const getFirstDayOfCurrentMonth = () => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+  };
   const toggleDatePicker = () => {
     setShowDatePicker(!showDatePicker);
   };
@@ -106,9 +113,11 @@ const ExpertDoctor = () => {
         break;
       case "Doctor":
         setIsRotated2(!isRotated2);
+        setIsRotated3(false);
         break;
       case "Location":
         setIsRotated3(!isRotated3);
+        setIsRotated2(false);
         break;
       default:
         break;
@@ -118,11 +127,29 @@ const ExpertDoctor = () => {
   const Time = ["10:00 AM to 1:00 PM", "2:00 PM to 6:00 PM"];
   const Doctor = [
     "Dr Dipak Garg",
-    "Dr Chinmay Nakhava 2",
+    "Dr Chinmay Nakhava ",
     "Dr Urmi shah",
-    "Dr Shreyansh Jhoshi",
+    "Dr Shreyansh Doshi",
+    "Dr Kartik Panikkar",
+    "Dr Poonam Rai",
+    "Dr Akshay Nair",
+    "Dr Rupali Sinha",
   ];
-  const Location = ["Dadar", "Juhu", "Andheri", "Malabar Hill"];
+  const Location = ["Kemps Corner ", "Dadar", "Juhu", "Andheri"];
+
+  const isFormValid = () => {
+    return (
+      firstName.trim() &&
+      lastName.trim() &&
+      mobile.trim() &&
+      (email.trim() === "" || isValidEmail) &&
+      isValidEmail &&
+      doctor.trim() &&
+      location.trim() &&
+      startDate &&
+      message.trim()
+    );
+  };
 
   const sendAppointmentData = async () => {
     setIsLoading(true);
@@ -150,6 +177,10 @@ const ExpertDoctor = () => {
     try {
       const response = await axios.request(config);
       console.log(JSON.stringify(response.data));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
       setfirstName("");
       setlastName("");
       setMobile("");
@@ -158,15 +189,7 @@ const ExpertDoctor = () => {
       setDoctor("");
       setLocation("");
       setMessage("");
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
     }
-  };
-
-  const isFormValid = () => {
-    return firstName || lastName || mobile || doctor || location || message;
   };
 
   const fetchDoctorConsultation = async () => {
@@ -241,13 +264,33 @@ const ExpertDoctor = () => {
     },
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
-    <div>
+    <div className="max-w-screen-2xl m-auto ">
       <Headerforfaqs setSearch={setSearch} />
-      <div className="mt-10 space-y-4 border- shadow-md bg-white rounded-lg xs:mx-[20px] lg:mx-[70px] p-7">
-        <div className="flex xs:flex-col  md:flex-row md:justify-between gap-x-5 xs:space-y-4 md:space-y-0">
+      <div className="flex justify-center my-10">
+        <h1 className="text-black font-extrabold text-4xl">
+          {Expert.Book_Appointment}
+        </h1>
+      </div>
+      <div className=" space-y-4 border- shadow-md bg-white rounded-lg xs:mx-[20px] lg:mx-32 py-7 xs:px-5 lg:px-12">
+        <div className="flex xs:flex-col  md:flex-row md:justify-between gap-x-7 xs:space-y-4 md:space-y-0">
           <div className="w-full space-y-2">
-            <p className="font-semibold text-sm text-black">First Name</p>
+            <p className="font-semibold text-sm text-black">
+              {Expert.First_Name}
+            </p>
             <input
               value={firstName}
               onChange={(e) => setfirstName(e.target.value)}
@@ -256,7 +299,9 @@ const ExpertDoctor = () => {
             />
           </div>
           <div className="w-full space-y-2">
-            <p className="font-semibold text-sm text-black">Last Name</p>
+            <p className="font-semibold text-sm text-black">
+              {Expert.Last_Name}
+            </p>
             <input
               value={lastName}
               onChange={(e) => setlastName(e.target.value)}
@@ -265,19 +310,22 @@ const ExpertDoctor = () => {
             />
           </div>
         </div>
-        <div className="flex xs:flex-col md:flex-row md:justify-between gap-x-5 xs:space-y-4 md:space-y-0">
+        <div className="flex xs:flex-col md:flex-row md:justify-between gap-x-7 xs:space-y-4 md:space-y-0">
           <div className="w-full space-y-2">
-            <p className="font-semibold text-sm text-black">Mobile No.</p>
+            <p className="font-semibold text-sm text-black">
+              {Expert.Mobile_No}
+            </p>
             <input
               value={mobile}
               onChange={handleMobileChange}
-              placeholder="Phone No."
+              placeholder="Mobile No."
               className="text-black p-2 text-sm outline-none border  border-gray-400 rounded-md h-10 w-full"
             />
           </div>
           <div className="w-full space-y-2">
             <p className="font-semibold text-sm text-black">
-              Email <span className="text-gray-400">{Strings.Optional}</span>
+              {Expert.Email}
+              <span className="text-gray-400">{Strings.Optional}</span>
             </p>
             <input
               value={email}
@@ -287,15 +335,13 @@ const ExpertDoctor = () => {
               className="text-black text-sm p-2 outline-none border  border-gray-400 rounded-md h-10 w-full"
             />
             {!isValidEmail && (
-              <p className="text-red-500 text-xs">
-                Please enter a valid email address.
-              </p>
+              <p className="text-red-500 text-xs">{Expert.Email_Err}</p>
             )}
           </div>
         </div>
-        <div className="flex xs:flex-col md:flex-row md:justify-between gap-x-5 xs:space-y-4 md:space-y-0">
+        <div className="flex xs:flex-col md:flex-row md:justify-between gap-x-7 xs:space-y-4 md:space-y-0">
           <div className="w-full space-y-2">
-            <p className="font-semibold text-sm text-black">Date</p>
+            <p className="font-semibold text-sm text-black">{Expert.Date}</p>
             <div
               onClick={toggleDatePicker}
               className=" outline-none border border-gray-400 rounded-md h-10 w-full flex items-center"
@@ -306,20 +352,22 @@ const ExpertDoctor = () => {
                 onChange={handleDateChange}
                 dateFormat="d-M-yyyy"
                 wrapperClassName="w-full"
+                minDate={getFirstDayOfCurrentMonth()}
               />
             </div>
           </div>
           <div className=" w-full  space-y-2">
-            <p className="font-semibold text-sm text-black">Doctor</p>
+            <p className="font-semibold text-sm text-black">{Expert.Doctor}</p>
             <div className="relative">
               <select
                 value={doctor}
                 onChange={(e) => handleDoctorChange(e.target.value)}
                 className=" text-black text-sm p-2 outline-none border border-gray-400 rounded-md h-10 w-full appearance-none"
                 onClick={() => handleToggleRotation("Doctor")}
+                onBlur={() => setIsRotated2(false)}
               >
                 <option value="" disabled>
-                  Select a Doctor
+                  {Expert.Select_a_Doctor}
                 </option>
                 {Doctor.map((state) => (
                   <option key={state} value={state}>
@@ -343,18 +391,21 @@ const ExpertDoctor = () => {
             </div>
           </div>
         </div>
-        <div className="flex xs:flex-col md:flex-row md:justify-between gap-x-5 xs:space-y-4 md:space-y-0">
+        <div className="flex xs:flex-col md:flex-row md:justify-between gap-x-7 xs:space-y-4 md:space-y-0">
           <div className="w-full space-y-2">
-            <p className="font-semibold text-sm text-black">Location</p>
+            <p className="font-semibold text-sm text-black">
+              {Expert.Location}
+            </p>
             <div className="relative">
               <select
                 value={location}
                 onChange={(e) => handleLocationChange(e.target.value)}
                 className="text-black text-sm p-2 outline-none border  border-gray-400 rounded-md h-10 w-full appearance-none"
                 onClick={() => handleToggleRotation("Location")}
+                onBlur={() => setIsRotated3(false)}
               >
                 <option value="" disabled>
-                  Select a Location
+                  {Expert.Select_a_Location}
                 </option>
                 {Location.map((state) => (
                   <option key={state} value={state}>
@@ -378,12 +429,13 @@ const ExpertDoctor = () => {
             </div>
           </div>
           <div className="w-full space-y-2">
-            <p className="font-semibold text-sm text-black">Message</p>
+            <p className="font-semibold text-sm text-black">{Expert.Message}</p>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Massage"
-              className="text-black text-sm p-2 outline-none border  border-gray-400 rounded-md h-10 w-full"
+              placeholder="Message"
+              className="text-black text-sm p-2 outline-none border  border-gray-400 rounded-md h-10- w-full"
+              rows={isMobile ? 4 : 1}
             />
           </div>
         </div>
@@ -392,7 +444,7 @@ const ExpertDoctor = () => {
             type="submit"
             disabled={!isFormValid()}
             onClick={sendAppointmentData}
-            className={`bg-black hover:bg-PictonBlue text-white font-medium text-base flex justify-center items-center h-10 w-[320px] rounded-md ${
+            className={`bg-black hover:bg-PictonBlue text-white font-medium text-base flex justify-center items-center h-10 w-[200px] rounded-md ${
               !isFormValid() ? " cursor-not-allowed" : ""
             }`}
           >
@@ -400,7 +452,12 @@ const ExpertDoctor = () => {
           </button>
         </div>
       </div>
-      <div className="xs:mx-[20px] lg:mx-0 flex justify-center flex-wrap md:gap-x-5 lg:gap-x-10 xl:gap-x-20 mt-5- my-10">
+      <div className="flex justify-center my-12">
+        <h1 className="text-black font-extrabold text-4xl">
+          {Expert.All_Doctors}
+        </h1>
+      </div>
+      <div className="xs:mx-[20px]  lg:mx-0- flex justify-center  flex-wrap md:gap-x-5 lg:gap-x-10 xl:gap-x-14">
         {ConsultationData.length > 0 ? (
           ConsultationData.map((ele, index) => (
             <motion.div
@@ -413,7 +470,7 @@ const ExpertDoctor = () => {
             >
               <div
                 key={index}
-                className=" half-bg my-5 bg-white shadow-md rounded-[10px] p-4 md:w-[350px] lg:transition-transform lg:hover:scale-105 lg:transform"
+                className=" half-bg mb-10 bg-white shadow-md rounded-[10px] p-4 md:w-[350px] lg:transition-transform lg:hover:scale-105 lg:transform"
               >
                 <div className=" flex justify-center ">
                   <div className=" mb-4 ">
@@ -424,32 +481,35 @@ const ExpertDoctor = () => {
                     />
                   </div>
                 </div>
-                <div className=" space-y-1 mt-4- ">
-                  <h1 className=" font-bold text-lg mb-4">{ele.name}</h1>
-                  <h1 className=" text-sm ">
-                    <span className="font-semibold ">Specialities : </span>
+                <div className=" space-y-[10px] mt-4- ">
+                  <div className=" font-bold text-lg mb-4">{ele.name}</div>
+                  <div className=" text-sm ">
+                    <span className="font-semibold ">
+                      {Expert.Specialities}
+                    </span>
                     {ele.specialities}
-                  </h1>
-                  <h1 className="text-sm">
-                    <span className="font-semibold ">Education : </span>
+                  </div>
+                  <div className="text-sm">
+                    <span className="font-semibold ">{Expert.Education}</span>
                     {ele.education}
-                  </h1>
-                  <h1 className=" text-sm">
-                    <span className="font-semibold "> Experience : </span>
-                    {ele.experience} Years
-                  </h1>
-                  <h1 className="text-sm">
-                    <span className="font-semibold "> Timing : </span>
+                  </div>
+                  <div className=" text-sm">
+                    <span className="font-semibold ">{Expert.Experience}</span>
+                    {ele.experience} {Expert.Years}
+                  </div>
+                  <div className="text-sm">
+                    <span className="font-semibold "> {Expert.Timing}</span>
                     {ele.timings}
-                  </h1>
-                  <h1 className="text-sm">
-                    <span className="font-semibold ">Charges : </span> INR {""}
+                  </div>
+                  <div className="text-sm">
+                    <span className="font-semibold ">{Expert.Charges}</span>{" "}
+                    {Expert.INR} {""}
                     {ele.charges}
-                  </h1>
-                  <h1 className=" text-sm">
-                    <span className="font-semibold "> Location : </span>
+                  </div>
+                  <div className=" text-sm">
+                    <span className="font-semibold "> {Expert.location} </span>
                     {ele.location}
-                  </h1>
+                  </div>
                   <div className="flex gap-x-[10px]  items-center">
                     <Image
                       src={Images.PHONE_LOGO_BLUE}

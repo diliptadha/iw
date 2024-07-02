@@ -84,7 +84,11 @@ const StoreLocation = () => {
                   ? "dadar"
                   : ele.id === "66741a469b461fcecbe847fd"
                   ? "andheri"
-                  : "juhu"
+                  : ele.id === ""
+                  ? "juhu"
+                  : ele.id === "66741a859b461fcecbe847ff"
+                  ? "kemps"
+                  : ""
               }
               key={index}
               className="border shadow-md rounded-[10px] mb-[15px] lg:max-w-[80%] md:max-w-[90%] xl:max-w-[70%] md:mt-0 md:mx-auto flex-wrap md:flex-none text-justify tracking-[0.5px] text-[12px] md:text-[15px] p-[20px] flex lg:transition-transform lg:hover:scale-105 lg:transform"

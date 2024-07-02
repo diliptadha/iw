@@ -148,7 +148,7 @@ const AddAdress = () => {
   const toggleRazorPage = () => {
     setShowRazorPage((pre) => !pre);
   };
-  
+
   const handleProceedToShipping = () => {
     router.push({
       pathname: "/shipping-address",
@@ -360,7 +360,7 @@ const AddAdress = () => {
   }, []);
 
   return (
-    <>
+    <div className="max-w-screen-2xl m-auto ">
       <HeaderHeadline />
       <div className=" px-[1rem] py-[1rem] md:px-[3rem] xl:px-[6rem]">
         {/* Coupon  */}
@@ -928,7 +928,7 @@ const AddAdress = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
