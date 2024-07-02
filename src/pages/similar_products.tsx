@@ -388,6 +388,10 @@ const SimilarProductPage = () => {
     }
   }, [showLoginModal]);
 
+  if (!similarProductData || !similarProductData.length) {
+    return null;
+  }
+
   return (
     <div className="h-[520px] px-[1rem] md:px-[2rem] xl:px-[4rem] w-full  overflow-hidden bg-[#F2F2F2]">
       <div className=""></div>

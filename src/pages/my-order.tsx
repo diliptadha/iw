@@ -7,8 +7,9 @@ import { format, formatDate } from "date-fns";
 import { Footer } from "@/Component/footer";
 import HeaderHeadline from "./header-headline";
 import Headerforfaqs from "@/Component/headerforfaqs";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { useRouter } from "next/navigation";
+import OrderCancelPopup from "@/Component/OrderCancelPopup";
 
 interface ExpectedDelivery {
   today: string;
@@ -27,6 +28,8 @@ const myOrder = () => {
     createdAt: any;
     orderId: any;
     products: any;
+    orderStatus?: string;
+    isRefundable?: boolean;
   }
 
   interface AddressData {
@@ -52,6 +55,8 @@ const myOrder = () => {
   const [orders, setOrders] = useState<CardData[]>([]);
   const [userId, setUserId] = useState<string | null>();
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showOrderCancelPopup, setShowOrderCancelPopup] = useState(false);
+  const [cancelOrderLoading, setCancelOrderLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     if (typeof window !== "undefined") {
       return !!localStorage.getItem("userId");
@@ -102,7 +107,7 @@ const myOrder = () => {
 
       const response = await axios.request(config);
 
-      console.log("orders", JSON.stringify(response.data.data));
+      console.log("orders", response.data.data);
       setOrders(response.data.data);
     } catch (error) {
       console.log(error);
@@ -159,6 +164,28 @@ const myOrder = () => {
 
   // console.log(toOrPr);
 
+  const onCancelOrder = async (orderId: string) => {
+    try {
+      setCancelOrderLoading(true);
+      let config: AxiosRequestConfig = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${process.env.NEXT_PUBLIC_API_URL}payment/cancelOrder`,
+        headers: {},
+        params: { orderId },
+      };
+      const response = await axios.request(config);
+      if (response.data?.refundResponse?.data) {
+        fetchUserOrderData();
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setCancelOrderLoading(false);
+      setShowOrderCancelPopup(false);
+    }
+  };
+
   return (
     <>
       <Headerforfaqs setSearch={setSearch} />
@@ -176,56 +203,80 @@ const myOrder = () => {
           <div className="wrap-div flex gap-5 flex-wrap sm:flex-nowrap mt-11 mb-14">
             <div className="left-card sm:min-w-[65%] w-full">
               {/* <div className="card mb-4 shadow-box"> */}
-              {orders.map((order, index) => (
-                <div
-                  key={index}
-                  className="card bg-white py-6 px-3 sm:flex mb-4 shadow-box"
-                >
-                  <div className="border flex justify-center items-center py-[10px] xs:h-[60px] xs:w-[80px] md:h-[90px] md:w-[150px] lg:h-[110px] lg:w-[180px] mr-3 mb-2 sm:mb-0">
-                    <img
-                      src={order.products.productImage}
-                      alt={order.products.title}
-                      className="xs:h-[80px] xs:w-[80px] md:w-[100%] md:h-[100%] object-cover"
-                    />
-                  </div>
+              {orders.map((order, index) => {
+                if (order.orderStatus === "cancelled") return null;
+                return (
+                  <div
+                    key={index}
+                    className="card bg-white py-6 px-3 sm:flex mb-4 shadow-box"
+                  >
+                    <div className="border flex justify-center items-center py-[10px] xs:h-[60px] xs:w-[80px] md:h-[90px] md:w-[150px] lg:h-[110px] lg:w-[180px] mr-3 mb-2 sm:mb-0">
+                      <img
+                        src={order.products.productImage}
+                        alt={order.products.title}
+                        className="xs:h-[80px] xs:w-[80px] md:w-[100%] md:h-[100%] object-cover"
+                      />
+                    </div>
 
-                  <div className="w-full">
-                    <div className="flex justify-between w-full border-b items-center pb-2">
-                      <div>
-                        <h3 className="frame-name text-[13px] sm:text-[14px] font-semibold">
-                          {order.products.title}
+                    <div className="w-full">
+                      <div className="flex justify-between w-full border-b items-center pb-2">
+                        <div>
+                          <h3 className="frame-name text-[13px] sm:text-[14px] font-semibold">
+                            {order.products.title}
+                          </h3>
+                        </div>
+                      </div>
+
+                      <div className="flex items-baseline justify-between  pt-[10px]">
+                        <h3 className="text-[13px] sm:text-[14px]">
+                          <span className="text-PictonBlue">
+                            {" "}
+                            {order.products.category ===
+                              "MYOPIA CONTROL LENSES" || "contact-lenses"
+                              ? order.products.title
+                              : "Frame"}
+                          </span>{" "}
+                          {order.products.frameShape.charAt(0).toUpperCase() +
+                            order.products.frameShape
+                              .slice(1)
+                              .toLowerCase()}{" "}
+                          / {order.products.frameStyle}
                         </h3>
                       </div>
-                    </div>
 
-                    <div className="flex items-baseline justify-between  pt-[10px]">
-                      <h3 className="text-[13px] sm:text-[14px]">
-                        <span className="text-PictonBlue">
-                          {" "}
-                          {order.products.category ===
-                            "MYOPIA CONTROL LENSES" || "contact-lenses"
-                            ? order.products.title
-                            : "Frame"}
-                        </span>{" "}
-                        {order.products.frameShape.charAt(0).toUpperCase() +
-                          order.products.frameShape.slice(1).toLowerCase()}{" "}
-                        / {order.products.frameStyle}
-                      </h3>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <h2>Price: {order.products.salePrice}</h2>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <h2>Price: {order.products.salePrice}</h2>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <h2>Qty: {order.quantity}</h2>
+                      <div className="flex justify-between">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <h2>Qty: {order.quantity}</h2>
+                          </div>
+                        </div>
+                        {order.isRefundable && (
+                          <div>
+                            <button
+                              className="bg-red-600 hover:bg-red-700 text-white font-normal text-xs w-[137px] h-[34px] rounded-[5px] mt-2"
+                              onClick={() => setShowOrderCancelPopup(true)}
+                            >
+                              Cancel Order
+                            </button>
+                          </div>
+                        )}
+                        {showOrderCancelPopup && (
+                          <OrderCancelPopup
+                            loading={cancelOrderLoading}
+                            onClickCancel={() => onCancelOrder(order.orderId)}
+                            onCloseModal={() => setShowOrderCancelPopup(false)}
+                          />
+                        )}
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
 
               {/* {grandtotal part} */}
               <div className="py-3 px-5">

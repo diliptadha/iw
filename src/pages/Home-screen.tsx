@@ -714,9 +714,9 @@ const Homescreen: React.FC = () => {
                       </div>
                       <div className="flex justify-center mt-[40px]  items-center ">
                         <div className="xs:w-[340px] sm:w-[410px] md:w-[580px] xl:w-[580px] overflow-hidden flex rounded-[10px]">
-                          {images2.map((i) => (
+                          {images2.map((i, index) => (
                             <Image
-                              key={i}
+                              key={index}
                               src={images2[currentIndex2]}
                               alt="/"
                               height={285}
