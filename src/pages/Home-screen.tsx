@@ -630,15 +630,7 @@ const Homescreen: React.FC = () => {
 
   useEffect(() => {
     fetchSliderData();
-    const interval = setInterval(() => {
-      if (slider.length > 0) {
-        setCurrentSlide((prevSlide) =>
-          prevSlide === slider.length - 1 ? 0 : prevSlide + 1
-        );
-      }
-    }, 2000);
-    return () => clearInterval(interval);
-  }, [slider]);
+  }, []);
 
   return (
     <>
