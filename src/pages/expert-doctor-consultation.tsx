@@ -10,6 +10,7 @@ import Headerforfaqs from "@/Component/headerforfaqs";
 import Image from "next/image";
 import Link from "next/link";
 import Loader from "@/Component/Loader";
+import Swal from "sweetalert2";
 import axios from "axios";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
@@ -181,6 +182,7 @@ const ExpertDoctor = () => {
       console.error(error);
     } finally {
       setIsLoading(false);
+      showAlert("success", "Appointment booked successfully!");
       setfirstName("");
       setlastName("");
       setMobile("");
@@ -190,6 +192,20 @@ const ExpertDoctor = () => {
       setLocation("");
       setMessage("");
     }
+  };
+
+  const showAlert = async (icon: "success", message: string) => {
+    const toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+    });
+    toast.fire({
+      icon: icon,
+      title: message,
+      padding: "10px 20px",
+    });
   };
 
   const fetchDoctorConsultation = async () => {

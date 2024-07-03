@@ -87,7 +87,7 @@ const StoreLocation = () => {
                   : ele.id === ""
                   ? "juhu"
                   : ele.id === "66741a859b461fcecbe847ff"
-                  ? "kemps"
+                  ? "kemps-corner"
                   : ""
               }
               key={index}

@@ -103,12 +103,12 @@ export const Footer = () => {
             {Strings.SERVICES}
           </div>
           <div className="mt-4">
-            <Link
+            {/* <Link
               href="/eye-testing"
               className=" font-lato font-light text-12 hover:opacity-[0.6]"
             >
               {Strings.EYE_TESTING}
-            </Link>
+            </Link> */}
           </div>
           <div>
             <Link
@@ -169,12 +169,12 @@ export const Footer = () => {
             {Strings.ABOUT_US}
           </div>
           <div className="mt-4">
-            <Link
+            {/* <Link
               href="/our-history"
               className="font-lato text-base text-12 font-light hover:opacity-[0.6]"
             >
               {Strings.OUR_HISTORY}
-            </Link>
+            </Link> */}
           </div>
           {/* <div>
             <Link
@@ -204,14 +204,14 @@ export const Footer = () => {
               {Strings.STORE_LOCATION}
             </Link>
           </div>
-          <div>
+          {/* <div>
             <Link
               href="/business-partners"
               className="font-lato text-base  text-12 font-light hover:opacity-[0.6]"
             >
               {Strings.BUSINESS_PARTNERS}
             </Link>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex flex-col mt-8 lg:ml-4 text-white w-full lg:w-[240px] xl:w-[300px]">
@@ -291,9 +291,9 @@ export const Footer = () => {
       </div>
 
       <div className=" flex gap-x-2 mt-4 lg:mt-8 font-lato xs:text-xs md:text-12 font-bold text-white">
-      <Link href={`/store-location#kemps`}>
-            <h1> {Strings.KEMPS_CORNER}</h1>{" "}
-          </Link>
+        <Link href={`/store-location#kemps-corner`}>
+          <h1> {Strings.KEMPS_CORNER}</h1>{" "}
+        </Link>
         <p className="border-l-2 border-white" />
         <Link href={`/store-location#dadar`}>
           <h1> {Strings.DADAR}</h1>

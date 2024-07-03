@@ -810,7 +810,7 @@ const Homescreen: React.FC = () => {
 
                           <div
                             ref={containerRef1}
-                            className="mt-5  xs:overflow-x-auto overflow-hidden flex xs:gap-x-8 md:gap-x-10 lg:gap-x-16  no-scrollbar"
+                            className="mt-5 overflow-x-auto overflow-hidden flex xs:gap-x-8 md:gap-x-10 lg:gap-x-16 no-scrollbar"
                           >
                             {/* <Slider ref={sliderRef2} {...settings2}></Slider>
                       <div key={index} className="px-2"></div> */}
