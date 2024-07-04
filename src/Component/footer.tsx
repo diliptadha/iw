@@ -302,10 +302,10 @@ export const Footer = () => {
         <Link href={`/store-location#juhu`}>
           <h1> {Strings.JUHU}</h1>
         </Link>
-        <p className="border-l-2 border-white" />
+        {/* <p className="border-l-2 border-white" />
         <Link href={`/store-location#andheri`}>
           <h1> {Strings.ANDHERI}</h1>
-        </Link>
+        </Link> */}
       </div>
       <div className="h-[1px] md:mx-0 md:w-full bg-white rounded-xl mt-3"></div>
       <div className="flex flex-col lg:flex-row mt-2">

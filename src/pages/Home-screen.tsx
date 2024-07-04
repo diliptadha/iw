@@ -207,13 +207,15 @@ const Homescreen: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}home/products`)
+      .get(
+        `${process.env.NEXT_PUBLIC_API_URL}home/products?under500=true&isBestSeller=true&newArrivals=true`
+      )
       .then((response) => {
         const data = response.data.productsDataByCriteria;
         setNewArrival(data.newArrivals);
         setBestSeller(data.isBestSeller);
         setUnderFive(data.under500);
-        console.log(data.newArrivals);
+        console.log("newArrivals", data.newArrivals);
       })
       .catch((error) => {
         console.log("Error fetching data", error);
@@ -975,12 +977,16 @@ const Homescreen: React.FC = () => {
                                   )}
                                 </div>
                                 <div className="xs:w-[280px] md:w-[400px] h-[350px] overflow-hidden flex rounded-[0px] bg-black-">
-                                  <img
+                                  <Image
+                                    height={350}
+                                    width={280}
                                     src={currentItem.productImage}
                                     alt="/"
                                     className="relative transition-transform duration-700 ease-in-out"
                                     // style={{
-                                    //   transform: `translateX(-${currIndex * 100}%)`,
+                                    //   transform: `translateX(-${
+                                    //     currIndex * 100
+                                    //   }%)`,
                                     // }}
                                   />
                                 </div>

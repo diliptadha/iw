@@ -3,10 +3,8 @@ const nextConfig = {
   output: "standalone",
   reactStrictMode: true,
   images: {
-    domains: ["cdn.shopify.com", "imagedelivery.net"],
+    domains: ["drive.google.com", "cdn.shopify.com", "imagedelivery.net"],
   },
-
-
 };
 
 export default nextConfig;

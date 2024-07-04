@@ -17,7 +17,7 @@ const Upto50off = () => {
           width={1278}
           className=""
         />
-        <div className="absolute xs:my-2 md:my-3 lg:my-5 xs:mr-2 md:mr-4 xl:mr-5 flex xs:gap-x-[2px] md:gap-x-2 xs:text-[4px] md:text-[8px] lg:text-xs xl:text-sm font-bold text-white">
+        <div className="absolute xs:my-2 md:my-3 lg:my-5 xs:mr-4 md:mr-8 xl:mr-10 flex xs:gap-x-[2px] md:gap-x-2 xs:text-[4px] md:text-[8px] lg:text-xs xl:text-sm font-bold text-white">
           <Link href={`/store-location#kemps-corner`}>
             <h1> {Strings.KEMPS_CORNER}</h1>{" "}
           </Link>
@@ -29,10 +29,10 @@ const Upto50off = () => {
           <Link href={`/store-location#juhu`}>
             <h1> {Strings.JUHU}</h1>
           </Link>
-          <p className="border-l-2 border-white" />
+          {/* <p className="border-l-2 border-white" />
           <Link href={`/store-location#andheri`}>
             <h1> {Strings.ANDHERI}</h1>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </div>
