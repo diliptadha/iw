@@ -645,40 +645,42 @@ const Homescreen: React.FC = () => {
               </div>
 
               <div className="flex justify-center mt-[40px] xs:mx-[20px] xl:mx-[70px]">
-                <div className="w-full">
-                  <Carousel
-                    selectedItem={currentSlide}
-                    showIndicators={false}
-                    showThumbs={false}
-                    showStatus={false}
-                    infiniteLoop={true}
-                    interval={2000}
-                    autoPlay={true}
-                    className="xs:h-[160px] md:h-[258px] lg:h-[358px] rounded-[10px] overflow-hidden"
-                  >
-                    {slider.map((item) => (
-                      <div key={item.id}>
-                        <img
-                          src={item.image}
-                          alt={item.title}
-                          loading="lazy"
-                          className="relative  object-cover- rounded-[10px] xs:h-[160px] md:h-[258px] lg:h-[358px] "
-                        />
-                        <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
-                          <p className="text-white absolute xs:top-14 md:top-[98px] lg:top-32 font-extrabold xs:text-xl md:text-3xl lg:text-[64px] ">
-                            <span className="">
-                              {item.title.split(" ").slice(0, 4).join(" ")}
-                            </span>
-                            <br />
-                            <span className="absolute xs:top-5 md:top-7 lg:top-20 left-0 right-0 bottom-0">
-                              {item.title.split(" ").slice(4).join(" ")}
-                            </span>
-                          </p>
+                {slider.length > 0 && (
+                  <div className="w-full">
+                    <Carousel
+                      selectedItem={currentSlide}
+                      showIndicators={false}
+                      showThumbs={false}
+                      showStatus={false}
+                      infiniteLoop={true}
+                      interval={2000}
+                      autoPlay={true}
+                      className="xs:h-[160px] md:h-[258px] lg:h-[358px] rounded-[10px] overflow-hidden"
+                    >
+                      {slider.map((item) => (
+                        <div key={item.id}>
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            loading="lazy"
+                            className="relative  object-cover- rounded-[10px] xs:h-[160px] md:h-[258px] lg:h-[358px] "
+                          />
+                          <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
+                            <p className="text-white absolute xs:top-14 md:top-[98px] lg:top-32 font-extrabold xs:text-xl md:text-3xl lg:text-[64px] ">
+                              <span className="">
+                                {item.title.split(" ").slice(0, 4).join(" ")}
+                              </span>
+                              <br />
+                              <span className="absolute xs:top-5 md:top-7 lg:top-20 left-0 right-0 bottom-0">
+                                {item.title.split(" ").slice(4).join(" ")}
+                              </span>
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </Carousel>
-                </div>
+                      ))}
+                    </Carousel>
+                  </div>
+                )}
               </div>
               {getContent.map((content, index) => {
                 if (index === 2) {
@@ -763,67 +765,68 @@ const Homescreen: React.FC = () => {
                   return null;
                 }
               })}
-              <div className="xs:mx-[20px] lg:mx-[72px] mt-[72px]">
-                <h1 className="font-extrabold xs:text-xl md:text-2xl">
-                  {Strings.SHOP_BY_CATEGORY}
-                </h1>
+              {selectedGender.length > 0 && (
+                <div className="xs:mx-[20px] lg:mx-[72px] mt-[72px]">
+                  <h1 className="font-extrabold xs:text-xl md:text-2xl">
+                    {Strings.SHOP_BY_CATEGORY}
+                  </h1>
 
-                <Tab.Group>
-                  <Tab.List className="mt-3 flex xs:space-x-2 md:space-x-16 flex-wrap border-b border-black relative">
-                    {Array.isArray(selectedGender) &&
-                      selectedGender.map((gender, index) => (
-                        <Tab as={Fragment} key={index}>
-                          {({ selected }) => (
-                            <button
-                              className={`text-[15px] text-black ${
-                                selected
-                                  ? "border-b-[5px] border-black p-2 outline-none font-extrabold relative top-[3px]"
-                                  : "font-normal"
-                              } xs:px-2 md:px-4 py-3`}
-                            >
-                              {gender.toUpperCase()}
-                            </button>
-                          )}
-                        </Tab>
-                      ))}
-                  </Tab.List>
-                  <Tab.Panels>
-                    {Object.keys(categories).map((selectedGender, index) => (
-                      <Tab.Panel className={""} key={index}>
-                        <div className="flex items-center">
-                          <Image
-                            onClick={handleScrollRight1}
-                            src={Images.Lefticon}
-                            alt="/"
-                            height={16}
-                            width={16}
-                            className=" mr-4 cursor-pointer"
-                          />
-
-                          <div
-                            ref={containerRef1}
-                            className="mt-5 overflow-x-auto overflow-hidden flex xs:gap-x-8 md:gap-x-10 lg:gap-x-16 no-scrollbar"
-                          >
-                            {/* <Slider ref={sliderRef2} {...settings2}></Slider>
-                      <div key={index} className="px-2"></div> */}
-                            {categories[selectedGender].map(
-                              (category, categoryIndex) => (
-                                <Frame
-                                  key={categoryIndex}
-                                  image={
-                                    genderImageMap[selectedGender as Gender]
-                                  }
-                                  buttonText={category}
-                                  buttonUrl={""}
-                                  gender={selectedGender}
-                                />
-                              )
+                  <Tab.Group>
+                    <Tab.List className="mt-3 flex xs:space-x-2 md:space-x-16 flex-wrap border-b border-black relative">
+                      {Array.isArray(selectedGender) &&
+                        selectedGender.map((gender, index) => (
+                          <Tab as={Fragment} key={index}>
+                            {({ selected }) => (
+                              <button
+                                className={`text-[15px] text-black ${
+                                  selected
+                                    ? "border-b-[5px] border-black p-2 outline-none font-extrabold relative top-[3px]"
+                                    : "font-normal"
+                                } xs:px-2 md:px-4 py-3`}
+                              >
+                                {gender.toUpperCase()}
+                              </button>
                             )}
+                          </Tab>
+                        ))}
+                    </Tab.List>
+                    <Tab.Panels>
+                      {Object.keys(categories).map((selectedGender, index) => (
+                        <Tab.Panel className={""} key={index}>
+                          <div className="flex items-center">
+                            <Image
+                              onClick={handleScrollRight1}
+                              src={Images.Lefticon}
+                              alt="/"
+                              height={16}
+                              width={16}
+                              className=" mr-4 cursor-pointer"
+                            />
+
+                            <div
+                              ref={containerRef1}
+                              className="mt-5 overflow-x-auto overflow-hidden flex xs:gap-x-8 md:gap-x-10 lg:gap-x-16 no-scrollbar"
+                            >
+                              {/* <Slider ref={sliderRef2} {...settings2}></Slider>
+                      <div key={index} className="px-2"></div> */}
+                              {categories[selectedGender].map(
+                                (category, categoryIndex) => (
+                                  <Frame
+                                    key={categoryIndex}
+                                    image={
+                                      genderImageMap[selectedGender as Gender]
+                                    }
+                                    buttonText={category}
+                                    buttonUrl={""}
+                                    gender={selectedGender}
+                                  />
+                                )
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </Tab.Panel>
-                    ))}
-                    {/* <Tab.Panel className={""}>
+                        </Tab.Panel>
+                      ))}
+                      {/* <Tab.Panel className={""}>
                 <div className="mt-5 xs:overflow-x-auto xs:space-x-4  xl:space-x-16 flex xl:justify-between lg:no-scrollbar">
                   {framesforwomen.map((frame, index) => (
                     <Frame
@@ -859,102 +862,104 @@ const Homescreen: React.FC = () => {
                   ))}
                 </div>
               </Tab.Panel> */}
-                  </Tab.Panels>
-                </Tab.Group>
+                    </Tab.Panels>
+                  </Tab.Group>
+                  {newArrival.length > 0 && (
+                    <div className="xs:mt-10 lg:mt-28">
+                      <h1 className="font-extrabold text-2xl text-black">
+                        {Strings.NEW_ARRIVALS}
+                      </h1>
 
-                <div className="xs:mt-10 lg:mt-28">
-                  <h1 className="font-extrabold text-2xl text-black">
-                    {Strings.NEW_ARRIVALS}
-                  </h1>
+                      <div className="flex items-center justify-between ">
+                        <Image
+                          onClick={handlePrev2}
+                          src={Images.Lefticon}
+                          alt="/"
+                          height={16}
+                          width={16}
+                          className={`ml-0 xl:mb-0 transform:translateX(-${
+                            currIndex * 100
+                          }%) ${
+                            currIndex === 0
+                              ? "opacity-60 cursor-not-allowed"
+                              : "cursor-pointer"
+                          }`}
+                          style={{
+                            pointerEvents: currIndex === 0 ? "none" : "auto",
+                          }}
+                        />
 
-                  <div className="flex items-center justify-between ">
-                    <Image
-                      onClick={handlePrev2}
-                      src={Images.Lefticon}
-                      alt="/"
-                      height={16}
-                      width={16}
-                      className={`ml-0 xl:mb-0 transform:translateX(-${
-                        currIndex * 100
-                      }%) ${
-                        currIndex === 0
-                          ? "opacity-60 cursor-not-allowed"
-                          : "cursor-pointer"
-                      }`}
-                      style={{
-                        pointerEvents: currIndex === 0 ? "none" : "auto",
-                      }}
-                    />
-
-                    {newArrival.map((currentItem, index) => {
-                      if (index === currIndex) {
-                        return (
-                          <div
-                            className="xs:flex-col-reverse xl:flex-row xl:space-x-8 flex items-center justify-evenly w-[100%]"
-                            key={index}
-                          >
-                            <div className="">
-                              <p className="text-xl font-extrabold text-PictonBlue">
-                                {currentItem.brands}
-                                <br />
-                                {currentItem.SKU}
-                              </p>
-                              {currentItem.salePrice ? (
-                                <div className="flex space-x-2">
-                                  <p className="font-normal text-xl text-black line-through">
-                                    ₹
-                                    {currentItem.originalPrice.toLocaleString(
-                                      "en-IN"
-                                    )}
+                        {newArrival.map((currentItem, index) => {
+                          if (index === currIndex) {
+                            return (
+                              <div
+                                className="xs:flex-col-reverse xl:flex-row xl:space-x-8 flex items-center justify-evenly w-[100%]"
+                                key={index}
+                              >
+                                <div className="">
+                                  <p className="text-xl font-extrabold text-PictonBlue">
+                                    {currentItem.brands}
+                                    <br />
+                                    {currentItem.SKU}
                                   </p>
-                                  <p className="font-extrabold text-xl text-black">
-                                    ₹
-                                    {currentItem.salePrice.toLocaleString(
-                                      "en-IN"
-                                    )}
-                                  </p>
-                                </div>
-                              ) : (
-                                <div className="flex space-x-2">
-                                  <p className="font-normal text-xl text-black">
-                                    ₹
-                                    {currentItem.originalPrice.toLocaleString(
-                                      "en-IN"
-                                    )}
-                                  </p>
-                                </div>
-                              )}
+                                  {currentItem.salePrice ? (
+                                    <div className="flex space-x-2">
+                                      <p className="font-normal text-xl text-black line-through">
+                                        ₹
+                                        {currentItem.originalPrice.toLocaleString(
+                                          "en-IN"
+                                        )}
+                                      </p>
+                                      <p className="font-extrabold text-xl text-black">
+                                        ₹
+                                        {currentItem.salePrice.toLocaleString(
+                                          "en-IN"
+                                        )}
+                                      </p>
+                                    </div>
+                                  ) : (
+                                    <div className="flex space-x-2">
+                                      <p className="font-normal text-xl text-black">
+                                        ₹
+                                        {currentItem.originalPrice.toLocaleString(
+                                          "en-IN"
+                                        )}
+                                      </p>
+                                    </div>
+                                  )}
 
-                              <p className="font-normal text-sm text-black mb-6">
-                                {Strings.Inclusive_of_all_taxes}
-                              </p>
-                              <StarRating rating={currentItem.rating} />
-                              <div className="flex space-x-4 mt-4 items-center">
-                                <button
-                                  onClick={() =>
-                                    addToCart(
-                                      isLoggedIn,
-                                      localStorage.getItem("userId")
-                                    )
-                                  }
-                                  className="w-[136px] h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border border-black outline-none px-2 lg:px-4 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold"
-                                >
-                                  {Strings.ADD_TO_CART}
-                                </button>
-                                <LoginModal
-                                  showLoginModal={showLoginModal}
-                                  setShowLoginModal={setShowLoginModal}
-                                  isLoggedIn={isLoggedIn}
-                                  setIsLoggedIn={setIsLoggedIn}
-                                />
-                                <button
-                                  onClick={() => handleProductPage(currentItem)}
-                                  className="w-[136px] h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border border-black outline-none px-2 lg:px-4 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold"
-                                >
-                                  {Strings.KNOW_MORE}
-                                </button>
+                                  <p className="font-normal text-sm text-black mb-6">
+                                    {Strings.Inclusive_of_all_taxes}
+                                  </p>
+                                  <StarRating rating={currentItem.rating} />
+                                  <div className="flex space-x-4 mt-4 items-center">
+                                    <button
+                                      onClick={() =>
+                                        addToCart(
+                                          isLoggedIn,
+                                          localStorage.getItem("userId")
+                                        )
+                                      }
+                                      className="w-[136px] h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border border-black outline-none px-2 lg:px-4 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold"
+                                    >
+                                      {Strings.ADD_TO_CART}
+                                    </button>
+                                    <LoginModal
+                                      showLoginModal={showLoginModal}
+                                      setShowLoginModal={setShowLoginModal}
+                                      isLoggedIn={isLoggedIn}
+                                      setIsLoggedIn={setIsLoggedIn}
+                                    />
+                                    <button
+                                      onClick={() =>
+                                        handleProductPage(currentItem)
+                                      }
+                                      className="w-[136px] h-38 rounded-md text-sm text-black bg-white flex items-center justify-center border border-black outline-none px-2 lg:px-4 py-2 hover:text-PictonBlue hover:border-PictonBlue hover:font-bold"
+                                    >
+                                      {Strings.KNOW_MORE}
+                                    </button>
 
-                                {/* <button
+                                    {/* <button
                             onClick={() =>
                               handleBuyNow(localStorage.getItem("userId"))
                             }
@@ -962,104 +967,112 @@ const Homescreen: React.FC = () => {
                           >
                             {Strings.BUY_NOW}
                           </button> */}
-                              </div>
-                              {cartMessage && (
-                                <div className="mt-4 text-sm text-green-600">
-                                  {cartMessage}
+                                  </div>
+                                  {cartMessage && (
+                                    <div className="mt-4 text-sm text-green-600">
+                                      {cartMessage}
+                                    </div>
+                                  )}
                                 </div>
-                              )}
-                            </div>
-                            <div className="xs:w-[280px] md:w-[400px] h-[350px] overflow-hidden flex rounded-[0px] bg-black-">
-                              <img
-                                src={currentItem.productImage}
-                                alt="/"
-                                className="relative transition-transform duration-700 ease-in-out"
-                                // style={{
-                                //   transform: `translateX(-${currIndex * 100}%)`,
-                                // }}
-                              />
-                            </div>
-                          </div>
-                        );
-                      }
-                      return null;
-                    })}
+                                <div className="xs:w-[280px] md:w-[400px] h-[350px] overflow-hidden flex rounded-[0px] bg-black-">
+                                  <img
+                                    src={currentItem.productImage}
+                                    alt="/"
+                                    className="relative transition-transform duration-700 ease-in-out"
+                                    // style={{
+                                    //   transform: `translateX(-${currIndex * 100}%)`,
+                                    // }}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          }
+                          return null;
+                        })}
 
+                        <Image
+                          onClick={handleNext2}
+                          src={Images.Righticon}
+                          alt="/"
+                          height={16}
+                          width={16}
+                          className={`mr-0 xl:mb-0 transform:translateX(-${
+                            currIndex * 100
+                          }%) ${
+                            currIndex === newArrival.length - 1
+                              ? "opacity-60 cursor-not-allowed"
+                              : "cursor-pointer"
+                          }`}
+                          style={{
+                            pointerEvents:
+                              currIndex === newArrival.length - 1
+                                ? "none"
+                                : "auto",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+              {underFive.length > 0 && (
+                <div className="h-[512px] py-14 xs:pl-4 md:pl-12 bg-Darkblue overflow-hidden mt-5">
+                  <h1 className="font-extrabold text-2xl ml-8 text-white space-x-2 flex">
+                    <p> {Strings.ALL_UNDER}</p>
+                    <span className="text-[#FFC107]">
+                      {Strings.FIVE_HUNDRED}
+                    </span>
+                  </h1>
+                  <div className="flex items-center">
                     <Image
-                      onClick={handleNext2}
-                      src={Images.Righticon}
+                      onClick={() => {
+                        if (sliderRef1.current) {
+                          sliderRef1.current.slickNext();
+                        }
+                      }}
+                      src={Images.Upicon}
                       alt="/"
                       height={16}
                       width={16}
-                      className={`mr-0 xl:mb-0 transform:translateX(-${
-                        currIndex * 100
-                      }%) ${
-                        currIndex === newArrival.length - 1
-                          ? "opacity-60 cursor-not-allowed"
-                          : "cursor-pointer"
-                      }`}
-                      style={{
-                        pointerEvents:
-                          currIndex === newArrival.length - 1 ? "none" : "auto",
-                      }}
+                      className="-rotate-90 mr-4 cursor-pointer"
+                    />
+                    <div className="mt-5 overflow-hidden w-full ">
+                      <Slider ref={sliderRef1} {...settings1}>
+                        {underFive.map((product, index) => (
+                          <div key={index} className="px-2">
+                            <Under500
+                              useCart={useCart}
+                              productId={product.productId}
+                              subProductId={product.subProductId}
+                              key={index}
+                              image={product.productImage}
+                              Brand={product.brands}
+                              SKU={product.SKU}
+                              salePrice={product.salePrice}
+                              originalPrice={product.originalPrice}
+                              rating={product.rating}
+                              isBestseller={product.isBestSeller}
+                              color={product.frameColor}
+                              shape={product.frameShape}
+                              gender={product.gender}
+                              category={product.category}
+                              size={product.frameSize}
+                              onZoomClick={() =>
+                                handleZoomClickForUnder500(product)
+                              }
+                            />
+                          </div>
+                        ))}
+                      </Slider>
+                    </div>
+                    <Under500Modal
+                      Open={isOpen}
+                      Close={closeModal2}
+                      product={Product}
                     />
                   </div>
                 </div>
-              </div>
-              <div className="h-[512px] py-14 xs:pl-4 md:pl-12 bg-Darkblue overflow-hidden mt-5">
-                <h1 className="font-extrabold text-2xl ml-8 text-white space-x-2 flex">
-                  <p> {Strings.ALL_UNDER}</p>
-                  <span className="text-[#FFC107]">{Strings.FIVE_HUNDRED}</span>
-                </h1>
-                <div className="flex items-center">
-                  <Image
-                    onClick={() => {
-                      if (sliderRef1.current) {
-                        sliderRef1.current.slickNext();
-                      }
-                    }}
-                    src={Images.Upicon}
-                    alt="/"
-                    height={16}
-                    width={16}
-                    className="-rotate-90 mr-4 cursor-pointer"
-                  />
-                  <div className="mt-5 overflow-hidden w-full ">
-                    <Slider ref={sliderRef1} {...settings1}>
-                      {underFive.map((product, index) => (
-                        <div key={index} className="px-2">
-                          <Under500
-                            useCart={useCart}
-                            productId={product.productId}
-                            subProductId={product.subProductId}
-                            key={index}
-                            image={product.productImage}
-                            Brand={product.brands}
-                            SKU={product.SKU}
-                            salePrice={product.salePrice}
-                            originalPrice={product.originalPrice}
-                            rating={product.rating}
-                            isBestseller={product.isBestSeller}
-                            color={product.frameColor}
-                            shape={product.frameShape}
-                            gender={product.gender}
-                            category={product.category}
-                            size={product.frameSize}
-                            onZoomClick={() =>
-                              handleZoomClickForUnder500(product)
-                            }
-                          />
-                        </div>
-                      ))}
-                    </Slider>
-                  </div>
-                  <Under500Modal
-                    Open={isOpen}
-                    Close={closeModal2}
-                    product={Product}
-                  />
-                </div>
-              </div>
+              )}
               <Upto50off />
               {getContent.map((content, index) => {
                 if (index === 1) {
@@ -1159,134 +1172,139 @@ const Homescreen: React.FC = () => {
                   return null;
                 }
               })}
-              <div className="mt-20 h-[512px] py-14 xs:pl-4 md:pl-12 bg-[#D2E7EE] overflow-hidden">
-                <h1 className="font-extrabold text-2xl text-black">
-                  {Strings.BESTSELLERS}
-                </h1>
-                <div className="flex items-center">
-                  <Image
-                    // onClick={handleScrollRight2}
-                    onClick={() => {
-                      if (sliderRef.current) {
-                        sliderRef.current.slickNext();
-                      }
-                    }}
-                    src={Images.Downiconblack}
-                    alt="/"
-                    height={8}
-                    width={16}
-                    className="rotate-90 mr-4 cursor-pointer"
-                  />
-                  <div className="mt-5 overflow-hidden w-full ">
-                    <Slider ref={sliderRef} {...settings} className="">
-                      {bestSeller.map((product, index) => (
-                        <div key={index} className="px-2">
-                          <Bestsellers
-                            productId={product.productId}
-                            subProductId={product.subProductId}
-                            key={index}
-                            image={product.productImage}
-                            title={product.brands}
-                            Brand={product.brands}
-                            SKU={product.SKU}
-                            salePrice={`₹${product.salePrice}`}
-                            originalPrice={`₹${product.originalPrice}`}
-                            rating={product.rating}
-                            isBestseller={product.isBestSeller}
-                            color={product.frameColor}
-                            shape={product.frameShape}
-                            gender={product.gender}
-                            category={product.category}
-                            size={product.frameSize}
-                            onZoomClick={() => handleZoomClick(product)}
-                          />
-                        </div>
-                      ))}
-                    </Slider>
-                  </div>
-                  <Modal
-                    isOpen={isModalOpen}
-                    onClose={closeModal}
-                    product={selectedProduct}
-                  />
-                </div>
-              </div>
-              <div className=" xs:my-[60px] xl:my-[100px] xs:mx-[20px] xl:mx-[60px]">
-                <h1 className="text-black font-extrabold xl:mx-5 xs:text-xl xl:text-2xl mb-7">
-                  {Strings.What_our_customers_have_to_say}
-                </h1>
-                <div
-                  className="flex relative items-center justify-between xs:space-x-[2
-          px] xl:space-x-4 "
-                >
-                  <Image
-                    onClick={handleScrollLeft}
-                    src={Images.Lefticon}
-                    alt="/"
-                    height={16}
-                    width={16}
-                    className="xs:hidden md:flex cursor-pointer"
-                  />
-                  <Image
-                    onClick={handleScrollRight}
-                    src={Images.Lefticon}
-                    alt="/"
-                    height={16}
-                    width={16}
-                    className="xs:block md:hidden cursor-pointer ml-[-10px] mr-2"
-                  />
-
-                  <div
-                    ref={containerRef}
-                    className="flex xl:overflow-hidden rounded-[10px] xs:space-x-5 md:space-x-10 xs:overflow-x-scroll no-scrollbar"
-                  >
-                    {customerData.map((Customer, index) => (
-                      <Customerssay
-                        key={index}
-                        rating={Customer.rating}
-                        h1={Customer.fname}
-                        h2={Customer.lname}
-                        p={Customer.comment}
-                        style={{
-                          opacity:
-                            windowWidth > 768
-                              ? index === visibleIndex
-                                ? 1
-                                : Math.abs(index - visibleIndex) < 3
-                                ? 0.5
-                                : 0
-                              : 1,
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <Image
-                    onClick={handleScrollRight}
-                    src={Images.Righticon}
-                    alt="/"
-                    height={16}
-                    width={16}
-                    className="xs:hidden md:flex cursor-pointer"
-                  />
-                  <div className=" space-y-2 top-64 z-10 right-2 absolute">
-                    <button
-                      onClick={handleScrollToTop}
-                      className="bg-PictonBlue h-12 w-12 rounded-full flex justify-center items-center"
-                    >
-                      <Image
-                        src={Images.Upicon}
-                        alt="/"
-                        height={16}
-                        width={16}
-                      />
-                    </button>
-                    <WhatsAppButton
-                      phoneNumber={Strings.Whatsapp_No}
-                      message="Hello, I would like to know more about your services."
+              {bestSeller.length > 0 && (
+                <div className="mt-20 h-[512px] py-14 xs:pl-4 md:pl-12 bg-[#D2E7EE] overflow-hidden">
+                  <h1 className="font-extrabold text-2xl text-black">
+                    {Strings.BESTSELLERS}
+                  </h1>
+                  <div className="flex items-center">
+                    <Image
+                      // onClick={handleScrollRight2}
+                      onClick={() => {
+                        if (sliderRef.current) {
+                          sliderRef.current.slickNext();
+                        }
+                      }}
+                      src={Images.Downiconblack}
+                      alt="/"
+                      height={8}
+                      width={16}
+                      className="rotate-90 mr-4 cursor-pointer"
+                    />
+                    <div className="mt-5 overflow-hidden w-full ">
+                      <Slider ref={sliderRef} {...settings} className="">
+                        {bestSeller.map((product, index) => (
+                          <div key={index} className="px-2">
+                            <Bestsellers
+                              productId={product.productId}
+                              subProductId={product.subProductId}
+                              key={index}
+                              image={product.productImage}
+                              title={product.brands}
+                              Brand={product.brands}
+                              SKU={product.SKU}
+                              salePrice={`₹${product.salePrice}`}
+                              originalPrice={`₹${product.originalPrice}`}
+                              rating={product.rating}
+                              isBestseller={product.isBestSeller}
+                              color={product.frameColor}
+                              shape={product.frameShape}
+                              gender={product.gender}
+                              category={product.category}
+                              size={product.frameSize}
+                              onZoomClick={() => handleZoomClick(product)}
+                            />
+                          </div>
+                        ))}
+                      </Slider>
+                    </div>
+                    <Modal
+                      isOpen={isModalOpen}
+                      onClose={closeModal}
+                      product={selectedProduct}
                     />
                   </div>
                 </div>
-              </div>
+              )}
+
+              {customerData.length > 0 && (
+                <div className=" xs:my-[60px] xl:my-[100px] xs:mx-[20px] xl:mx-[60px]">
+                  <h1 className="text-black font-extrabold xl:mx-5 xs:text-xl xl:text-2xl mb-7">
+                    {Strings.What_our_customers_have_to_say}
+                  </h1>
+                  <div
+                    className="flex relative items-center justify-between xs:space-x-[2
+          px] xl:space-x-4 "
+                  >
+                    <Image
+                      onClick={handleScrollLeft}
+                      src={Images.Lefticon}
+                      alt="/"
+                      height={16}
+                      width={16}
+                      className="xs:hidden md:flex cursor-pointer"
+                    />
+                    <Image
+                      onClick={handleScrollRight}
+                      src={Images.Lefticon}
+                      alt="/"
+                      height={16}
+                      width={16}
+                      className="xs:block md:hidden cursor-pointer ml-[-10px] mr-2"
+                    />
+
+                    <div
+                      ref={containerRef}
+                      className="flex xl:overflow-hidden rounded-[10px] xs:space-x-5 md:space-x-10 xs:overflow-x-scroll no-scrollbar"
+                    >
+                      {customerData.map((Customer, index) => (
+                        <Customerssay
+                          key={index}
+                          rating={Customer.rating}
+                          h1={Customer.fname}
+                          h2={Customer.lname}
+                          p={Customer.comment}
+                          style={{
+                            opacity:
+                              windowWidth > 768
+                                ? index === visibleIndex
+                                  ? 1
+                                  : Math.abs(index - visibleIndex) < 3
+                                  ? 0.5
+                                  : 0
+                                : 1,
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <Image
+                      onClick={handleScrollRight}
+                      src={Images.Righticon}
+                      alt="/"
+                      height={16}
+                      width={16}
+                      className="xs:hidden md:flex cursor-pointer"
+                    />
+                    <div className=" space-y-2 top-64 z-10 right-2 absolute">
+                      <button
+                        onClick={handleScrollToTop}
+                        className="bg-PictonBlue h-12 w-12 rounded-full flex justify-center items-center"
+                      >
+                        <Image
+                          src={Images.Upicon}
+                          alt="/"
+                          height={16}
+                          width={16}
+                        />
+                      </button>
+                      <WhatsAppButton
+                        phoneNumber={Strings.Whatsapp_No}
+                        message="Hello, I would like to know more about your services."
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             <Footer />
           </div>

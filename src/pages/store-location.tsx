@@ -110,10 +110,18 @@ const StoreLocation = () => {
                     <StarRating rating={ele.rating} />
                   </div>
                 </div>
-                <h3 className="mb-[6px] md:mb-[16px] md:text-[14px] lg:text-[16px] xl:text-[18px]">
+                <Link
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                    ele.address
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-[#000000] hover:text-[#42b7e9] mb-[6px] md:mb-[16px] md:text-[14px] lg:text-[16px] xl:text-[18px]"
+                >
                   {ele.address}
-                </h3>
-                <h4 className="mb-[10px] md:mb-[20px] md:text-[14px] lg:text-[16px] xl:text-[18px]">
+                </Link>
+
+                <h4 className="  my-[10px] md:mb-[20px] md:text-[14px] lg:text-[16px] xl:text-[18px]">
                   {ele.hours}
                 </h4>
                 <div className="flex gap-[10px] mb-[20px] items-center">

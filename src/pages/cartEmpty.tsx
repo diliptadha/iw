@@ -1,12 +1,14 @@
-import React from "react";
 import "../app/globals.css";
+
 import { Images, Strings } from "@/constant";
-import Link from "next/link";
+
 import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 
 const CartEmpty = () => {
   return (
-    <>
+    <div className="max-w-screen-2xl m-auto ">
       <div className=" px-[1rem] py-[1rem] md:px-[3rem] xl:px-[6rem]">
         <div className="flex items-center justify-between mb-9">
           <Link href={"/"}>
@@ -35,7 +37,7 @@ const CartEmpty = () => {
           </Link>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

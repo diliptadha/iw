@@ -117,6 +117,8 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   const [isGridVisible4, setIsGridVisible4] = useState(true);
   const [isGridVisible5, setIsGridVisible5] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const drawerRef = useRef<HTMLDivElement>(null);
+
   const [isOpen, setIsOpen] = useState(false);
   const [selectedGender, setSelectedGender] = useState<string[]>([]);
   const [selectedFrameStyle, setSelectedFrameStyle] = useState<string[]>([]);
@@ -317,18 +319,35 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   };
 
   useEffect(() => {
-    const isMobileScreen = () => window.innerWidth <= 767;
-    if (isMobileScreen()) {
-      if (!isDrawerOpen) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "";
+    const handleClickOutside = (event: any) => {
+      if (drawerRef.current && !drawerRef.current.contains(event.target)) {
+        setIsDrawerOpen(true);
       }
+    };
+
+    if (!isDrawerOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
     }
+
     return () => {
-      document.body.style.overflow = "";
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [!isDrawerOpen]);
+  // useEffect(() => {
+  //   const isMobileScreen = () => window.innerWidth <= 767;
+  //   if (isMobileScreen()) {
+  //     if (!isDrawerOpen) {
+  //       document.body.style.overflow = "hidden";
+  //     } else {
+  //       document.body.style.overflow = "";
+  //     }
+  //   }
+  //   return () => {
+  //     document.body.style.overflow = "";
+  //   };
+  // }, [!isDrawerOpen]);
 
   const handleScrollToTop = () => {
     window.scrollTo({
@@ -885,6 +904,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       <Header setSearch={setSearch} />
       <div className="mt-[36px] xs:mx-[20px] xl:mx-[72px]- mx flex">
         <div
+          ref={drawerRef}
           className={`drawer xs:z-index1 lg:z-index2 xs:w-[333px] ${
             isDrawerOpen && "md:hidden"
           } ${isDrawerOpen && "hidden"}`}

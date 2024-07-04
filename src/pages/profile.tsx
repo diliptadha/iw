@@ -529,7 +529,7 @@ const Profile = () => {
                 <div className="flex">
                   <h1 className=" w-24">City :</h1>
                   <input
-                    type="tel"
+                    type="text"
                     className="flex bg-[#f2f2f2] justify-center outline-none border-b border-gray-500"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
@@ -539,7 +539,7 @@ const Profile = () => {
                 <div className="flex">
                   <h1 className=" w-24">Address :</h1>
                   <input
-                    type="tel"
+                    type="text"
                     className="flex bg-[#f2f2f2] justify-center outline-none border-b border-gray-500"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
