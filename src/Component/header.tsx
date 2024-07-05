@@ -84,7 +84,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
     );
   };
 
-  const [signInText, setSignInText] = useState("Sign In");
+  const [signInText, setSignInText] = useState("SIGN IN");
   const [firstName, setFirstName] = useState("");
 
   useEffect(() => {
@@ -455,6 +455,15 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
               />
               <div className="space-y-2 px-5 mt-20 w-full">
                 <div className="space-y-2">
+                  <div className="flex items-center cursor-pointer">
+                    <Image height={16} width={16} alt="/" src={Images.home} />
+                    <Link href={"/"}>
+                      <p className="text-white font-normal text-xs ml-2">
+                        {Strings.HOME}
+                      </p>
+                    </Link>
+                  </div>
+                  <p className="border-[0.5px] border-white"></p>
                   {menuData?.map((item, index) => (
                     <div key={index} className="space-y-2">
                       <div
@@ -472,7 +481,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                           />
                         </button>
                       </div>
-                      <p className=" border "></p>
+                      <p className="border-[0.5px] border-white"></p>
                     </div>
                   ))}
                 </div>
@@ -512,6 +521,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                       {item.usage.map((usage, subIndex) => (
                                         <li key={subIndex}>
                                           <Link
+                                            onClick={handleMenuItemClick}
                                             href={`/${item.category
                                               .toLowerCase()
                                               .replace(/\s+/g, "-")}/${usage
@@ -527,6 +537,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                         </li>
                                       ))}
                                     </ul>
+                                    <p className="border-[0.5px] border-black mt-2"></p>
                                   </div>
                                 )}
 
@@ -540,6 +551,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                       {item.gender.map((gender, subIndex) => (
                                         <li key={subIndex}>
                                           <Link
+                                            onClick={handleMenuItemClick}
                                             href={`/${item.category
                                               .toLowerCase()
                                               .replace(
@@ -555,7 +567,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                         </li>
                                       ))}
                                     </ul>
-                                    <p className="border border-black mt-2"></p>
+                                    <p className="border-[0.5px] border-black mt-2"></p>
                                   </div>
                                 )}
                             </div>
@@ -576,6 +588,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     {item.brand.map((brand, subIndex) => (
                                       <li key={subIndex}>
                                         <Link
+                                          onClick={handleMenuItemClick}
                                           href={`/${item.category
                                             .toLowerCase()
                                             .replace(/\s+/g, "-")}/${brand
@@ -596,7 +609,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                       </li>
                                     ))}
                                   </ul>
-                                  <p className="border border-black mt-2"></p>
+                                  <p className="border-[0.5px] border-black mt-2"></p>
                                 </>
                               )}
                             </div>
@@ -611,6 +624,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     {item.color.map((color, subIndex) => (
                                       <li key={subIndex}>
                                         <Link
+                                          onClick={handleMenuItemClick}
                                           href={`/${item.category
                                             .toLowerCase()
                                             .replace(/\s+/g, "-")}/${color
@@ -630,7 +644,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                       </li>
                                     ))}
                                   </ul>
-                                  <p className="border border-black mt-2"></p>
+                                  <p className="border-[0.5px] border-black mt-2"></p>
                                 </>
                               )}
                             </div>
@@ -645,6 +659,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     {item.style.map((style, subIndex) => (
                                       <li key={subIndex}>
                                         <Link
+                                          onClick={handleMenuItemClick}
                                           href={`/${item.category
                                             .toLowerCase()
                                             .replace(/\s+/g, "-")}/${style
@@ -657,7 +672,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                       </li>
                                     ))}
                                   </ul>
-                                  <p className="border border-black mt-2"></p>
+                                  <p className="border-[0.5px] border-black mt-2"></p>
                                 </>
                               )}
                             </div>
@@ -672,6 +687,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                                     {item.shape.map((shape, subIndex) => (
                                       <li key={subIndex}>
                                         <Link
+                                          onClick={handleMenuItemClick}
                                           href={`/${item.category
                                             .toLowerCase()
                                             .replace(/\s+/g, "-")}/${shape
@@ -709,7 +725,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                     </a>
                   </h1>
 
-                  <p className="border"></p>
+                  <p className="border-[0.5px] border-white"></p>
 
                   <div className="flex items-center cursor-pointer">
                     <Image
@@ -725,7 +741,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                     </Link>
                   </div>
 
-                  <p className="border"></p>
+                  <p className="border-[0.5px] border-white"></p>
                   <div
                     onClick={openWhatsApp}
                     className="flex items-center cursor-pointer"
@@ -735,7 +751,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       {Strings.TALK_WITH_US}
                     </p>
                   </div>
-                  <p className="border"></p>
+                  <p className="border-[0.5px] border-white"></p>
                   <div className="flex items-center">
                     <Link href={isLoggedIn ? "/profile" : "/"}>
                       <Image
@@ -761,7 +777,6 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                       setIsLoggedIn={setIsLoggedIn}
                     />
                   </div>
-                  <p className="border"></p>
                 </div>
               </div>
             </div>

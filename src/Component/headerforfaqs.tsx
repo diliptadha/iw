@@ -346,6 +346,15 @@ const Headerforfaqs: React.FC<HeaderProps> = ({ setSearch }) => {
               />
               <div className="space-y-2 px-5 mt-20 w-full">
                 <div className="space-y-4">
+                  <div className="flex items-center cursor-pointer">
+                    <Image height={16} width={16} alt="/" src={Images.home} />
+                    <Link href={"/"}>
+                      <p className="text-white font-normal text-xs ml-2">
+                        {Strings.HOME}
+                      </p>
+                    </Link>
+                  </div>
+                  <p className="border-[0.5px] border-white"></p>
                   <h1 className="flex items-center cursor-pointer   ">
                     <a href="tel:+918291251241">
                       <Image
@@ -362,7 +371,7 @@ const Headerforfaqs: React.FC<HeaderProps> = ({ setSearch }) => {
                     </a>
                   </h1>
 
-                  <p className="border"></p>
+                  <p className="border-[0.5px] border-white"></p>
 
                   <div className="flex items-center cursor-pointer">
                     <Image
@@ -378,7 +387,7 @@ const Headerforfaqs: React.FC<HeaderProps> = ({ setSearch }) => {
                     </Link>
                   </div>
 
-                  <p className="border"></p>
+                  <p className="border-[0.5px] border-white"></p>
                   <div
                     onClick={openWhatsApp}
                     className="flex items-center cursor-pointer"
@@ -388,7 +397,7 @@ const Headerforfaqs: React.FC<HeaderProps> = ({ setSearch }) => {
                       {Strings.TALK_WITH_US}
                     </p>
                   </div>
-                  <p className="border"></p>
+                  <p className="border-[0.5px] border-white"></p>
                   <div className="flex items-center">
                     <Link href={isLoggedIn ? "/profile" : "/"}>
                       <Image
@@ -414,7 +423,6 @@ const Headerforfaqs: React.FC<HeaderProps> = ({ setSearch }) => {
                       setIsLoggedIn={setIsLoggedIn}
                     />
                   </div>
-                  <p className="border"></p>
                 </div>
               </div>
             </div>

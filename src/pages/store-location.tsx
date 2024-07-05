@@ -101,7 +101,7 @@ const StoreLocation = () => {
                   className="w-[100%] h-[100%] rounded-[4px] object-cover"
                 />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 space-y-4">
                 <div className="mb-[15px] font-bold flex justify-between items-center ">
                   <h2 className="text-[15px] md:text-[18px] lg:text-[20px]">
                     {ele.title}
@@ -110,31 +110,48 @@ const StoreLocation = () => {
                     <StarRating rating={ele.rating} />
                   </div>
                 </div>
-                <Link
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                    ele.address
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline text-[#000000] hover:text-[#42b7e9] mb-[6px] md:mb-[16px] md:text-[14px] lg:text-[16px] xl:text-[18px]"
-                >
-                  {ele.address}
-                </Link>
-
-                <h4 className="  my-[10px] md:mb-[20px] md:text-[14px] lg:text-[16px] xl:text-[18px]">
+                <div className="flex items-start">
+                  <Image
+                    src={Images.locationblack}
+                    alt="/"
+                    height={16}
+                    width={16}
+                    className="mr-2 mt-2"
+                  />
+                  <div>
+                    <Link
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                        ele.address
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="leading-[0.5px]- line-clamp-2 text-[#000000] hover:text-[#42b7e9]  md:text-[14px] lg:text-[16px]- "
+                    >
+                      {ele.address}
+                    </Link>
+                  </div>
+                </div>
+                <div className=" flex items-center   md:text-[14px] lg:text-[16px]- ">
+                  <Image
+                    src={Images.clock}
+                    alt="/"
+                    height={16}
+                    width={16}
+                    className="mr-2"
+                  />
                   {ele.hours}
-                </h4>
-                <div className="flex gap-[10px] mb-[20px] items-center">
+                </div>
+                <div className="flex gap-[10px]  items-center">
                   <Image
                     src={Images.PHONE_LOGO_BLUE}
-                    width={20}
-                    height={20}
+                    width={16}
+                    height={16}
                     alt="PhoneIcon"
-                    className="h-[20px] w-[20px]"
+                    className="h-[16px] w-[16px]"
                   />
                   <Link
                     href={`tel:-${ele.number}`}
-                    className="underline text-[#000000] hover:text-[#42b7e9] md:text-[14px] lg:text-[16px] xl:text-[18px]"
+                    className="underline text-[#000000] hover:text-[#42b7e9] md:text-[14px] lg:text-[16px]- xl:text-[18px]-"
                   >
                     +91 {ele.number}
                   </Link>

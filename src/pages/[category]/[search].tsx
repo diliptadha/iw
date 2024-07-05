@@ -96,6 +96,8 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   const [isGridVisible4, setIsGridVisible4] = useState(true);
   const [isGridVisible5, setIsGridVisible5] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const drawerRef = useRef<HTMLDivElement>(null);
+
   const [isOpen, setIsOpen] = useState(false);
   const [selectedGender, setSelectedGender] = useState<string[]>([]);
   const [selectedFrameStyle, setSelectedFrameStyle] = useState<string[]>([]);
@@ -259,16 +261,22 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
   };
 
   useEffect(() => {
-    const isMobileScreen = () => window.innerWidth <= 767;
-    if (isMobileScreen()) {
-      if (!isDrawerOpen) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "";
+    const handleClickOutside = (event: any) => {
+      if (window.innerWidth <= 576) {
+        if (drawerRef.current && !drawerRef.current.contains(event.target)) {
+          setIsDrawerOpen(true);
+        }
       }
+    };
+
+    if (!isDrawerOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
     }
+
     return () => {
-      document.body.style.overflow = "";
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [!isDrawerOpen]);
 
@@ -410,12 +418,26 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
         JSON.stringify(selectedFrameMaterial)
       );
 
+      // urlSelectedCategory.charAt(0).toUpperCase() +
+      // urlSelectedCategory.slice(1).toLowerCase()
+
+      // const toCamelCase = (str: string) => {
+      //   return str
+      //     .replace(/([-_][a-z])/gi, (match) => {
+      //       return match.toUpperCase().replace("-", " ").replace("_", " ");
+      //     })
+      //     .replace(/^[a-z]/, (match) => {
+      //       return match.toUpperCase();
+      //     });
+      // };
+
       const categoryArray = Array.isArray(category) ? category : [category];
+      // const camelCaseCategoryArray = categoryArray.map(toCamelCase);
 
       const urlSelectedCategory = encodeURIComponent(
         JSON.stringify(categoryArray)
       );
-      console.log(urlSelectedCategory);
+      console.log("Category", urlSelectedCategory);
 
       const urlSelectedSearchRaw = gender.map((g: string) => {
         const cleanedGender = g.replace(/glasses-for-/, "").toLowerCase();
@@ -825,14 +847,21 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       )
       .join(" ");
   };
+
   return (
     <div className="list-bg max-w-screen-2xl m-auto">
       <Header setSearch={setSearch} />
       <div className="mt-[36px] xs:mx-[20px] xl:mx-[72px]- mx flex">
         <div
+          ref={drawerRef}
           className={`drawer xs:z-index1 lg:z-index2 xs:w-[333px] ${
             isDrawerOpen && "md:hidden"
-          } ${isDrawerOpen && "hidden"}`}
+          } ${isDrawerOpen && "hidden"} ${
+            formatCategory(category) === "Swimming Goggles" ||
+            formatCategory(category) === "Contact Lenses"
+              ? "hidden"
+              : "block"
+          }`}
         >
           <div className="space-y-4 p-6 border border-black xs:overflow-y-scroll lg:overflow-auto xs:rounded-r-[10px] md:rounded-[10px] xs:h-full md:h-auto w-[333px]">
             <div className="flex justify-end">
@@ -877,7 +906,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                 ))}
               </div>
             )}
-            <p className="border-[.5px] border-black"></p>
+            <p className="border-[0.5px] border-black"></p>
             <div
               onClick={() => toggleGridVisibility(2)}
               className="flex justify-between items-center"
@@ -914,7 +943,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                 ))}
               </div>
             )}
-            <p className="border-[.5px] border-black"></p>
+            <p className="border-[0.5px] border-black"></p>
             <div
               onClick={() => toggleGridVisibility(3)}
               className="flex justify-between items-center"
@@ -945,7 +974,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                 ))}
               </div>
             )}
-            <p className="border-[.5px] border-black"></p>
+            <p className="border-[0.5px] border-black"></p>
             <div
               onClick={() => toggleGridVisibility(4)}
               className="flex justify-between items-center"
@@ -984,7 +1013,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                 ))}
               </div>
             )}
-            <p className="border-[.5px] border-black"></p>
+            <p className="border-[0.5px] border-black"></p>
             <div
               onClick={() => toggleGridVisibility(5)}
               className="flex justify-between items-center"
@@ -1341,11 +1370,11 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       </div>
       <button
         onClick={toggleDrawer}
-        className={`absolute md:hidden bg-white h-7 w-7 top-[80px] left-4 flex justify-center items-center rounded-full ${
+        className={`absolute border border-black md:hidden bg-white h-7 w-7 top-[80px] left-4 flex justify-center items-center rounded-full ${
           !isDrawerOpen ? "hidden" : ""
         }`}
       >
-        <Image src={Images.Righticon} alt="" height={18} width={18} />
+        <Image src={Images.filter} alt="" height={18} width={18} />
       </button>
       <div className="mb-9 flex justify-end xs:mx-[20px] xl:mx-[72px]- mx">
         <div className="space-y-2 mt-[44px]">

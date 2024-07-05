@@ -320,8 +320,10 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
-      if (drawerRef.current && !drawerRef.current.contains(event.target)) {
-        setIsDrawerOpen(true);
+      if (window.innerWidth <= 576) {
+        if (drawerRef.current && !drawerRef.current.contains(event.target)) {
+          setIsDrawerOpen(true);
+        }
       }
     };
 
@@ -907,7 +909,11 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
           ref={drawerRef}
           className={`drawer xs:z-index1 lg:z-index2 xs:w-[333px] ${
             isDrawerOpen && "md:hidden"
-          } ${isDrawerOpen && "hidden"}`}
+          } ${isDrawerOpen && "hidden"} ${
+            search === "Swimming Goggles" || search === "Contact Lenses"
+              ? "hidden"
+              : "block"
+          }`}
         >
           <div className="space-y-4 p-6 border border-black xs:overflow-y-scroll lg:overflow-auto xs:rounded-r-[10px] md:rounded-[10px] xs:h-full md:h-auto w-[333px]">
             <div className="flex justify-end">
@@ -952,7 +958,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                 ))}
               </div>
             )}
-            <p className="border-[.5px] border-black"></p>
+            <p className="border-[0.5px] border-black"></p>
             <div
               onClick={() => toggleGridVisibility(2)}
               className="flex justify-between items-center"
@@ -989,7 +995,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                 ))}
               </div>
             )}
-            <p className="border-[.5px] border-black"></p>
+            <p className="border-[0.5px] border-black"></p>
             <div
               onClick={() => toggleGridVisibility(3)}
               className="flex justify-between items-center"
@@ -1020,7 +1026,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                 ))}
               </div>
             )}
-            <p className="border-[.5px] border-black"></p>
+            <p className="border-[0.5px] border-black"></p>
             <div
               onClick={() => toggleGridVisibility(4)}
               className="flex justify-between items-center"
@@ -1059,7 +1065,7 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
                 ))}
               </div>
             )}
-            <p className="border-[.5px] border-black"></p>
+            <p className="border-[0.5px] border-black"></p>
             <div
               onClick={() => toggleGridVisibility(5)}
               className="flex justify-between items-center"
@@ -1100,7 +1106,9 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
         </div>
         <div className="md:ml-3 xl:ml-7 w-full">
           <div className="flex items-center xs:justify-center md:justify-between xs:flex-col lg:flex-row xs:space-y-2 lg:space-y-0 text-black font-normal text-sm">
-            <p className="xs:order-1">Eyewear / Reading Glasses</p>
+            <p className="xs:order-1">{`Eyewear / ${
+              search ? search : "All"
+            }`}</p>
             <p className="xs:order-3 lg:order-2">
               {search === ""
                 ? `Showing product data ${
@@ -1503,11 +1511,11 @@ const Listingpage: React.FC<{ filters: Filters }> = ({ filters }) => {
       </div>
       <button
         onClick={toggleDrawer}
-        className={`absolute md:hidden bg-white h-7 w-7 top-[80px] left-4 flex justify-center items-center rounded-full ${
+        className={`absolute  border border-black md:hidden bg-white h-7 w-7 top-[80px] left-4 flex justify-center items-center rounded-full ${
           !isDrawerOpen ? "hidden" : ""
         }`}
       >
-        <Image src={Images.Righticon} alt="" height={18} width={18} />
+        <Image src={Images.filter} alt="" height={18} width={18} />
       </button>
       <div className="mb-9 flex justify-end xs:mx-[20px] xl:mx-[72px]- mx">
         <div className="space-y-2 mt-[44px]">

@@ -782,7 +782,10 @@ const AddAdress = () => {
             </div>
 
             <div className="shadow-box mb-4 p-3">
-              <div className="lg:p-4 p-2 border flex items-center justify-between text-[10px] lg:text-[13px]">
+              <div
+                onClick={toggleDropdown}
+                className="cursor-pointer lg:p-4 p-2 border flex items-center justify-between text-[10px] lg:text-[13px]"
+              >
                 <h4 className=" font-semibold">
                   {Strings.YOUR_CART}{" "}
                   <span className="text-orange-500 ml-1">
@@ -797,7 +800,6 @@ const AddAdress = () => {
                     className={`focus:outline-none transition-transform duration-400 ease-in-out ${
                       isOpen ? "rotate-90" : ""
                     }`}
-                    onClick={toggleDropdown}
                   >
                     <img
                       src={Images.RIGHT_ARROW}

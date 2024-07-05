@@ -193,8 +193,17 @@ const HeaderHeadline = () => {
               className="absolute top-4 right-4"
             />
             <div className="space-y-2 px-5 mt-20 w-full">
+              <div className="flex items-center cursor-pointer">
+                <Image height={16} width={16} alt="/" src={Images.home} />
+                <Link href={"/"}>
+                  <p className="text-white font-normal text-xs ml-2">
+                    {Strings.HOME}
+                  </p>
+                </Link>
+              </div>
+              <p className="border-[0.5px] border-white"></p>
               <div className="space-y-2">
-                {menuData.map((item, index) => (
+                {/* {menuData.map((item, index) => (
                   <div key={index} className="space-y-2">
                     <div
                       onClick={() => toggleMegaMenu(index)}
@@ -214,7 +223,7 @@ const HeaderHeadline = () => {
                     </div>
                     <p className=" border "></p>
                   </div>
-                ))}
+                ))} */}
               </div>
               <div className="flex justify-center">
                 {menuData.map(
@@ -268,7 +277,7 @@ const HeaderHeadline = () => {
                               )}
                           </div>
 
-                          <p className="border border-black"></p>
+                          <p className="border-[0.5px] border-black"></p>
                           <div>
                             {item.brand && item.brand.length > 0 && (
                               <>
@@ -357,7 +366,7 @@ const HeaderHeadline = () => {
                     {Strings.NEED_HELP}
                   </p>
                 </div>
-                <p className="border"></p>
+                <p className="border-[0.5px] border-white"></p>
                 <div className="flex items-center cursor-pointer">
                   <Image
                     src={Images.Locationwhite}
@@ -369,14 +378,19 @@ const HeaderHeadline = () => {
                     {Strings.FIND_THE_NEAREST_STORE}
                   </p>
                 </div>
-                <p className="border"></p>
-                <div className="flex items-center cursor-pointer">
-                  <Image src={Images.Eyewhite} alt="/" height={14} width={20} />
+                <p className="border-[0.5px] border-white"></p>
+
+                <div
+                  onClick={openWhatsApp}
+                  className="flex items-center cursor-pointer"
+                >
+                  <Image src={Images.vector} alt="/" height={18} width={18} />
                   <p className="text-white font-normal text-xs ml-2">
-                    {Strings.BOOK_AN_APPOINTMENT}
+                    {Strings.TALK_WITH_US}
                   </p>
                 </div>
-                <p className="border"></p>
+                <p className="border-[0.5px] border-white"></p>
+
                 <div className="flex items-center cursor-pointer">
                   <Image
                     src={Images.Userwhite}
@@ -388,7 +402,7 @@ const HeaderHeadline = () => {
                     {Strings.SIGN_IN}
                   </p>
                 </div>
-                <p className="border"></p>
+                <p className="border-[0.5px] border-white"></p>
               </div>
             </div>
           </div>

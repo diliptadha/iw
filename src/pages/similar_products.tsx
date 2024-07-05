@@ -413,7 +413,7 @@ const SimilarProductPage = () => {
           className="mt-5 mx-3 overflow-hidden flex space-x-10- w-full overflow-x-scroll no-scrollbar"
         >
           <div className="">
-            <div className="relative h-[335px] w-[320px] rounded-[10px] mr-5 md:mr-10">
+            {/* <div className="relative h-[335px] w-[320px] rounded-[10px] mr-5 md:mr-10">
               <Image
                 src={Images.EXPLORE}
                 alt="/"
@@ -428,7 +428,7 @@ const SimilarProductPage = () => {
                   {Strings.EXPLORE}
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
           {similarProductData &&
             Array.isArray(similarProductData) &&

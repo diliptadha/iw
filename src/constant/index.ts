@@ -125,9 +125,14 @@ export const Images = {
   profile: "/Images/profile.png",
   Iksana_Eye_Logo: "/Images/iksana_eye_logo.png",
   vector: "/Images/Vector13.png",
+  filter: "/Images/filter.png",
+  home: "/Images/home.png",
+  locationblack: "/Images/locationblack.png",
+  clock: "/Images/clock.png",
 };
 
 export const Strings = {
+  HOME: "HOME",
   Optional: "(Optional)",
   MEDIUM: "Medium",
   COUPONS: "Coupons",

@@ -391,7 +391,10 @@ const ShippingAddress = () => {
             <h2 className="mb-[15px] font-semibold">{Strings.SUMMARY}</h2>
 
             <div className="shadow-box mb-4 p-3">
-              <div className="p-4 border flex items-center justify-between">
+              <div
+                onClick={toggleDropdown}
+                className="cursor-pointer p-4 border flex items-center justify-between"
+              >
                 <h4 className="text-[13px] font-semibold">
                   {Strings.YOUR_CART}{" "}
                   <span className="text-orange-500 ml-1">
@@ -406,7 +409,6 @@ const ShippingAddress = () => {
                     className={`focus:outline-none transition-transform duration-400 ease-in-out ${
                       isOpen ? "rotate-90" : ""
                     }`}
-                    onClick={toggleDropdown}
                   >
                     <img
                       src={Images.RIGHT_ARROW}

@@ -127,7 +127,7 @@ const ExpertDoctor = () => {
 
   const Time = ["10:00 AM to 1:00 PM", "2:00 PM to 6:00 PM"];
   const Doctor = [
-    "Dr Dipak Garg",
+    "Dr Deepak Garg",
     "Dr Chinmay Nakhava ",
     "Dr Urmi shah",
     "Dr Shreyansh Doshi",

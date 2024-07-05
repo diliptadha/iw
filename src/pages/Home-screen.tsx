@@ -684,18 +684,19 @@ const Homescreen: React.FC = () => {
                   </div>
                 )}
               </div>
+
               {getContent.map((content, index) => {
                 if (index === 2) {
                   return (
                     <div className="flex xs:flex-col xl:flex-row md:justify-between mt-10 xs:mx-[20px] xl:mx-[72px]  items-center">
                       <div className=" xl:w-[640px]">
-                        <p className="bg-black-">
-                          <h1 className="font-extrabold xs:text-xl lg:text-[24px] text-PictonBlue">
+                        <div className="bg-black-">
+                          <div className="font-extrabold xs:text-xl lg:text-[24px] text-PictonBlue">
                             {content.tagLine}
-                          </h1>
+                          </div>
                           <p className="border border-black my-3 xs:w-full xl:w-[610px]"></p>
-                        </p>
-                        <h1 className="font-medium text-black  xs:text-lg md:text-2xl xs:block- md:flex- xl:block-">
+                        </div>
+                        <div className="font-medium text-black  xs:text-lg md:text-2xl xs:block- md:flex- xl:block-">
                           <span className="">
                             {content.title.split(" ").slice(0, 3).join(" ")}
                           </span>
@@ -703,7 +704,7 @@ const Homescreen: React.FC = () => {
                           <span>
                             {content.title.split(" ").slice(3).join(" ")}
                           </span>
-                        </h1>
+                        </div>
                         <p className="font-normal leading-4 text-black text-sm mt-3 xl:w-[350px]">
                           {content.desc}
                         </p>
@@ -977,18 +978,22 @@ const Homescreen: React.FC = () => {
                                   )}
                                 </div>
                                 <div className="xs:w-[280px] md:w-[400px] h-[350px] overflow-hidden flex rounded-[0px] bg-black-">
-                                  <Image
-                                    height={350}
-                                    width={280}
-                                    src={currentItem.productImage}
-                                    alt="/"
-                                    className="relative transition-transform duration-700 ease-in-out"
-                                    // style={{
-                                    //   transform: `translateX(-${
-                                    //     currIndex * 100
-                                    //   }%)`,
-                                    // }}
-                                  />
+                                  <button
+                                    onClick={() =>
+                                      handleProductPage(currentItem)
+                                    }
+                                  >
+                                    <img
+                                      src={currentItem.productImage}
+                                      alt="/"
+                                      className="relative transition-transform duration-700 ease-in-out"
+                                      // style={{
+                                      //   transform: `translateX(-${
+                                      //     currIndex * 100
+                                      //   }%)`,
+                                      // }}
+                                    />
+                                  </button>
                                 </div>
                               </div>
                             );
@@ -1023,12 +1028,12 @@ const Homescreen: React.FC = () => {
               )}
               {underFive.length > 0 && (
                 <div className="h-[512px] py-14 xs:pl-4 md:pl-12 bg-Darkblue overflow-hidden mt-5">
-                  <h1 className="font-extrabold text-2xl ml-8 text-white space-x-2 flex">
+                  <div className="font-extrabold text-2xl ml-8 text-white space-x-2 flex">
                     <p> {Strings.ALL_UNDER}</p>
                     <span className="text-[#FFC107]">
                       {Strings.FIVE_HUNDRED}
                     </span>
-                  </h1>
+                  </div>
                   <div className="flex items-center">
                     <Image
                       onClick={() => {
