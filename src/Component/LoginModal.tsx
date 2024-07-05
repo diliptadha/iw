@@ -120,6 +120,7 @@ const LoginModal = ({
     setIsLoading(true);
     try {
       let data = JSON.stringify({
+        emailId: email,
         Otp: otp,
       });
       let config = {
