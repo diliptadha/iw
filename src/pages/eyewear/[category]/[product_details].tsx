@@ -796,14 +796,14 @@ const ProductDetails = () => {
 
                     <div
                       ref={containerRef2}
-                      className="overflow-x-auto flex md:flex-wrap mx-0 lg:mx-1 "
+                      className="overflow-x-auto flex md:flex-wrap mx-0 lg:mx-1  "
                     >
                       <Image
                         height={500}
                         width={500}
                         src={selectedSubProduct.ProductData?.productImage}
                         alt="productImage"
-                        className="image2 md:mb-1 lg:mb-2 md:mr-1 lg:mr-2 border border-black rounded  md:object-cover"
+                        className="image2 md:mb-1 lg:mb-2 md:mr-1 lg:mr-2 md:border md:border-black rounded  md:object-cover"
                         loading="lazy"
                       />
                       {Array.isArray(
@@ -821,7 +821,7 @@ const ProductDetails = () => {
                                 index === 0
                                   ? "md:mb-1 md:mr-1 lg:mb-2"
                                   : "md:mr-1 md:mb-1 lg:mb-0 lg:mr-2"
-                              } border border-black rounded md:object-cover`}
+                              } md:border md:border-black rounded md:object-cover`}
                               loading="lazy"
                             />
                           )

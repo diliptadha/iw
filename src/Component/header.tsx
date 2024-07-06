@@ -84,6 +84,25 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
     );
   };
 
+  useEffect(() => {
+    const cleanupLocalStorage = () => {
+      setSearch("");
+      setSearchLocal("");
+      localStorage.removeItem("searchTerm");
+      localStorage.removeItem("search");
+    };
+
+    const handleRouteChange = () => {
+      if (window.location.pathname !== "/advanced-search") {
+        cleanupLocalStorage();
+      }
+    };
+
+    return () => {
+      handleRouteChange();
+    };
+  }, []);
+
   const [signInText, setSignInText] = useState("SIGN IN");
   const [firstName, setFirstName] = useState("");
 
@@ -150,21 +169,6 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
       );
     }
   };
-
-  useEffect(() => {
-    const handlePopState = () => {
-      if (window.location.pathname !== "/advanced-search") {
-        localStorage.removeItem("searchTerm");
-        localStorage.removeItem("search");
-        setSearch("");
-        setSearchLocal("");
-      }
-    };
-
-    return () => {
-      handlePopState();
-    };
-  }, []);
 
   let userId: string | null;
   useEffect(() => {
@@ -435,10 +439,28 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
               </a>
             </div>
           </div>
-          <div className="flex items-center xs:block lg:hidden">
-            <button onClick={toggleMenu}>
-              <Image src={Images.Menu} alt="/" height={28} width={28} />
-            </button>
+          <div className="flex items-center gap-x-2 xs:flex lg:hidden">
+            <div className="relative" onClick={handleCartPage}>
+              <button>
+                <Image
+                  src={Images.whitecart}
+                  alt="/"
+                  height={21}
+                  width={19}
+                  className="w-[20px]"
+                />
+              </button>
+              <div className="rounded-full h-[18px] w-[18px] bg-[#FF4307] absolute top-0 right-[-7px] translate-x-0 translate-y-[-50%]">
+                <span className="absolute text-[10px] top-[50%] right-[50%] text-white translate-x-[50%] translate-y-[-50%]">
+                  {cart || tQty}
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center xs:block lg:hidden">
+              <button onClick={toggleMenu}>
+                <Image src={Images.Menu} alt="/" height={28} width={28} />
+              </button>
+            </div>
           </div>
           {showMenu && (
             <div
@@ -1027,47 +1049,64 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                             <h1 className="font-bold text-black">
                               {Strings.BRANDS}
                             </h1>
-                            <ul
-                              className={`${
-                                item.brand.length > 11
-                                  ? "grid grid-cols-2 gap-x-20"
-                                  : ""
-                              } space-y-[4px]`}
-                            >
-                              {/* <ul
-                              className={
-                                item.category.toLowerCase() === "brands"
-                                  ? "grid grid-cols-3 gap-x-20"
-                                  : "space-y-[4px]"
-                              }
-                            > */}
-                              {item.brand.map((brand, subIndex) => (
-                                <li
-                                  key={subIndex}
-                                  className="hover:text-PictonBlue cursor-pointer text-black font-medium text-xs"
-                                  // onClick={() => handleBrandClick(brand)}
-                                >
-                                  <a
-                                    href={`/${item.category
-                                      .toLowerCase()
-                                      .replace(/\s+/g, "-")}/${brand
-                                      .toLowerCase()
-                                      .replace(/\s+/g, "-")
-                                      .replace(/&/g, "and")}${
-                                      item.category.toLowerCase() ===
-                                        "contact lenses" ||
-                                      item.category.toLowerCase() ===
-                                        "myopia control glasses"
-                                        ? "-lens"
-                                        : "-frames"
-                                    }`}
+                            <div className="grid grid-cols-2 gap-4">
+                              <ul className="space-y-[4px]">
+                                {item.brand
+                                  .slice(0, 18)
+                                  .map((brand, subIndex) => (
+                                    <li
+                                      key={subIndex}
+                                      className="hover:text-PictonBlue cursor-pointer text-black font-medium text-xs"
+                                    >
+                                      <a
+                                        href={`/${item.category
+                                          .toLowerCase()
+                                          .replace(/\s+/g, "-")}/${brand
+                                          .toLowerCase()
+                                          .replace(/\s+/g, "-")
+                                          .replace(/&/g, "and")}${
+                                          item.category.toLowerCase() ===
+                                            "contact lenses" ||
+                                          item.category.toLowerCase() ===
+                                            "myopia control glasses"
+                                            ? "-lens"
+                                            : "-frames"
+                                        }`}
+                                      >
+                                        {brand.charAt(0).toUpperCase() +
+                                          brand.slice(1).toLowerCase()}
+                                      </a>
+                                    </li>
+                                  ))}
+                              </ul>
+                              <ul className="space-y-[4px]">
+                                {item.brand.slice(18).map((brand, subIndex) => (
+                                  <li
+                                    key={subIndex + 18}
+                                    className="hover:text-PictonBlue cursor-pointer text-black font-medium text-xs"
                                   >
-                                    {brand.charAt(0).toUpperCase() +
-                                      brand.slice(1).toLowerCase()}
-                                  </a>
-                                </li>
-                              ))}
-                            </ul>
+                                    <a
+                                      href={`/${item.category
+                                        .toLowerCase()
+                                        .replace(/\s+/g, "-")}/${brand
+                                        .toLowerCase()
+                                        .replace(/\s+/g, "-")
+                                        .replace(/&/g, "and")}${
+                                        item.category.toLowerCase() ===
+                                          "contact lenses" ||
+                                        item.category.toLowerCase() ===
+                                          "myopia control glasses"
+                                          ? "-lens"
+                                          : "-frames"
+                                      }`}
+                                    >
+                                      {brand.charAt(0).toUpperCase() +
+                                        brand.slice(1).toLowerCase()}
+                                    </a>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
                           </>
                         )}
                       </div>

@@ -129,6 +129,7 @@ export const Images = {
   home: "/Images/home.png",
   locationblack: "/Images/locationblack.png",
   clock: "/Images/clock.png",
+  whitecart: "/Images/whitecart.png",
 };
 
 export const Strings = {

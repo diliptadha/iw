@@ -1103,9 +1103,11 @@ const Homescreen: React.FC = () => {
                         <p className="text-black font-normal text-xl">
                           {content.title}
                         </p>
-                        <button className="bg-black hover:bg-PictonBlue text-white font-normal text-xs w-[137px] h-[34px] rounded-[5px] mt-2">
-                          {Strings.BOOK_NOW}
-                        </button>
+                        <Link href="/expert-doctor-consultation">
+                          <button className="bg-black hover:bg-PictonBlue text-white font-normal text-xs w-[137px] h-[34px] rounded-[5px] mt-2">
+                            {Strings.BOOK_NOW}
+                          </button>
+                        </Link>
                       </div>
                       {/* <div className="xs:flex xl:hidden justify-center flex">
                   <Image
