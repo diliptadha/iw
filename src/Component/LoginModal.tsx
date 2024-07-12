@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
 import Loader from "./Loader";
+import Swal from "sweetalert2";
 import axios from "axios";
 
 export const toggleModal = (
@@ -170,7 +171,18 @@ const LoginModal = ({
       setUserId(response.data.signInData.userData.userId);
       setShowLoginModal(false);
       setIsLoggedIn(true);
-      window.location.reload();
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        icon: "success",
+        title: "You have logged in successfully",
+        padding: "10px 20px",
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.log(error);
     } finally {

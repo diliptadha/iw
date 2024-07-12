@@ -93,7 +93,10 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
     };
 
     const handleRouteChange = () => {
-      if (window.location.pathname !== "/advanced-search") {
+      if (
+        window.location.pathname !== "/advanced-search" &&
+        window.location.pathname === "/"
+      ) {
         cleanupLocalStorage();
       }
     };

@@ -1,11 +1,13 @@
 import "../app/globals.css";
 
-import { ContactUs, Strings } from "@/constant";
+import { ContactUs, Images, Strings } from "@/constant";
 import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { Footer } from "@/Component/footer";
 import Header from "@/Component/header";
+import Image from "next/image";
+import WhatsAppButton from "@/Component/WhatsAppButton";
 import axios from "axios";
 
 interface IFormInput {
@@ -46,8 +48,15 @@ const Contactus = () => {
     }
   };
 
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
-    <>
+    <div className="max-w-screen-2xl m-auto">
       <Header setSearch={setSearch} />
       <div className="m-5 md:my-10">
         <h1 className="py-5 text-center text-3xl">{ContactUs.CONTACT_US}</h1>
@@ -167,10 +176,24 @@ const Contactus = () => {
           </div>
         </div>
       </div>
-      <div className="mt-10">
+      <div className="flex justify-end xs:mx-[20px] xl:mx-[70px] my-10">
+        <div className=" space-y-2 ">
+          <button
+            onClick={handleScrollToTop}
+            className="bg-PictonBlue h-12 w-12 rounded-full flex justify-center items-center"
+          >
+            <Image src={Images.Upicon} alt="/" height={16} width={16} />
+          </button>
+          <WhatsAppButton
+            phoneNumber={Strings.Whatsapp_No}
+            message="Hello, I would like to know more about your services."
+          />
+        </div>
+      </div>
+      <div className="">
         <Footer />
       </div>
-    </>
+    </div>
   );
 };
 

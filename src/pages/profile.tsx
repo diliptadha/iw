@@ -13,6 +13,7 @@ import Image from "next/image";
 import LoginModal from "@/Component/LoginModal";
 import Product from "@/Component/Product";
 import Swal from "sweetalert2";
+import WhatsAppButton from "@/Component/WhatsAppButton";
 import axios from "axios";
 
 interface FavoriteProduct {
@@ -144,6 +145,7 @@ const Profile = () => {
   const updateUserProfile = async () => {
     const token = localStorage.getItem("accessToken");
     console.log("Authorization Token for updateUserProfile:", token);
+
     try {
       let data = JSON.stringify({
         firstName: firstName,
@@ -186,9 +188,12 @@ const Profile = () => {
       setMyFavorites(response.data.data);
       const favoriteStatus = response.data.data.reduce(
         (acc: { [key: string]: boolean }, product: FavoriteProduct) => {
-          acc[product.productInfo.productId] = true;
+          if (product.productInfo) {
+            acc[product.productInfo.productId] = true;
+          }
           return acc;
         },
+
         {}
       );
       setFavoriteStatus(favoriteStatus);
@@ -217,6 +222,10 @@ const Profile = () => {
 
   const removeFavoriteProduct = async (productId: string, userId: string) => {
     try {
+      if (!productId || !userId) {
+        throw new Error("Product ID or User ID is not defined");
+      }
+
       const data = JSON.stringify({ userId, productId });
       const config = {
         method: "post",
@@ -225,21 +234,34 @@ const Profile = () => {
         headers: {},
         data,
       };
+
       const response = await axios.request(config);
+
+      console.log(response.data);
+
+      if (!response.data.productData) {
+        throw new Error("productData is not defined in the response");
+      }
+
       console.log(JSON.stringify(response.data.productData));
+
       setFavoriteStatus((prevState) => {
         const newState = { ...prevState };
         delete newState[productId];
+        localStorage.setItem("favoriteStatus", JSON.stringify(newState));
+
         return newState;
       });
+
       setMyFavorites((prevFavorites) =>
         prevFavorites.filter(
-          (product) => product.productInfo.productId !== productId
+          (product) => product.productInfo?.productId !== productId
         )
       );
-      showAlert("info", "Your product has been removed to favorites!");
+
+      showAlert("info", "Your product has been removed from favorites!");
     } catch (error) {
-      console.log(error);
+      console.error();
     }
   };
 
@@ -318,6 +340,13 @@ const Profile = () => {
     router.push("/");
   };
 
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <div className="max-w-screen-2xl m-auto">
       <div>
@@ -355,7 +384,7 @@ const Profile = () => {
             </button>
           </div>
         </div>
-        <div className="mb-28 bg-[#f2f2f2] border-[1.5px] border-slate-300 xs:mx-[20px] xl:mx-[70px] rounded-b-lg xs:p-3 xl:p-7 flex  xs:flex-col lg:flex-row  lg:justify-between">
+        <div className="mb-28- bg-[#f2f2f2] border-[1.5px] border-slate-300 xs:mx-[20px] xl:mx-[70px] rounded-b-lg xs:p-3 xl:p-7 flex  xs:flex-col lg:flex-row  lg:justify-between">
           <div className="flex   text-black xs:mb-6 lg:mb-0 xs:flex-row lg:flex-col xs:justify-between lg:justify-normal lg:space-y-6 lg:w-[140px]">
             <button
               className={`flex items-center hover:text-PictonBlue  ${
@@ -579,7 +608,10 @@ const Profile = () => {
                   <div className="flex-wrap xs:justify-center xl:justify-normal flex sm:gap-x-10 lg:gap-x-20 ">
                     {myFavorites?.length > 0 ? (
                       myFavorites?.map((favoriteProduct, index) => {
-                        const product = favoriteProduct.productInfo;
+                        const product = favoriteProduct?.productInfo;
+                        if (!product) {
+                          return null;
+                        }
                         return (
                           <Product
                             key={index}
@@ -674,6 +706,20 @@ const Profile = () => {
                 ))}
               </div>
             )}
+          </div>
+        </div>
+        <div className="flex justify-end xs:mx-[20px] xl:mx-[70px] my-10">
+          <div className=" space-y-2 ">
+            <button
+              onClick={handleScrollToTop}
+              className="bg-PictonBlue h-12 w-12 rounded-full flex justify-center items-center"
+            >
+              <Image src={Images.Upicon} alt="/" height={16} width={16} />
+            </button>
+            <WhatsAppButton
+              phoneNumber={Strings.Whatsapp_No}
+              message="Hello, I would like to know more about your services."
+            />
           </div>
         </div>
         <Footer />

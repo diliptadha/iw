@@ -1,15 +1,25 @@
 import "../app/globals.css";
 
+import { Images, Strings } from "@/constant";
 import React, { useState } from "react";
 
 import { Footer } from "@/Component/footer";
 import Headerforfaqs from "@/Component/headerforfaqs";
-import { Strings } from "@/constant";
+import Image from "next/image";
+import WhatsAppButton from "@/Component/WhatsAppButton";
 
 const Terms = () => {
   const [search, setSearch] = useState("");
+
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
-    <>
+    <div className="max-w-screen-2xl m-auto">
       <Headerforfaqs setSearch={setSearch} />
       <div className=" px-[2rem] py-[2rem] md:px-[3rem] xl:px-[6rem] ">
         <h1 className="underline text-[30px] font-semibold mb-[20px] text-[#42b7e9]">
@@ -428,8 +438,22 @@ const Terms = () => {
           </div>
         </div>
       </div>
+      <div className="flex justify-end xs:mx-[20px] xl:mx-[70px] my-10">
+        <div className=" space-y-2 ">
+          <button
+            onClick={handleScrollToTop}
+            className="bg-PictonBlue h-12 w-12 rounded-full flex justify-center items-center"
+          >
+            <Image src={Images.Upicon} alt="/" height={16} width={16} />
+          </button>
+          <WhatsAppButton
+            phoneNumber={Strings.Whatsapp_No}
+            message="Hello, I would like to know more about your services."
+          />
+        </div>
+      </div>
       <Footer />
-    </>
+    </div>
   );
 };
 

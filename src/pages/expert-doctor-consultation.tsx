@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Loader from "@/Component/Loader";
 import Swal from "sweetalert2";
+import WhatsAppButton from "@/Component/WhatsAppButton";
 import axios from "axios";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
@@ -64,6 +65,13 @@ const ExpertDoctor = () => {
       setIsAnimated(true);
     }
   }, [inView]);
+
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   const handleEmailChange = (e: { target: { value: any } }) => {
     const emailValue = e.target.value;
@@ -136,7 +144,7 @@ const ExpertDoctor = () => {
     "Dr Akshay Nair",
     "Dr Rupali Sinha",
   ];
-  const Location = ["Kemps Corner ", "Dadar", "Juhu", "Andheri"];
+  const Location = ["Kemps Corner ", "Dadar", "Juhu"];
 
   const isFormValid = () => {
     return (
@@ -217,23 +225,7 @@ const ExpertDoctor = () => {
     };
     try {
       const response = await axios.request(config);
-
-      const sortedData = response.data.doctorData.sort(
-        (a: { id: string }, b: { id: string }) => {
-          if (
-            a.id === "667e70a56265d6fe80c1b589" ||
-            a.id === "667e719c6265d6fe80c1b58a"
-          )
-            return 1;
-          if (
-            b.id === "667e70a56265d6fe80c1b589" ||
-            b.id === "667e719c6265d6fe80c1b58a"
-          )
-            return -1;
-          return 0;
-        }
-      );
-
+      const sortedData = response.data.doctorData;
       setConsultationData(sortedData);
     } catch (error) {
       console.log(error);
@@ -473,7 +465,7 @@ const ExpertDoctor = () => {
           {Expert.All_Doctors}
         </h1>
       </div>
-      <div className="xs:mx-[20px]  lg:mx-0- flex justify-center  flex-wrap md:gap-x-5 lg:gap-x-10 xl:gap-x-14">
+      <div className="xs:mx-[20px]-  lg:mx-0 flex justify-center  flex-wrap md:gap-x-5 lg:gap-x-10 xl:gap-x-14">
         {ConsultationData.length > 0 ? (
           ConsultationData.map((ele, index) => (
             <motion.div
@@ -486,7 +478,7 @@ const ExpertDoctor = () => {
             >
               <div
                 key={index}
-                className=" half-bg mb-10 bg-white shadow-md rounded-[10px] p-4 md:w-[350px] lg:transition-transform lg:hover:scale-105 lg:transform"
+                className=" half-bg mb-10 bg-white shadow-md rounded-[10px] p-4 xs:w-[330px] md:w-[350px]  md:h-[475px] lg:transition-transform lg:hover:scale-105 lg:transform"
               >
                 <div className=" flex justify-center ">
                   <div className=" mb-4 ">
@@ -548,6 +540,20 @@ const ExpertDoctor = () => {
         ) : (
           <div>{Strings.NO_DATA_FOUND}</div>
         )}
+      </div>
+      <div className="flex justify-end xs:mx-[20px] lg:mx-32 mb-10">
+        <div className=" space-y-2 ">
+          <button
+            onClick={handleScrollToTop}
+            className="bg-PictonBlue h-12 w-12 rounded-full flex justify-center items-center"
+          >
+            <Image src={Images.Upicon} alt="/" height={16} width={16} />
+          </button>
+          <WhatsAppButton
+            phoneNumber={Strings.Whatsapp_No}
+            message="Hello, I would like to know more about your services."
+          />
+        </div>
       </div>
       <Footer />
     </div>

@@ -359,6 +359,8 @@ const SimilarProductPage = () => {
       setFavoriteStatus((prevState) => {
         const newState = { ...prevState };
         delete newState[productId];
+        localStorage.setItem("favoriteStatus", JSON.stringify(newState));
+
         return newState;
       });
       showAlert("info", "Your product has been removed to favorites!");

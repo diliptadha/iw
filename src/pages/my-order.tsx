@@ -2,14 +2,16 @@ import "../app/globals.css";
 
 import { Faqs, Images, Strings } from "@/constant";
 import React, { useEffect, useState } from "react";
+import axios, { AxiosRequestConfig } from "axios";
 import { format, formatDate } from "date-fns";
 
 import { Footer } from "@/Component/footer";
 import HeaderHeadline from "./header-headline";
 import Headerforfaqs from "@/Component/headerforfaqs";
-import axios, { AxiosRequestConfig } from "axios";
-import { useRouter } from "next/navigation";
+import Image from "next/image";
 import OrderCancelPopup from "@/Component/OrderCancelPopup";
+import WhatsAppButton from "@/Component/WhatsAppButton";
+import { useRouter } from "next/navigation";
 
 interface ExpectedDelivery {
   today: string;
@@ -186,8 +188,15 @@ const myOrder = () => {
     }
   };
 
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
-    <>
+    <div className="max-w-screen-2xl m-auto">
       <Headerforfaqs setSearch={setSearch} />
       <div className=" px-[1rem] py-[1rem] md:px-[3rem] xl:px-[6rem] ">
         <div className="-bg-[#90e9c1] ">
@@ -318,8 +327,22 @@ const myOrder = () => {
           </div>
         </div>
       </div>
+      <div className="flex justify-end xs:mx-[20px] xl:mx-[70px] my-10">
+        <div className=" space-y-2 ">
+          <button
+            onClick={handleScrollToTop}
+            className="bg-PictonBlue h-12 w-12 rounded-full flex justify-center items-center"
+          >
+            <Image src={Images.Upicon} alt="/" height={16} width={16} />
+          </button>
+          <WhatsAppButton
+            phoneNumber={Strings.Whatsapp_No}
+            message="Hello, I would like to know more about your services."
+          />
+        </div>
+      </div>
       <Footer />
-    </>
+    </div>
   );
 };
 

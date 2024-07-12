@@ -21,11 +21,11 @@ const Upto50off = () => {
           <Link href={`/store-location#kemps-corner`}>
             <h1> {Strings.KEMPS_CORNER}</h1>{" "}
           </Link>
-          <p className="border-l-2 border-white" />
+          <p className="xs:border-l-[0.5px] lg:border-l-2 border-white" />
           <Link href={`/store-location#dadar`}>
             <h1> {Strings.DADAR}</h1>
           </Link>
-          <p className="border-l-2 border-white" />
+          <p className="xs:border-l-[0.5px] lg:border-l-2 border-white" />
           <Link href={`/store-location#juhu`}>
             <h1> {Strings.JUHU}</h1>
           </Link>

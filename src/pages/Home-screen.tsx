@@ -10,15 +10,11 @@ import LoginModal, { toggleModal } from "@/Component/LoginModal";
 import React, { Fragment, Key, useLayoutEffect, useRef, useState } from "react";
 
 import Bestsellers from "@/Component/Bestsellers";
-import Carosel from "@/Component/Upto50off";
 import { Carousel } from "react-responsive-carousel";
 import Customerssay from "@/Component/Customerssay";
 import DynamicTitle from "@/Component/DynamicTitle";
 import { Footer } from "@/Component/footer";
 import Frame from "@/Component/Frame";
-import Frameforkids from "@/Component/Frameforkids";
-import Frameformen from "@/Component/Frameformen";
-import Frameforunisex from "@/Component/Frameforunisex";
 import Header from "@/Component/header";
 import Image from "next/image";
 import ImageCarousel from "@/Component/Upto50off";
@@ -150,9 +146,9 @@ const Homescreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       await new Promise((resolve) => setTimeout(resolve, 2000));
-
       setLoading(false);
     };
 
@@ -296,41 +292,6 @@ const Homescreen: React.FC = () => {
 
     router.push(actualRoute);
   };
-  const handleBuyNow = async (userId: string | null) => {
-    try {
-      if (!userId) {
-        setShowLoginModal(true);
-        return;
-      }
-      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}product/addToCartProduct?userId=${userId}`;
-      console.log("handleBuyNow API URL:", apiUrl);
-      const response = await axios.post(
-        apiUrl,
-        {
-          cartProducts: [
-            {
-              productId: newArrival[currIndex].productId,
-              subProductId: newArrival[currIndex].subProductId,
-              size: newArrival[currIndex].frameSize,
-              quantity: 1,
-              salePrice: newArrival[currIndex].salePrice,
-              originalPrice: newArrival[currIndex].originalPrice,
-              productImage: newArrival[currIndex].productImage,
-            },
-          ],
-        },
-
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      window.location.href = "/cart";
-    } catch (error) {
-      console.error("Error adding item to cart:", error);
-    }
-  };
 
   const handleNext2 = () => {
     setCurrIndex((prevIndex) => (prevIndex + 1) % newArrival.length);
@@ -411,48 +372,6 @@ const Homescreen: React.FC = () => {
         setScrollPosition(scrollPosition + scrollStep2);
       } else {
         containerRef1.current.scrollTo({
-          left: 0,
-          behavior: "smooth",
-        });
-        setScrollPosition(0);
-      }
-    }
-  };
-  const handleScrollRight2 = () => {
-    if (containerRef2.current) {
-      const containerWidth = containerRef2.current.scrollWidth;
-      const containerScrollWidth = containerRef2.current.offsetWidth;
-      const maxScrollRight = containerWidth - containerScrollWidth;
-
-      if (scrollPosition < maxScrollRight) {
-        containerRef2.current.scrollBy({
-          left: scrollStep2,
-          behavior: "smooth",
-        });
-        setScrollPosition(scrollPosition + scrollStep2);
-      } else {
-        containerRef2.current.scrollTo({
-          left: 0,
-          behavior: "smooth",
-        });
-        setScrollPosition(0);
-      }
-    }
-  };
-  const handleScrollRight3 = () => {
-    if (containerRef3.current) {
-      const containerWidth = containerRef3.current.scrollWidth;
-      const containerScrollWidth = containerRef3.current.offsetWidth;
-      const maxScrollRight = containerWidth - containerScrollWidth;
-
-      if (scrollPosition < maxScrollRight) {
-        containerRef3.current.scrollBy({
-          left: scrollStep2,
-          behavior: "smooth",
-        });
-        setScrollPosition(scrollPosition + scrollStep2);
-      } else {
-        containerRef3.current.scrollTo({
           left: 0,
           behavior: "smooth",
         });
@@ -869,7 +788,7 @@ const Homescreen: React.FC = () => {
                   </Tab.Group>
                   {newArrival.length > 0 && (
                     <div className="xs:mt-10 lg:mt-28">
-                      <h1 className="font-extrabold text-2xl text-black">
+                      <h1 className="font-extrabold text-2xl text-black ">
                         {Strings.NEW_ARRIVALS}
                       </h1>
 
@@ -935,7 +854,7 @@ const Homescreen: React.FC = () => {
                                     {Strings.Inclusive_of_all_taxes}
                                   </p>
                                   <StarRating rating={currentItem.rating} />
-                                  <div className="flex space-x-4 mt-4 items-center">
+                                  <div className="flex xs:space-x-2 lg:space-x-4 mt-4 items-center">
                                     <button
                                       onClick={() =>
                                         addToCart(
@@ -1319,7 +1238,9 @@ const Homescreen: React.FC = () => {
                 </div>
               )}
             </div>
-            <Footer />
+            <div className="max-w-screen-2xl m-auto">
+              <Footer />
+            </div>
           </div>
         )}
       </div>

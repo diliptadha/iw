@@ -3,7 +3,9 @@ import { useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
+import LoginModal from "@/Component/LoginModal";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface MenuItem {
   category: string;
@@ -31,6 +33,8 @@ interface MenuItem {
 }
 
 const HeaderHeadline = () => {
+  const router = useRouter();
+
   const [selectedLanguage, setSelectedLanguage] = useState<string | null>(
     "English"
   );
@@ -38,6 +42,13 @@ const HeaderHeadline = () => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [menuData, setMenuData] = useState<MenuItem[]>([]);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !!localStorage.getItem("userId");
+    }
+    return false;
+  });
 
   const fetchData = async () => {
     try {
@@ -107,7 +118,7 @@ const HeaderHeadline = () => {
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-  const [signInText, setSignInText] = useState("Sign In");
+  const [signInText, setSignInText] = useState("SIGN IN");
   const [firstName, setFirstName] = useState("");
 
   useEffect(() => {
@@ -127,6 +138,14 @@ const HeaderHeadline = () => {
       localStorage.setItem("firstName", firstName);
     }
   }, [firstName]);
+
+  const handleButtonClick = () => {
+    if (isLoggedIn) {
+      router.push("/profile");
+    } else {
+      setShowLoginModal(true);
+    }
+  };
 
   const openWhatsApp = () => {
     window.open(
@@ -437,12 +456,17 @@ const HeaderHeadline = () => {
               />
             </Link>
             <button
-              className={`text-black font-bold text-xs ml-2 
-                  
-            `}
+              onClick={handleButtonClick}
+              className={` text-black font-bold text-xs ml-2  `}
             >
               {signInText}
             </button>
+            <LoginModal
+              showLoginModal={showLoginModal}
+              setShowLoginModal={setShowLoginModal}
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+            />
           </div>
         </div>
       </div>

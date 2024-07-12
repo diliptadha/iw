@@ -1,13 +1,14 @@
 import "../app/globals.css";
 
+import { Images, Strings } from "@/constant";
 import React, { useEffect, useState } from "react";
 
 import { Footer } from "@/Component/footer";
 import Header from "@/Component/header";
 import Image from "next/image";
-import { Images } from "@/constant";
 import Link from "next/link";
 import StarRating from "./StarRating";
+import WhatsAppButton from "@/Component/WhatsAppButton";
 import axios from "axios";
 
 interface storeData {
@@ -70,8 +71,15 @@ const StoreLocation = () => {
     }
   }, [storeData]);
 
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
-    <>
+    <div className="max-w-screen-2xl m-auto">
       <div className="">
         <Header setSearch={setSearch} />
       </div>
@@ -163,8 +171,22 @@ const StoreLocation = () => {
           <></>
         )}
       </div>
+      <div className="flex justify-end xs:mx-[20px] xl:mx-[70px] my-10">
+        <div className=" space-y-2 ">
+          <button
+            onClick={handleScrollToTop}
+            className="bg-PictonBlue h-12 w-12 rounded-full flex justify-center items-center"
+          >
+            <Image src={Images.Upicon} alt="/" height={16} width={16} />
+          </button>
+          <WhatsAppButton
+            phoneNumber={Strings.Whatsapp_No}
+            message="Hello, I would like to know more about your services."
+          />
+        </div>
+      </div>
       <Footer />
-    </>
+    </div>
   );
 };
 
