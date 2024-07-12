@@ -1,6 +1,6 @@
 import { Images, Strings } from "@/constant";
 import LoginModal, { toggleModal } from "@/Component/LoginModal";
-import { useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect, useRef, useState } from "react";
 
 import DynamicTitle from "./DynamicTitle";
 import Image from "next/image";
@@ -93,20 +93,13 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
     };
 
     const handleRouteChange = () => {
-      if (
-        window.location.pathname !== "/advanced-search" &&
-        window.location.pathname === "/"
-      ) {
+      if (window.location.pathname !== "/advanced-search") {
         cleanupLocalStorage();
       }
     };
 
-    window.addEventListener("popstate", handleRouteChange);
-
-    handleRouteChange();
-
     return () => {
-      window.removeEventListener("popstate", handleRouteChange);
+      handleRouteChange();
     };
   }, []);
 
@@ -397,6 +390,30 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
     }
   }, []);
 
+  const [openIndex, setOpenIndex] = useState(null);
+
+  const handleToggle = (index: any) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  const [hasScrolled, setHasScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setHasScrolled(true);
+      } else {
+        setHasScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <>
       <DynamicTitle
@@ -447,22 +464,24 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
             </div>
           </div>
           <div className="flex items-center gap-x-2 xs:flex lg:hidden">
-            <div className="relative" onClick={handleCartPage}>
-              <button>
-                <Image
-                  src={Images.whitecart}
-                  alt="/"
-                  height={21}
-                  width={19}
-                  className="w-[20px]"
-                />
-              </button>
-              <div className="rounded-full h-[18px] w-[18px] bg-[#FF4307] absolute top-0 right-[-7px] translate-x-0 translate-y-[-50%]">
-                <span className="absolute text-[10px] top-[50%] right-[50%] text-white translate-x-[50%] translate-y-[-50%]">
-                  {cart || tQty}
-                </span>
+            {hasScrolled && (
+              <div className="relative" onClick={handleCartPage}>
+                <button>
+                  <Image
+                    src={Images.whitecart}
+                    alt="/"
+                    height={21}
+                    width={19}
+                    className="w-[20px]"
+                  />
+                </button>
+                <div className="rounded-full h-[18px] w-[18px] bg-[#FF4307] absolute top-0 right-[-7px] translate-x-0 translate-y-[-50%]">
+                  <span className="absolute text-[10px] top-[50%] right-[50%] text-white translate-x-[50%] translate-y-[-50%]">
+                    {cart || tQty}
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
             <div className="flex items-center xs:block lg:hidden">
               <button onClick={toggleMenu}>
                 <Image src={Images.Menu} alt="/" height={28} width={28} />
@@ -496,7 +515,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                   {menuData?.map((item, index) => (
                     <div key={index} className="space-y-2">
                       <div
-                        onClick={() => toggleMegaMenu(index)}
+                        onClick={() => handleToggle(index)}
                         className="flex justify-between font-normal text-xs text-white my-4"
                       >
                         {item.category.toUpperCase()}
@@ -506,15 +525,238 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                             alt="/"
                             height={16}
                             width={16}
-                            className="mr-4 "
+                            className={`mr-4 transition-transform duration-300 ${
+                              openIndex === index ? "rotate-180" : ""
+                            }`}
                           />
                         </button>
                       </div>
+                      {openIndex === index && (
+                        <div className="">
+                          <div className="">
+                            {item.category === "Contact Lenses" &&
+                              item.usage.length > 0 && (
+                                <div>
+                                  <h1 className="font-bold  text-black">
+                                    {Strings.USAGE.toUpperCase()}
+                                  </h1>
+                                  <ul className="mt-2 text-xs- text-white">
+                                    {item.usage.map((usage, subIndex) => (
+                                      <li key={subIndex}>
+                                        <Link
+                                          onClick={handleMenuItemClick}
+                                          href={`/${item.category
+                                            .toLowerCase()
+                                            .replace(/\s+/g, "-")}/${usage
+                                            .toLowerCase()
+                                            .replace(
+                                              /\s+/g,
+                                              "-"
+                                            )}-contact-lenses`}
+                                        >
+                                          {usage.charAt(0).toUpperCase() +
+                                            usage.slice(1).toLowerCase()}
+                                        </Link>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                  <p className="border-[0.5px] border-slate-400 my-2 mx-1"></p>
+                                </div>
+                              )}
+
+                            {item.category !== "Contact Lenses" &&
+                              item.gender.length > 0 && (
+                                <div>
+                                  <h1 className="font-bold  text-black">
+                                    {Strings.GENDER}
+                                  </h1>
+                                  <ul className="mt-2 text-xs- text-white">
+                                    {item.gender.map((gender, subIndex) => (
+                                      <li key={subIndex}>
+                                        <Link
+                                          onClick={handleMenuItemClick}
+                                          href={`/${item.category
+                                            .toLowerCase()
+                                            .replace(
+                                              /\s+/g,
+                                              "-"
+                                            )}/${`glasses-for-${gender
+                                            .toLowerCase()
+                                            .replace(/\s+/g, "-")}`}`}
+                                        >
+                                          {gender.charAt(0).toUpperCase() +
+                                            gender.slice(1).toLowerCase()}
+                                        </Link>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                  <p className="border-[0.5px] border-slate-400 my-2 mx-1"></p>
+                                </div>
+                              )}
+                          </div>
+                          <div>
+                            {item.brand && item.brand.length > 0 && (
+                              <>
+                                <h1 className="font-bold  text-black">
+                                  {Strings.BRANDS}
+                                </h1>
+                                <ul
+                                  className={`
+                                   ${
+                                     item.category ===
+                                       "Myopia Control Glasses" ||
+                                     item.category === "Contact Lenses"
+                                       ? "mt-2  text-white"
+                                       : "grid grid-cols-3 mt-2 text-white"
+                                   }
+                                  `}
+                                >
+                                  {item.brand.map((brand, subIndex) => (
+                                    <li key={subIndex}>
+                                      <Link
+                                        onClick={handleMenuItemClick}
+                                        href={`/${item.category
+                                          .toLowerCase()
+                                          .replace(/\s+/g, "-")}/${brand
+                                          .toLowerCase()
+                                          .replace(/\s+/g, "-")
+                                          .replace(/&/g, "and")}${
+                                          item.category.toLowerCase() ===
+                                            "contact lenses" ||
+                                          item.category.toLowerCase() ===
+                                            "myopia control glasses"
+                                            ? "-lens"
+                                            : "-frames"
+                                        }`}
+                                      >
+                                        {brand.charAt(0).toUpperCase() +
+                                          brand.slice(1).toLowerCase()}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                                <p
+                                  className={`${
+                                    item.category ===
+                                      "Myopia Control Glasses" ||
+                                    item.category === "Brands"
+                                      ? "my-2"
+                                      : "border-[0.5px] border-slate-400 my-2 mx-1"
+                                  }`}
+                                ></p>
+                              </>
+                            )}
+                          </div>
+
+                          <div>
+                            {item.color && item.color.length > 0 && (
+                              <>
+                                <h1 className="font-bold  text-black">
+                                  {Strings.COLOR}
+                                </h1>
+                                <ul
+                                  className={`${
+                                    item.category === "Contact Lenses"
+                                      ? "mt-2  text-white"
+                                      : "grid grid-cols-3 mt-2 text-white"
+                                  }`}
+                                >
+                                  {item.color.map((color, subIndex) => (
+                                    <li key={subIndex}>
+                                      <Link
+                                        onClick={handleMenuItemClick}
+                                        href={`/${item.category
+                                          .toLowerCase()
+                                          .replace(/\s+/g, "-")}/${color
+                                          .toLowerCase()
+                                          .replace(/\s+/g, "-")}${
+                                          item.category.toLowerCase() ===
+                                            "contact lenses" ||
+                                          item.category.toLowerCase() ===
+                                            "myopia control glasses"
+                                            ? "-lens"
+                                            : "-frames"
+                                        }`}
+                                      >
+                                        {color.charAt(0).toUpperCase() +
+                                          color.slice(1).toLowerCase()}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+
+                                <p
+                                  className={` ${
+                                    item.category === "Contact Lenses"
+                                      ? "my-2"
+                                      : "border-[0.5px] border-slate-400 my-2 mx-1"
+                                  }`}
+                                ></p>
+                              </>
+                            )}
+                          </div>
+
+                          <div>
+                            {item.style && item.style.length > 0 && (
+                              <>
+                                <h1 className="font-bold  text-black">
+                                  {Strings.STYLE}
+                                </h1>
+                                <ul className="mt-2  text-white">
+                                  {item.style.map((style, subIndex) => (
+                                    <li key={subIndex}>
+                                      <Link
+                                        onClick={handleMenuItemClick}
+                                        href={`/${item.category
+                                          .toLowerCase()
+                                          .replace(/\s+/g, "-")}/${style
+                                          .toLowerCase()
+                                          .replace(/\s+/g, "-")}-frames`}
+                                      >
+                                        {style.charAt(0).toUpperCase() +
+                                          style.slice(1).toLowerCase()}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                                <p className="border-[0.5px] border-slate-400 my-2 mx-1"></p>
+                              </>
+                            )}
+                          </div>
+
+                          <div>
+                            {item.shape && item.shape.length > 0 && (
+                              <>
+                                <h1 className="font-bold text-black">
+                                  {Strings.SHAPE}
+                                </h1>
+                                <ul className="mt-2 text-xs- grid text-white grid-cols-3">
+                                  {item.shape.map((shape, subIndex) => (
+                                    <li key={subIndex}>
+                                      <Link
+                                        onClick={handleMenuItemClick}
+                                        href={`/${item.category
+                                          .toLowerCase()
+                                          .replace(/\s+/g, "-")}/${shape
+                                          .toLowerCase()
+                                          .replace(/\s+/g, "-")}-frames`}
+                                      >
+                                        {shape.charAt(0).toUpperCase() +
+                                          shape.slice(1).toLowerCase()}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      )}
                       <p className="border-[0.5px] border-white"></p>
                     </div>
                   ))}
                 </div>
-                <div className="flex justify-center">
+                {/* <div className="flex justify-center">
                   {menuData?.map(
                     (item, index) =>
                       item.megaMenuOpen &&
@@ -736,7 +978,7 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
                         </div>
                       ) : null)
                   )}
-                </div>
+                </div> */}
                 <div className="space-y-4">
                   <h1 className="flex items-center cursor-pointer   ">
                     <a href="tel:+918291251241">

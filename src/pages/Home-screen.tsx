@@ -143,11 +143,12 @@ const Homescreen: React.FC = () => {
         console.log("Error fetching data", error);
       });
   }, []);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
     const fetchData = async () => {
+      setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setLoading(false);
     };
