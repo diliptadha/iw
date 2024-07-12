@@ -98,8 +98,12 @@ const Header: React.FC<HeaderProps> = ({ setSearch }) => {
       }
     };
 
+    window.addEventListener("popstate", handleRouteChange);
+
+    handleRouteChange();
+
     return () => {
-      handleRouteChange();
+      window.removeEventListener("popstate", handleRouteChange);
     };
   }, []);
 
